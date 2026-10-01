@@ -18,3 +18,18 @@ The source heading `Crystals` maps to `Crystal`, and `Lorentz Oscilator`
 maps to `Oscillator Model`. Keep any future title aliases explicit. The website
 builder reads only the public catalog, not the private vault. Do not publish
 unrelated vault files.
+
+# Chapter pages and connections
+
+The user also authorizes a Markdown context layer around the handwritten PDFs:
+questions, physical pictures, key ideas, contents, and explicit connections.
+Edit `chapters/*.md` for that layer and `site/chapters.json` for tags, verified
+PDF contents page numbers, and the connection graph. This context layer is
+separate from the verbatim Optimum previews and guides; never rewrite those.
+Unwritten connection destinations must remain clearly marked as planned.
+Use PDF page counts and the last PDF Git change for publication metadata.
+Keep the original PDF bytes and existing reader/download URLs intact.
+
+Calligraphic initials belong only to page titles, not navigation or every
+subheading. Search must index all public chapter Markdown, tags, questions,
+Optimum guides, topic outlines, and research. Do not index the private vault.

@@ -10,6 +10,7 @@ from urllib.parse import quote
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 import app
 import site_content
+import chapter_content
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--base-path', default='/markdown-server')
@@ -23,23 +24,26 @@ out.mkdir(parents=True, exist_ok=True)
 # otherwise retain an old stylesheet URL when reached through the menu.
 site_version = hashlib.sha256(b''.join(
     (Path(app.__file__).parent / name).read_bytes()
-    for name in ['app.py', 'site_content.py', 'assets/style.css', 'assets/math.js', 'site/catalog.json', 'scripts/build-pages.py']
-) + b''.join(name.encode() + hashlib.sha256(app.resolve(name, root).read_bytes()).digest()
+    for name in ['app.py', 'site_content.py', 'chapter_content.py', 'assets/style.css', 'assets/math.js', 'assets/search.js', 'assets/pdf-reader.js', 'site/catalog.json', 'site/chapters.json', 'scripts/build-pages.py']
+) + b''.join(path.read_bytes() for path in sorted((Path(app.__file__).parent / 'chapters').glob('*.md')))
+  + b''.join(name.encode() + hashlib.sha256(app.resolve(name, root).read_bytes()).digest()
             for root, names in [(app.ROOT, app.files()), (app.PDF_ROOT, app.pdf_files())]
             for name in names)).hexdigest()[:16]
 (out / 'style.css').write_text(app.CSS)
 shutil.copytree(Path(app.__file__).parent / 'assets/fonts', out / 'assets/fonts', dirs_exist_ok=True)
 shutil.copytree(Path(app.__file__).parent / 'assets/vendor', out / 'assets/vendor', dirs_exist_ok=True)
 shutil.copyfile(Path(app.__file__).parent / 'assets/math.js', out / 'assets/math.js')
+shutil.copyfile(Path(app.__file__).parent / 'assets/search.js', out / 'assets/search.js')
+shutil.copyfile(Path(app.__file__).parent / 'assets/pdf-reader.js', out / 'assets/pdf-reader.js')
 
 
 def write_page(path, title, body, raw=None):
     target = out / path
     target.parent.mkdir(parents=True, exist_ok=True)
-    active = "notes" if path.startswith(("notes/", "notebooks/")) else path.split("/")[0]
+    active = "notes" if path.startswith(("notes/", "notebooks/", "connections/")) else path.split("/")[0]
     html = app.page(title, body, raw, active=active).decode()
     # Prefix all local links, leaving external URLs and fragments intact.
-    html = re.sub(r'(href|src)="/(?!/)', lambda match: f'{match[1]}="{base}/', html)
+    html = re.sub(r'(href|src|data-pdf-url)="/(?!/)', lambda match: f'{match[1]}="{base}/', html)
     def version_page_link(match):
         url = match[1]
         if url.startswith(base + '/') and url.endswith('/'):
@@ -93,7 +97,13 @@ for name in app.pdf_files():
     version = hashlib.sha256(source.read_bytes()).hexdigest()[:16]
     url = f'/pdfs/{quote(name,safe="/")}?v={version}'
     write_page('notebooks/' + name + '/index.html', source.stem,
-               site_content.viewer(name, url))
+               site_content.viewer(name, url, app.pdf_files(), chapter_content.pdf_metadata(source)))
 for route, title, body in site_content.pages(app.pdf_files(), app.files()):
     write_page(route + 'index.html', title, body)
+for slug, concept in chapter_content.CONCEPTS.items():
+    write_page('connections/' + slug + '/index.html', concept['title'], chapter_content.concept_page(slug, app.pdf_files()))
+index = chapter_content.search_index(app.pdf_files(), app.files(), app.ROOT)
+for entry in index:
+    entry['url'] = base + entry['url'] + '?v=' + site_version
+(out / 'search-index.json').write_text(__import__('json').dumps(index, ensure_ascii=False))
 print(f'Built {len(app.files())} Markdown documents and {len(app.pdf_files())} PDFs in {out}')

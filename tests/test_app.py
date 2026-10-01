@@ -77,6 +77,27 @@ class ServerTests(unittest.TestCase):
             self.assertTrue(body)
             self.assertIn("script-src 'self'", headers['Content-Security-Policy'])
         self.assertEqual(self.request('/assets/vendor/katex-0.19.0/../../app.py')[0], '404 Not Found')
+    def test_chapter_metadata_and_connection_graph(self):
+        import chapter_content
+        from html import escape
+        folder = app.PDF_ROOT / 'Obsidian'; folder.mkdir()
+        source = Path(app.__file__).parent / 'pdfs/Obsidian/Electromagnetic Pieces.pdf'
+        target = folder / source.name; target.write_bytes(source.read_bytes())
+        status, _, body = self.request('/notebooks/Obsidian/Electromagnetic Pieces.pdf/')
+        self.assertEqual(status, '200 OK')
+        self.assertIn(b'4 pages', body)
+        self.assertIn(b'Why can E and B be treated as one field?', body)
+        self.assertIn(b'data-pdf-page="4"', body)
+        self.assertIn(escape(app.site_content.CATALOG['reading_guides']['Electromagnetic Pieces']).encode(), body)
+        self.assertEqual(self.request('/pdfs/Obsidian/Electromagnetic Pieces.pdf')[2], source.read_bytes())
+        names = ['Obsidian/Electromagnetic Pieces.pdf', "Obsidian/Maxwell's Equations.pdf"]
+        self.assertIn('note:Electromagnetic Pieces', chapter_content.backlinks("note:Maxwell's Equations", names))
+        self.assertIn('note:Electromagnetic Pieces', chapter_content.backlinks('concept:vector-calculus', names))
+        self.assertEqual(self.request('/connections/vector-calculus/')[0], '200 OK')
+        self.assertEqual(self.request('/connections/unknown/')[0], '404 Not Found')
+        status, headers, index = self.request('/search-index.json')
+        self.assertEqual(status, '200 OK'); self.assertTrue(json.loads(index))
+        self.assertIn("connect-src 'self'", headers['Content-Security-Policy'])
     def test_size_limit(self):
         (app.ROOT/'big.md').write_bytes(b'x'*(app.MAX_TEXT+1))
         self.assertEqual(self.request('/docs/big.md')[0],'413 Content Too Large')

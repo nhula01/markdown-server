@@ -151,3 +151,32 @@ Edit `site_content.py` for page copy and selected research, and
 arXiv and publisher records; Scholar and LinkedIn link to the supplied profiles.
 The server and Pages build share the same page templates. Daily PDF publishing
 continues to trigger the site build without changing the official exports.
+
+## Handwritten chapters
+
+Each existing notebook reader URL now opens a chapter page. The original PDF
+is a separate object inside that page, rendered in the browser using locally
+hosted Mozilla PDF.js 6.3.289. Its Apache license and supporting assets are in
+`assets/vendor/`. Contents links select actual PDF pages; page controls and
+zoom work independently of the chapter’s written context. Open PDF always
+links to the unchanged original export.
+
+`chapters/*.md` holds the editable physical picture and key idea for each
+physics notebook. `site/chapters.json` holds its question, tags, contents
+page numbers, prerequisites, onward connections, and recurring ideas.
+Connections can target `note:<exact title>`, `concept:<slug>`, `topic:<slug>`,
+or `page:research`. Incoming links are generated from the same graph. Planned
+concept pages clearly indicate that their dedicated handwritten chapter is
+still to come and link back to the related existing notebooks.
+
+Page counts are read directly from the PDFs. “PDF updated” is the most recent
+Git change to that file, not the export time or an inferred notebook edit date.
+Pages checkout includes history so those dates remain accurate after deployment.
+Only H1 titles receive calligraphic initials; navigation and other headings
+use ordinary type.
+
+The Search button, Cmd+K, or Ctrl+K opens a keyboard-accessible search panel.
+The static build regenerates `search-index.json` from public chapter Markdown,
+questions, tags, verbatim Optimum guides, concepts, topic outlines, research,
+and public written documents. The local server exposes the same index.
+All search happens in the browser; it does not send queries to a service.

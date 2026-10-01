@@ -1,5 +1,6 @@
 import hashlib, json, mimetypes, os
 import site_content
+import chapter_content
 from html import escape
 from pathlib import Path
 from urllib.parse import quote
@@ -7,7 +8,7 @@ from wsgiref.simple_server import make_server
 from markdown_it import MarkdownIt
 
 ROOT=Path(os.getenv("MD_ROOT","content")).resolve()
-PARSER=MarkdownIt("js-default")
+PARSER=chapter_content.MARKDOWN
 IMAGES={".png",".jpg",".jpeg",".gif",".webp",".avif",".ico"}
 PDF_ROOT=Path(os.getenv("PDF_ROOT","pdfs")).resolve()
 MAX_PDF=100*1024*1024
@@ -37,7 +38,7 @@ def pdf_files():
 
 def page(title,body,raw=None,active=None):
     math_assets = ''
-    if 'class="guide-verbatim"' in body:
+    if 'class="guide-verbatim"' in body or 'class="chapter-prose"' in body or 'class="math-source"' in body:
         vendor = '/assets/vendor/katex-0.19.0/'
         version = hashlib.sha256((Path(__file__).parent/'assets/math.js').read_bytes()).hexdigest()[:16]
         math_assets = (f'<link rel="stylesheet" href="{vendor}katex.min.css">'
@@ -47,8 +48,14 @@ def page(title,body,raw=None,active=None):
     download=f'<p class="muted"><a href="/raw/{quote(raw,safe="/")}">Raw Markdown</a></p>' if raw else ''
     body=site_content.decorate_headings(body)
     if raw: body=f'<article class="document">{body}{download}</article>'
-    navigation=''.join(f'<a href="/{slug}/"'+(' aria-current="page"' if active==slug else '')+f'>{site_content.initials(label)}</a>' for slug,label in [('notes','Notes'),('research','Research'),('about','About')])
-    return f'''<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="Intuitive handwritten notes on optics and quantum physics, and research by Phi Hung Nguyen."><title>{escape(title)} · Phi Hung Nguyen</title><link rel="stylesheet" href="/style.css?v={hashlib.sha256(CSS.encode()).hexdigest()[:16]}">{math_assets}</head><body><a class="skip-link" href="#main">Skip to content</a><header class="site-header"><div class="header-inner"><a class="brand" href="/">{site_content.initials("Phi Hung Nguyen")}</a><nav aria-label="Main navigation">{navigation}</nav></div></header><main id="main">{body}</main><footer><p>Phi Hung Nguyen · Optical Sciences · University of Arizona</p><p><a href="/notes/">A notebook in progress</a> · <a href="{escape(site_content.CATALOG['scholar'],quote=True)}">Scholar ↗</a> · <a href="{escape(site_content.CATALOG['linkedin'],quote=True)}">LinkedIn ↗</a></p></footer></body></html>'''.encode()
+    navigation=''.join(f'<a href="/{slug}/"'+(' aria-current="page"' if active==slug else '')+f'>{label}</a>' for slug,label in [('notes','Notes'),('research','Research'),('about','About')])
+    search_version = hashlib.sha256((Path(__file__).parent/'assets/search.js').read_bytes()).hexdigest()[:16]
+    search_script = f'<script defer src="/assets/search.js?v={search_version}"></script>'
+    if 'class="pdf-reader"' in body:
+        pdf_version = hashlib.sha256((Path(__file__).parent/'assets/pdf-reader.js').read_bytes()).hexdigest()[:16]
+        search_script += f'<script type="module" src="/assets/pdf-reader.js?v={pdf_version}"></script>'
+    search_dialog = '''<dialog id="notebook-search" aria-labelledby="search-title"><div class="search-top"><h2 id="search-title">Search the notebook</h2><button type="button" data-search-close aria-label="Close search">Close <kbd>Esc</kbd></button></div><label class="search-label" for="search-query">Titles, ideas, tags, and reading guides</label><input id="search-query" type="search" autocomplete="off" placeholder="Try Maxwell, resonance, or Lindblad…" aria-controls="search-results"><p id="search-status" role="status" aria-live="polite">Type to search the notebook.</p><ul id="search-results"></ul><p class="search-help">↑ ↓ to move · Enter to open · Esc to close</p></dialog>'''
+    return f'''<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="Intuitive handwritten notes on optics and quantum physics, and research by Phi Hung Nguyen."><title>{escape(title)} · Phi Hung Nguyen</title><link rel="stylesheet" href="/style.css?v={hashlib.sha256(CSS.encode()).hexdigest()[:16]}">{math_assets}{search_script}</head><body><a class="skip-link" href="#main">Skip to content</a><header class="site-header"><div class="header-inner"><a class="brand" href="/">Phi Hung Nguyen</a><nav aria-label="Main navigation">{navigation}<button class="search-trigger" type="button" data-search-open>Search <kbd>⌘K</kbd></button></nav></div></header><main id="main">{body}</main><footer><p>Phi Hung Nguyen · Optical Sciences · University of Arizona</p><p><a href="/notes/">A notebook in progress</a> · <a href="{escape(site_content.CATALOG['scholar'],quote=True)}">Scholar ↗</a> · <a href="{escape(site_content.CATALOG['linkedin'],quote=True)}">LinkedIn ↗</a></p></footer>{search_dialog}</body></html>'''.encode()
 
 def application(environ,start_response):
     method=environ.get("REQUEST_METHOD","GET")
@@ -62,15 +69,22 @@ def application(environ,start_response):
             kind="application/json"; body=b'{"status":"ok"}'
         elif path=="/style.css":
             kind="text/css; charset=utf-8"; body=CSS.encode()
-        elif path.startswith(("/assets/fonts/", "/assets/vendor/katex-0.19.0/")) or path == '/assets/math.js':
+        elif path.startswith(("/assets/fonts/", "/assets/vendor/katex-0.19.0/", "/assets/vendor/pdfjs-6.3.289/")) or path in {'/assets/math.js', '/assets/search.js', '/assets/pdf-reader.js'}:
             file=resolve(path.removeprefix("/assets/"),Path(__file__).parent/'assets')
             types = {'.ttf': 'font/ttf', '.woff2': 'font/woff2',
-                     '.js': 'text/javascript; charset=utf-8', '.css': 'text/css; charset=utf-8'}
+                     '.mjs': 'text/javascript; charset=utf-8', '.bcmap': 'application/octet-stream', '.pfb': 'application/octet-stream', '.wasm': 'application/wasm', '.js': 'text/javascript; charset=utf-8', '.css': 'text/css; charset=utf-8'}
             if file.suffix not in types: raise FileNotFoundError
             kind=types[file.suffix]
             body=file.read_bytes()
         elif path=="/api/files":
             kind="application/json; charset=utf-8"; body=json.dumps({"files":files()},ensure_ascii=False).encode()
+        elif path=="/search-index.json":
+            kind="application/json; charset=utf-8"
+            body=json.dumps(chapter_content.search_index(pdf_files(), files(), ROOT), ensure_ascii=False).encode()
+        elif path.startswith('/connections/'):
+            slug=path.removeprefix('/connections/').strip('/')
+            if slug not in chapter_content.CONCEPTS: raise FileNotFoundError
+            body=page(chapter_content.CONCEPTS[slug]['title'], chapter_content.concept_page(slug, pdf_files()), active='notes')
         elif path.startswith(("/pdfs/","/notebooks/")):
             viewer=path.startswith("/notebooks/"); name=path.split("/",2)[2].removesuffix("/")
             file=resolve(name,PDF_ROOT)
@@ -78,7 +92,7 @@ def application(environ,start_response):
             if file.stat().st_size>MAX_PDF: raise OverflowError
             if viewer:
                 url="/pdfs/"+quote(name,safe="/")+"?v="+hashlib.sha256(file.read_bytes()).hexdigest()[:16]
-                body=page(file.stem,site_content.viewer(name,url),active='notes')
+                body=page(file.stem,site_content.viewer(name,url,pdf_files(),chapter_content.pdf_metadata(file)),active='notes')
             else:
                 kind="application/pdf"; body=file.read_bytes()
         elif path=="/" or path.strip("/") in {"notes","research","about"} or path.startswith("/notes/"):
@@ -106,7 +120,7 @@ def application(environ,start_response):
         status="413 Content Too Large"; body=page("Too large","<h1>File exceeds the size limit</h1>")
     except OSError:
         status="500 Internal Server Error"; body=page("Unavailable","<h1>Unable to read this file</h1>")
-    headers=[("Content-Type",kind),("Content-Length",str(len(body))),("X-Content-Type-Options","nosniff"),("Cache-Control","no-cache"),("Content-Security-Policy","default-src 'none'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' https: data:; frame-src 'self'; font-src 'self'; base-uri 'none'; frame-ancestors 'self'; form-action 'none'")]+extra
+    headers=[("Content-Type",kind),("Content-Length",str(len(body))),("X-Content-Type-Options","nosniff"),("Cache-Control","no-cache"),("Content-Security-Policy","default-src 'none'; script-src 'self' 'wasm-unsafe-eval'; connect-src 'self'; worker-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' https: data:; frame-src 'self'; font-src 'self'; base-uri 'none'; frame-ancestors 'self'; form-action 'none'")]+extra
     start_response(status,headers)
     return [] if method=="HEAD" else [body]
 

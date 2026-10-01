@@ -70,7 +70,7 @@ def decorate_headings(body):
     def decorate(match):
         parts = re.split(r'(<[^>]+>)', match[2])
         return match[1] + ''.join(part if part.startswith('<') else initials(part) for part in parts) + match[3]
-    return re.sub(r'(<h[123]\b[^>]*>)(.*?)(</h[123]>)', decorate, body, flags=re.DOTALL)
+    return re.sub(r'(<h1\b[^>]*>)(.*?)(</h1>)', decorate, body, flags=re.DOTALL)
 
 
 def home(names):
@@ -126,11 +126,9 @@ def about():
         <aside class="profile-links"><p class="kicker">Elsewhere</p><a href="{escape(CATALOG['scholar'], quote=True)}">Google Scholar ↗</a><a href="{escape(CATALOG['linkedin'], quote=True)}">LinkedIn ↗</a><a href="https://optics.arizona.edu/person/phi-hung-nguyen">University profile ↗</a><a href="https://wp.optics.arizona.edu/danielsoh/people/">Soh Lab ↗</a></aside></div>'''
 
 
-def viewer(name, url):
-    topic = topic_for(name)
-    parent = f'<a href="/notes/{topic["slug"]}/">{escape(topic["title"])}</a>' if topic else '<a href="/notes/">Notes</a>'
-    return f'''<div class="breadcrumbs">{parent} / {escape(Path(name).stem)}</div><div class="viewer-head"><div><p class="eyebrow">Handwritten working notes</p><h1>{escape(Path(name).stem)}</h1></div><a class="button" href="{escape(url, quote=True)}">Open PDF ↗</a></div>
-        <p class="file-source">Original reMarkable PDF. If your browser cannot display it below, use “Open PDF”.</p><iframe class="pdf-frame" title="{escape(Path(name).stem, quote=True)}" src="{escape(url, quote=True)}" width="100%" height="1100"></iframe>'''
+def viewer(name, url, names=(), metadata=None):
+    from chapter_content import viewer as chapter_viewer
+    return chapter_viewer(name, url, names, metadata)
 
 
 def pages(names, documents=()):

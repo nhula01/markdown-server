@@ -1,0 +1,331 @@
+{
+  "chapters": {
+    "Electromagnetic Pieces": {
+      "slug": "electromagnetic-pieces",
+      "question": "Why can E and B be treated as one field?",
+      "tags": [
+        "electromagnetism",
+        "fields",
+        "sources",
+        "vector calculus"
+      ],
+      "contents": [
+        {
+          "title": "What E and B represent",
+          "page": 1
+        },
+        {
+          "title": "ε₀ and μ₀",
+          "page": 2
+        },
+        {
+          "title": "Sources of electromagnetic fields",
+          "page": 3
+        },
+        {
+          "title": "Divergence & Gauss",
+          "page": 4
+        },
+        {
+          "title": "Curl & Stokes",
+          "page": 4
+        }
+      ],
+      "prerequisites": [
+        "concept:vector-calculus",
+        "concept:differential-equations"
+      ],
+      "leads_to": [
+        "note:Maxwell's Equations",
+        "concept:plane-waves",
+        "concept:quantization"
+      ],
+      "appears_in": [
+        "concept:cavity-qed",
+        "concept:input-output",
+        "topic:quantum-networks"
+      ]
+    },
+    "Maxwell's Equations": {
+      "slug": "maxwells-equations",
+      "question": "Local rules, global consequences.",
+      "tags": [
+        "Maxwell",
+        "electromagnetism",
+        "charge conservation",
+        "wave equation"
+      ],
+      "contents": [
+        {
+          "title": "Gauss: charge and electric displacement",
+          "page": 1
+        },
+        {
+          "title": "Ampère: current and changing fields",
+          "page": 1
+        },
+        {
+          "title": "Faraday: electric circulation",
+          "page": 1
+        },
+        {
+          "title": "No magnetic monopoles",
+          "page": 1
+        }
+      ],
+      "prerequisites": [
+        "note:Electromagnetic Pieces",
+        "concept:vector-calculus"
+      ],
+      "leads_to": [
+        "concept:continuity",
+        "concept:plane-waves",
+        "note:Linear Light",
+        "concept:quantization"
+      ],
+      "appears_in": [
+        "concept:cavity-qed",
+        "concept:input-output",
+        "topic:quantum-networks"
+      ]
+    },
+    "Crystal": {
+      "slug": "crystal",
+      "question": "What does the absorption spectrum reveal about a solid?",
+      "tags": [
+        "solid state",
+        "crystals",
+        "reciprocal lattice",
+        "confinement"
+      ],
+      "contents": [
+        {
+          "title": "Absorption and changing the geometry",
+          "page": 1
+        },
+        {
+          "title": "Localization and confinement",
+          "page": 2
+        },
+        {
+          "title": "Lattices, primitive cells, and a basis",
+          "page": 3
+        },
+        {
+          "title": "Reciprocal lattice",
+          "page": 4
+        }
+      ],
+      "prerequisites": [
+        "concept:atomic-structure",
+        "concept:fourier-pictures"
+      ],
+      "leads_to": [
+        "note:Electrons in Crystals",
+        "note:Oscillator Model",
+        "note:Linear Light"
+      ],
+      "appears_in": [
+        "concept:confinement",
+        "concept:band-structure",
+        "topic:nonlinear-and-fiber-optics"
+      ]
+    },
+    "Electrons in Crystals": {
+      "slug": "electrons-in-crystals",
+      "question": "How do atomic states become energy bands?",
+      "tags": [
+        "electrons",
+        "tight binding",
+        "Bloch",
+        "bands",
+        "Fermi"
+      ],
+      "contents": [
+        {
+          "title": "Atomic states and Bloch’s picture",
+          "page": 1
+        },
+        {
+          "title": "Tight-binding model",
+          "page": 2
+        },
+        {
+          "title": "Periodic boundary conditions",
+          "page": 3
+        },
+        {
+          "title": "Electron distribution",
+          "page": 4
+        },
+        {
+          "title": "Metals, insulators, and semiconductors",
+          "page": 5
+        }
+      ],
+      "prerequisites": [
+        "note:Crystal",
+        "concept:hydrogen-atom"
+      ],
+      "leads_to": [
+        "concept:band-structure",
+        "note:Linear Light"
+      ],
+      "appears_in": [
+        "concept:confinement",
+        "topic:quantum-optics"
+      ]
+    },
+    "Oscillator Model": {
+      "slug": "oscillator-model",
+      "question": "What can a driven electron tell us about a material?",
+      "tags": [
+        "oscillator",
+        "Lorentz",
+        "Drude",
+        "resonance",
+        "susceptibility"
+      ],
+      "contents": [
+        {
+          "title": "The driven oscillator",
+          "page": 1
+        },
+        {
+          "title": "Damping and resonance",
+          "page": 1
+        },
+        {
+          "title": "Material susceptibility",
+          "page": 1
+        }
+      ],
+      "prerequisites": [
+        "concept:differential-equations",
+        "note:Maxwell's Equations"
+      ],
+      "leads_to": [
+        "note:Linear Light",
+        "concept:dispersion"
+      ],
+      "appears_in": [
+        "concept:damped-cavity",
+        "topic:open-quantum-systems",
+        "page:research"
+      ]
+    },
+    "Linear Light": {
+      "slug": "linear-light",
+      "question": "How does a material’s response reshape a propagating wave?",
+      "tags": [
+        "linear optics",
+        "dipoles",
+        "susceptibility",
+        "dispersion",
+        "absorption"
+      ],
+      "contents": [
+        {
+          "title": "Dipoles and material response",
+          "page": 1
+        },
+        {
+          "title": "Linear susceptibility",
+          "page": 1
+        },
+        {
+          "title": "Dispersion and absorption",
+          "page": 2
+        },
+        {
+          "title": "Phase and group velocity",
+          "page": 2
+        }
+      ],
+      "prerequisites": [
+        "note:Maxwell's Equations",
+        "note:Oscillator Model"
+      ],
+      "leads_to": [
+        "concept:dispersion",
+        "topic:nonlinear-and-fiber-optics"
+      ],
+      "appears_in": [
+        "topic:quantum-optics",
+        "topic:nonlinear-and-fiber-optics"
+      ]
+    }
+  },
+  "concepts": {
+    "vector-calculus": {
+      "title": "Vector Calculus",
+      "topic": "mathematical-methods",
+      "description": "Divergence, curl, and integral theorems: the language of sources and circulation."
+    },
+    "differential-equations": {
+      "title": "Differential Equations",
+      "topic": "mathematical-methods",
+      "description": "Follow how a local rule produces motion, oscillation, or propagation."
+    },
+    "plane-waves": {
+      "title": "Plane Waves",
+      "topic": "fields-and-waves",
+      "description": "A simple propagating field connects Maxwell’s equations to the wave picture."
+    },
+    "quantization": {
+      "title": "Quantization of the EM Field",
+      "topic": "quantum-optics",
+      "description": "Follow the connection from classical field modes to quantum light."
+    },
+    "cavity-qed": {
+      "title": "Cavity QED",
+      "topic": "quantum-optics",
+      "description": "The meeting point of optical modes and light–atom interactions."
+    },
+    "input-output": {
+      "title": "Input–Output Theory",
+      "topic": "quantum-networks",
+      "description": "Connect the dynamics of an optical system to the fields entering and leaving it."
+    },
+    "continuity": {
+      "title": "Continuity Equation",
+      "topic": "fields-and-waves",
+      "description": "Connect local charge conservation to the sources in Maxwell’s equations."
+    },
+    "atomic-structure": {
+      "title": "Atomic Structure",
+      "topic": "light-and-matter",
+      "description": "The atomic picture behind electron states and material response."
+    },
+    "fourier-pictures": {
+      "title": "Fourier Pictures",
+      "topic": "mathematical-methods",
+      "description": "Connect spatial structure, reciprocal space, and spectra."
+    },
+    "hydrogen-atom": {
+      "title": "Hydrogen Atom",
+      "topic": "quantum-optics",
+      "description": "An atomic starting point for the electron states that become bands in a solid."
+    },
+    "band-structure": {
+      "title": "Band Structure",
+      "topic": "light-and-matter",
+      "description": "Follow how atomic states and a periodic lattice produce allowed energy bands."
+    },
+    "confinement": {
+      "title": "Quantum Confinement",
+      "topic": "light-and-matter",
+      "description": "Connect geometry, localization, and changes in a material’s optical response."
+    },
+    "dispersion": {
+      "title": "Dispersion",
+      "topic": "light-and-matter",
+      "description": "Follow frequency-dependent material response into phase and group velocity."
+    },
+    "damped-cavity": {
+      "title": "Damped Cavity",
+      "topic": "open-quantum-systems",
+      "description": "Connect the oscillator picture to loss and open quantum dynamics."
+    }
+  }
+}

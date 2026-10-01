@@ -35,6 +35,7 @@ class PagesTests(unittest.TestCase):
             self.assertEqual((out / 'pdfs/Open Systems/Input Output.pdf').read_bytes(), data)
             viewer = (out / 'notebooks/Open Systems/Input Output.pdf/index.html').read_text()
             self.assertIn('/markdown-server/pdfs/Open%20Systems/Input%20Output.pdf?v=' + hashlib.sha256(data).hexdigest()[:16], viewer)
+            self.assertIn('data-pdf-url="/markdown-server/pdfs/Open%20Systems/Input%20Output.pdf?v=', viewer)
             page = (out / 'docs/welcome.md/index.html').read_text()
             self.assertIn('/markdown-server/docs/notes/next.md/', page)
             self.assertIn('/markdown-server/docs/pic.png', page)
@@ -82,6 +83,24 @@ class PagesTests(unittest.TestCase):
             quantum = (out / 'notes/quantum-optics/index.html').read_text()
             self.assertIn('no published notebooks here yet', quantum)
             self.assertNotIn('<iframe', quantum)
+            import json
+            index = json.loads((out / 'search-index.json').read_text())
+            crystal = next(entry for entry in index if entry['title'] == 'Crystal')
+            self.assertIn(CATALOG['reading_guides']['Crystal'], crystal['text'])
+            self.assertIn('Physical picture', crystal['text'])
+            self.assertIn('confinement', crystal['tags'])
+            self.assertTrue(any('Lindblad' in entry['text'] for entry in index))
+            self.assertTrue(any(entry['category'] == 'Research' for entry in index))
+            self.assertEqual(next(entry['status'] for entry in index if entry['title'] == 'Cavity QED'), 'Planned chapter')
+            chapter = (out / 'notebooks/Obsidian/Crystal.pdf/index.html').read_text()
+            self.assertIn('Key connections', chapter)
+            self.assertIn('Linked from', chapter)
+            self.assertIn('data-pdf-page="4"', chapter)
+            self.assertIn('id="physical-picture"', chapter)
+            self.assertNotIn('<h2><span class="initial">', chapter)
+            for entry in index:
+                target = out / unquote(urlsplit(entry['url']).path).removeprefix('/markdown-server/')
+                self.assertTrue((target / 'index.html').is_file())
             for page in out.rglob('*.html'):
                 parser = Links(); parser.feed(page.read_text())
                 for url in parser.urls:

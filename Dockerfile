@@ -2,9 +2,10 @@ FROM python:3.12-slim
 WORKDIR /app
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt && useradd --uid 10001 --create-home markdown
-COPY --chown=markdown:markdown app.py site_content.py ./
+COPY --chown=markdown:markdown app.py site_content.py chapter_content.py ./
 COPY --chown=markdown:markdown assets ./assets
 COPY --chown=markdown:markdown site ./site
+COPY --chown=markdown:markdown chapters ./chapters
 COPY --chown=markdown:markdown content ./content
 COPY --chown=markdown:markdown pdfs ./pdfs
 USER markdown
