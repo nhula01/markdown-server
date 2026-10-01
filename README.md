@@ -56,3 +56,47 @@ The service is read-only and has no authentication: every document in `MD_ROOT` 
 ```sh
 python -m unittest discover -s tests -v
 ```
+
+## reMarkable handwritten notebooks
+
+Export PDFs to `pdfs/` in this checkout. The home page automatically lists them;
+`/notebooks/Open%20Systems/Input%20Output.pdf` embeds the notebook and
+`/pdfs/Open%20Systems/Input%20Output.pdf` serves its original PDF. Refreshing
+shows updated exports at the same URL. `PDF_ROOT` overrides the PDF directory.
+PDFs are limited to 100 MiB. Only PDFs intended for publication belong here.
+Docker builds include `pdfs/`; rebuild/redeploy the image after each Git push,
+or mount a PDF directory at `/app/pdfs` for live filesystem updates.
+
+On your Mac:
+
+```sh
+brew tap jeffsteinbok/remarkablesync
+brew install remarkablesync
+RemarkableSync config
+```
+
+The Homebrew formula uses `RemarkableSync` (capital R); other installations may
+use `reMarkableSync`. Choose Cloud in the wizard and complete pairing yourself.
+Set the PDF directory to this checkout's `pdfs/`, keep backups outside the repo,
+and disable Markdown/OCR export. Then run the default PDF-only pipeline:
+
+```sh
+RemarkableSync --output-dir "$PWD/pdfs"
+```
+
+Edit one notebook on the tablet, allow Cloud sync, rerun, and verify its PDF
+changes with `git status --short -- pdfs`. Open the PDF to confirm handwriting.
+Only after this succeeds, run `zsh scripts/sync-remarkable.zsh` to sync, commit
+PDF changes, and push. It preserves unrelated staged files and retries pushes.
+Git credentials must work without a prompt for scheduled runs.
+
+For daily sync at 18:00 local time, edit the absolute script/log paths in
+`scripts/com.nhula01.remarkable-sync.plist.example`, copy it to
+`~/Library/LaunchAgents/com.nhula01.remarkable-sync.plist`, then load it with
+`launchctl bootstrap gui/$(id -u) ~/Library/LaunchAgents/com.nhula01.remarkable-sync.plist`.
+The example is deliberately inactive until the changed-PDF test succeeds.
+The Mac must be available to run the job. Remove the job with
+`launchctl bootout gui/$(id -u)/com.nhula01.remarkable-sync`.
+
+The existing GitHub Action runs tests only. Configure your container host to
+redeploy on pushes to `main` to complete automatic website updates.
