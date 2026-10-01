@@ -19,6 +19,14 @@ base = args.base_path.rstrip('/')
 out = Path(args.output)
 out.mkdir(parents=True, exist_ok=True)
 (out / '.nojekyll').touch()
+# Version HTML navigation as well as CSS/PDF assets. Previously cached pages
+# otherwise retain an old stylesheet URL when reached through the menu.
+site_version = hashlib.sha256(b''.join(
+    (Path(app.__file__).parent / name).read_bytes()
+    for name in ['app.py', 'site_content.py', 'assets/style.css', 'site/catalog.json', 'scripts/build-pages.py']
+) + b''.join(name.encode() + hashlib.sha256(app.resolve(name, root).read_bytes()).digest()
+            for root, names in [(app.ROOT, app.files()), (app.PDF_ROOT, app.pdf_files())]
+            for name in names)).hexdigest()[:16]
 (out / 'style.css').write_text(app.CSS)
 shutil.copytree(Path(app.__file__).parent / 'assets/fonts', out / 'assets/fonts', dirs_exist_ok=True)
 
@@ -30,6 +38,12 @@ def write_page(path, title, body, raw=None):
     html = app.page(title, body, raw, active=active).decode()
     # Prefix all local links, leaving external URLs and fragments intact.
     html = re.sub(r'(href|src)="/(?!/)', lambda match: f'{match[1]}="{base}/', html)
+    def version_page_link(match):
+        url = match[1]
+        if url.startswith(base + '/') and url.endswith('/'):
+            return f'href="{url}?v={site_version}"'
+        return match[0]
+    html = re.sub(r'href="([^"]+)"', version_page_link, html)
     target.write_text(html, encoding='utf-8')
 
 for name in app.files():

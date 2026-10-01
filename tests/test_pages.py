@@ -52,6 +52,11 @@ class PagesTests(unittest.TestCase):
             subprocess.run([sys.executable, 'scripts/build-pages.py', '--output', str(out)],
                            env={**os.environ, 'MD_ROOT': str(content), 'PDF_ROOT': str(pdfs)},
                            check=True, capture_output=True)
+            # Menu navigation must bypass cached HTML, not just cached CSS.
+            for route in ['index.html', 'notes/index.html', 'research/index.html', 'about/index.html']:
+                html = (out / route).read_text()
+                for section in ['notes', 'research', 'about']:
+                    self.assertRegex(html, f'/markdown-server/{section}/\\?v=[a-f0-9]{{16}}')
             notes = (out / 'notes/index.html').read_text()
             self.assertIn('A new notebook', re.sub('<[^>]+>', '', notes))
             self.assertIn('Outline · notes to come', notes)
