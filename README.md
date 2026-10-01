@@ -98,5 +98,14 @@ The example is deliberately inactive until the changed-PDF test succeeds.
 The Mac must be available to run the job. Remove the job with
 `launchctl bootout gui/$(id -u)/com.nhula01.remarkable-sync`.
 
-The existing GitHub Action runs tests only. Configure your container host to
-redeploy on pushes to `main` to complete automatic website updates.
+### Free hosting with GitHub Pages
+
+In the repo's **Settings → Pages**, choose **GitHub Actions** as the source.
+The `Publish GitHub Pages` workflow builds and publishes the library on every
+push to `main`. The expected address is https://nhula01.github.io/markdown-server/.
+PDF exports trigger the same deployment automatically, without running a Python
+server online. Static notebook URLs include the `/markdown-server/` prefix.
+
+Preview the static build with `.venv/bin/python scripts/build-pages.py`;
+the generated `_site/` directory is ignored by Git. The Flask-free Python server
+and Docker deployment remain available as alternatives.
