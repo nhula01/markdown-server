@@ -1,4 +1,5 @@
 import os
+import hashlib
 import subprocess
 import sys
 import tempfile
@@ -24,7 +25,7 @@ class PagesTests(unittest.TestCase):
                            check=True, capture_output=True)
             self.assertEqual((out / 'pdfs/Open Systems/Input Output.pdf').read_bytes(), data)
             viewer = (out / 'notebooks/Open Systems/Input Output.pdf/index.html').read_text()
-            self.assertIn('/markdown-server/pdfs/Open%20Systems/Input%20Output.pdf', viewer)
+            self.assertIn('/markdown-server/pdfs/Open%20Systems/Input%20Output.pdf?v=' + hashlib.sha256(data).hexdigest()[:16], viewer)
             page = (out / 'docs/welcome.md/index.html').read_text()
             self.assertIn('/markdown-server/docs/notes/next.md/', page)
             self.assertIn('/markdown-server/docs/pic.png', page)

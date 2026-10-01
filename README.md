@@ -74,10 +74,24 @@ The home page automatically lists PDFs; `/notebooks/<path>.pdf` embeds them and
 PDF directory. PDFs are limited to 100 MiB. Only PDFs intended for publication
 belong here. Docker builds include `pdfs/`.
 
-The launchd example remains inactive. It can automate publishing saved PDFs,
-but it does not export updated notebooks from the desktop app. Automatic native
-export is not currently configured. The previously installed reMarkableSync can
-still back up raw files, but its third-party rendering is not used for this site.
+A daily Codex scheduled task at 18:00 America/Phoenix exports the Obsidian
+folder through the official desktop app and publishes changes. The Mac must be
+awake and unlocked, Codex running, and reMarkable signed in and synced.
+The task reports meaningful updates or failures and stays quiet when unchanged.
+
+For a manual run, export into a fresh empty temporary folder, then run:
+
+```sh
+/opt/homebrew/Cellar/remarkablesync/3.0.0/libexec/bin/python scripts/import-official-pdfs.py /path/to/exports
+zsh scripts/sync-remarkable.zsh
+```
+
+The import helper requires PyMuPDF. It validates PDFs before replacing files,
+compares rendered pages to skip metadata-only changes, and copies changed
+exports byte-for-byte. It never deletes missing notebooks. Static viewers use
+content hash query parameters so changed PDFs bypass old browser caches.
+The launchd example is inactive and only publishes already saved PDFs.
+reMarkableSync can still back up raw files; its rendering is not used here.
 
 ### Free hosting with GitHub Pages
 

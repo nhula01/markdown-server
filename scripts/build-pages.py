@@ -1,5 +1,6 @@
 """Build the document library for GitHub Pages (including project URL prefixes)."""
 import argparse
+import hashlib
 import shutil
 import sys
 from pathlib import Path
@@ -73,7 +74,8 @@ for name in app.pdf_files():
     target = out / 'pdfs' / name
     target.parent.mkdir(parents=True, exist_ok=True)
     shutil.copyfile(source, target)
-    url = f'{base}/pdfs/{quote(name,safe="/")}'
+    version = hashlib.sha256(source.read_bytes()).hexdigest()[:16]
+    url = f'{base}/pdfs/{quote(name,safe="/")}?v={version}'
     write_page('notebooks/' + name + '/index.html', source.stem,
                f'<h1>{app.escape(source.stem)}</h1><p><a href="{url}">Open or download PDF</a></p>'
                f'<iframe title="{app.escape(source.stem,quote=True)}" src="{url}" width="100%" height="1100"></iframe>')
