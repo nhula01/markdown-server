@@ -180,3 +180,24 @@ The static build regenerates `search-index.json` from
 questions, tags, verbatim Optimum guides, concepts, topic outlines, research,
 and public written documents. The local server exposes the same index.
 All search happens in the browser; it does not send queries to a service.
+
+## Curated leads
+
+The homepage’s Follow a thread explorer searches published notes using titles,
+questions, tags, and Optimum text. Selecting a note reveals curated questions;
+selecting a question reveals an ordered trail with published and planned steps.
+Every chapter offers the same leads, starting at its position in the trail.
+Selections can be shared through the homepage’s `start` and `lead` parameters.
+
+Edit **Follow a thread.md** in the MyBrain Obsidian vault. Each `##` heading is
+a question, followed by two or more numbered `[[Exact notebook title]]` links.
+Reorder or add links to change the trail; add another question to create a lead.
+Titles automatically resolve to handwritten chapters when a matching PDF is
+published, otherwise to a planned concept page (or the notebook outline).
+Questions apply to each published note before the final step of the trail.
+
+The scheduled PDF publishing script also imports these edits. For a manual
+refresh, run `python3 scripts/update-leads.py` then build/publish as usual. Only
+question headings and numbered links are imported into `site/leads.md`; other
+private vault content is excluded. An invalid trail aborts before overwriting
+the existing public copy. `LEADS_SOURCE` overrides the vault path for sync.

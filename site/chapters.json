@@ -326,6 +326,41 @@
       "title": "Damped Cavity",
       "topic": "open-quantum-systems",
       "description": "Connect the oscillator picture to loss and open quantum dynamics."
+    },
+    "polarization": {
+      "title": "Polarization",
+      "topic": "light-and-matter",
+      "description": "Follow how a field induces a collective dipole response."
+    },
+    "susceptibility": {
+      "title": "Susceptibility",
+      "topic": "light-and-matter",
+      "description": "Connect material response to the field driving it."
+    },
+    "normal-modes": {
+      "title": "Normal Modes",
+      "topic": "mathematical-methods",
+      "description": "Decompose a field or coupled system into independent patterns of oscillation."
+    },
+    "harmonic-oscillator": {
+      "title": "Harmonic Oscillator",
+      "topic": "quantum-optics",
+      "description": "Follow the oscillator from classical motion to quantum energy levels."
+    },
+    "photons": {
+      "title": "Photons",
+      "topic": "quantum-optics",
+      "description": "Follow field quantization into discrete excitations of optical modes."
+    },
+    "nonlinear-response": {
+      "title": "Nonlinear Optical Response",
+      "topic": "nonlinear-and-fiber-optics",
+      "description": "Explore what changes beyond a response proportional to the driving field."
+    },
+    "quantum-network": {
+      "title": "Quantum Networks",
+      "topic": "quantum-networks",
+      "description": "Connect quantum systems through the light they exchange."
     }
   }
 }

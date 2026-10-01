@@ -1,6 +1,7 @@
 import hashlib, json, mimetypes, os
 import site_content
 import chapter_content
+import lead_content
 from html import escape
 from pathlib import Path
 from urllib.parse import quote
@@ -51,6 +52,9 @@ def page(title,body,raw=None,active=None):
     navigation=''.join(f'<a href="/{slug}/"'+(' aria-current="page"' if active==slug else '')+f'>{label}</a>' for slug,label in [('notes','Notes'),('research','Research'),('about','About')])
     search_version = hashlib.sha256((Path(__file__).parent/'assets/search.js').read_bytes()).hexdigest()[:16]
     search_script = f'<script defer src="/assets/search.js?v={search_version}"></script>'
+    if 'class="section thread-explorer"' in body:
+        lead_version = hashlib.sha256((Path(__file__).parent/'assets/leads.js').read_bytes()).hexdigest()[:16]
+        search_script += f'<script defer src="/assets/leads.js?v={lead_version}"></script>'
     if 'class="pdf-reader"' in body:
         pdf_version = hashlib.sha256((Path(__file__).parent/'assets/pdf-reader.js').read_bytes()).hexdigest()[:16]
         search_script += f'<script type="module" src="/assets/pdf-reader.js?v={pdf_version}"></script>'
@@ -69,7 +73,7 @@ def application(environ,start_response):
             kind="application/json"; body=b'{"status":"ok"}'
         elif path=="/style.css":
             kind="text/css; charset=utf-8"; body=CSS.encode()
-        elif path.startswith(("/assets/fonts/", "/assets/vendor/katex-0.19.0/", "/assets/vendor/pdfjs-6.3.289/")) or path in {'/assets/math.js', '/assets/search.js', '/assets/pdf-reader.js'}:
+        elif path.startswith(("/assets/fonts/", "/assets/vendor/katex-0.19.0/", "/assets/vendor/pdfjs-6.3.289/")) or path in {'/assets/math.js', '/assets/search.js', '/assets/pdf-reader.js', '/assets/leads.js'}:
             file=resolve(path.removeprefix("/assets/"),Path(__file__).parent/'assets')
             types = {'.ttf': 'font/ttf', '.woff2': 'font/woff2',
                      '.mjs': 'text/javascript; charset=utf-8', '.bcmap': 'application/octet-stream', '.pfb': 'application/octet-stream', '.wasm': 'application/wasm', '.js': 'text/javascript; charset=utf-8', '.css': 'text/css; charset=utf-8'}
@@ -78,6 +82,9 @@ def application(environ,start_response):
             body=file.read_bytes()
         elif path=="/api/files":
             kind="application/json; charset=utf-8"; body=json.dumps({"files":files()},ensure_ascii=False).encode()
+        elif path=="/leads-index.json":
+            kind="application/json; charset=utf-8"
+            body=json.dumps(lead_content.index(pdf_files(), chapter_content.search_index(pdf_files(), files(), ROOT)), ensure_ascii=False).encode()
         elif path=="/search-index.json":
             kind="application/json; charset=utf-8"
             body=json.dumps(chapter_content.search_index(pdf_files(), files(), ROOT), ensure_ascii=False).encode()

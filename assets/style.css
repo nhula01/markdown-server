@@ -239,3 +239,46 @@ kbd { font: 10px ui-monospace, monospace; color: var(--muted); border: 1px solid
   .chapter-pagination { flex-wrap: wrap; }
   #notebook-search { padding: 20px; }
 }
+
+/* Curated questions, drawn as reading paths rather than a graph. */
+.thread-explorer { scroll-margin-top: 28px; }
+.thread-picker { max-width: 670px; margin: 28px 0; }
+.thread-picker label { display: block; font-size: 17px; margin-bottom: 10px; }
+.thread-input { display: flex; border: 1px solid var(--line); background: rgba(255,255,255,.45); }
+.thread-input input { min-width: 0; width: 100%; border: 0; background: transparent; padding: 15px 18px; color: inherit; font: inherit; font-size: 18px; }
+.thread-input button { padding: 0 18px; border: 0; background: transparent; color: inherit; font-size: 27px; cursor: pointer; }
+.thread-input input:focus-visible { outline: 2px solid var(--ink); outline-offset: 3px; }
+#thread-options { list-style: none; padding: 0; margin: 0; max-height: 310px; overflow-y: auto; }
+#thread-options button { width: 100%; text-align: left; display: flex; justify-content: space-between; gap: 18px; padding: 12px 16px; border: 0; border-bottom: 1px solid var(--line); background: transparent; color: inherit; font: inherit; cursor: pointer; }
+#thread-options button:hover, #thread-options button:focus-visible { background: rgba(100,110,125,.08); }
+#thread-options small { color: var(--muted); }
+#thread-origin { border-left: 2px solid var(--ink); padding: 0 0 0 20px; margin: 35px 0; }
+#thread-origin h3 { font-size: 29px; margin: 8px 0; }
+#thread-origin p { margin: 8px 0; }
+.lead-grid { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 18px; }
+.lead-card { display: flex; flex-direction: column; text-align: left; padding: 24px; border: 1px solid var(--line); background: rgba(255,255,255,.23); color: inherit; font: inherit; cursor: pointer; transition: background .18s, transform .18s; }
+.lead-card:hover { background: rgba(255,255,255,.65); transform: translateY(-2px); }
+.lead-card:focus-visible, .thread-back:focus-visible { outline: 2px solid var(--ink); outline-offset: 3px; }
+.lead-number, .lead-count, .trail-status { font-size: 12px; color: var(--muted); }
+.lead-number { letter-spacing: .15em; margin-bottom: 16px; }
+.lead-card strong { font-size: 24px; line-height: 1.3; margin-bottom: 12px; }
+.lead-path { margin: 15px 0 22px; font-size: 15px; line-height: 1.7; }
+.lead-action { margin-top: auto; font-size: 15px; }
+.thread-back { border: 0; padding: 6px 0; background: transparent; font: inherit; color: inherit; cursor: pointer; }
+#thread-trail h3 { font-size: 30px; line-height: 1.35; margin: 25px 0; }
+.trail-steps { list-style: none; padding: 0; margin: 26px 0 36px 10px; border-left: 1px solid var(--line); }
+.trail-steps li { position: relative; padding: 0 20px 30px 30px; display: flex; align-items: flex-start; flex-direction: column; gap: 7px; }
+.trail-steps li::before { content: ''; position: absolute; left: -5px; top: 8px; width: 9px; height: 9px; border: 1px solid var(--ink); border-radius: 50%; background: var(--paper); }
+.trail-steps li:last-child { padding-bottom: 0; }
+.trail-steps li small { font-size: 11px; text-transform: uppercase; letter-spacing: .13em; }
+.trail-steps li a { font-size: 24px; }
+.follow-lead { border-top: 1px solid var(--line); margin-top: 40px; padding-top: 30px; scroll-margin-top: 25px; }
+.chapter-leads { list-style: none; padding: 0; }
+.chapter-leads li { border-bottom: 1px solid var(--line); }
+.chapter-leads a { display: flex; flex-direction: column; gap: 9px; padding: 18px 0; text-decoration: none; }
+.chapter-leads strong { font-size: 21px; }
+.chapter-leads span, .chapter-leads small { color: var(--muted); font-size: 14px; line-height: 1.6; }
+#thread-origin, #thread-trail, .lead-grid { animation: thread-reveal .22s ease-out; }
+@keyframes thread-reveal { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+@media (max-width: 680px) { .lead-grid { grid-template-columns: 1fr; } #thread-options button { flex-direction: column; gap: 4px; } .lead-card { padding: 20px; } }
+@media (prefers-reduced-motion: reduce) { #thread-origin, #thread-trail, .lead-grid { animation: none; } .lead-card { transition: none; } }

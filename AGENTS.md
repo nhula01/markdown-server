@@ -33,3 +33,13 @@ Keep the original PDF bytes and existing reader/download URLs intact.
 Calligraphic initials belong only to page titles, not navigation or every
 subheading. Search must index all public tags, questions,
 Optimum guides, topic outlines, and research. Do not index the private vault.
+
+# Curated leads
+
+The user authorizes generated question-based reading trails and edits them in
+`/Users/nph/Documents/MyBrain/Follow a thread.md`. The public `site/leads.md`
+is refreshed by `scripts/update-leads.py`; only `##` questions and numbered
+`[[Exact notebook title]]` links are imported. Preserve the user’s edits. Do not
+import other vault prose. Published PDFs automatically replace planned steps.
+Every chapter links into the same homepage explorer. Keep the verbatim Optimum
+guides separate; do not restore Physical picture or Key idea sections.
