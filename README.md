@@ -104,3 +104,27 @@ server online. Static notebook URLs include the `/markdown-server/` prefix.
 Preview the static build with `.venv/bin/python scripts/build-pages.py`;
 the generated `_site/` directory is ignored by Git. The Flask-free Python server
 and Docker deployment remain available as alternatives.
+
+## Personal academic website
+
+The site has Home, Notes, Research, and About pages. It uses a quiet sage and
+ivory palette, serif typography, and an original field illustration, inspired
+by the organization of David Tong’s teaching website.
+
+`site/catalog.json` controls the nine topic titles, descriptions, reading
+outlines, prerequisites, and notebook assignments. Exact notebook titles are
+matched to topics without moving PDFs, so existing reader and download URLs
+remain stable. New unmatched exports appear under **Notebook desk** until
+assigned. PDFs under a directory matching a topic slug also join that topic.
+
+`writing/<topic>/` contains planning folders for future notes. These folders
+are not published. The MyBrain vault was used to plan the topic structure;
+the builder never reads or copies that vault. Only curated descriptions and
+existing official exports appear on the site. Planned pages are explicitly
+marked until notebooks exist.
+
+Edit `site_content.py` for page copy and selected research, and
+`assets/style.css` for presentation. Research entries link to their public
+arXiv and publisher records; Scholar and LinkedIn link to the supplied profiles.
+The server and Pages build share the same page templates. Daily PDF publishing
+continues to trigger the site build without changing the official exports.

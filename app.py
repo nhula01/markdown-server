@@ -1,4 +1,5 @@
-import json, mimetypes, os
+import hashlib, json, mimetypes, os
+import site_content
 from html import escape
 from pathlib import Path
 from urllib.parse import quote
@@ -12,7 +13,7 @@ PDF_ROOT=Path(os.getenv("PDF_ROOT","pdfs")).resolve()
 MAX_PDF=100*1024*1024
 MAX_TEXT=2*1024*1024
 MAX_IMAGE=10*1024*1024
-CSS=""":root{color-scheme:light dark;font-family:system-ui,sans-serif;line-height:1.65}body{max-width:900px;margin:0 auto;padding:32px 24px;background:light-dark(#faf9f6,#151719);color:light-dark(#202627,#e4e8e9)}a{color:light-dark(#17626b,#7fd7dd);text-underline-offset:3px}nav{display:flex;gap:20px;padding-bottom:18px;border-bottom:1px solid #8885;font-size:14px}main{padding-top:22px}h1,h2,h3{line-height:1.25}pre{overflow:auto;background:light-dark(#eef0ed,#22272a);padding:18px;border-radius:8px}code{font-family:ui-monospace,monospace}blockquote{border-left:3px solid #47a3ac;margin-left:0;padding-left:20px;color:light-dark(#566366,#b2bfc2)}table{border-collapse:collapse;display:block;overflow:auto}th,td{border:1px solid #8885;padding:8px 14px}img{max-width:100%;height:auto}li{margin:6px 0}.files{list-style:none;padding:0}.files li{padding:12px 0;border-bottom:1px solid #8883}.muted{color:light-dark(#617073,#a9b8bb);font-size:14px}hr{border:0;border-top:1px solid #8885}"""
+CSS=(Path(__file__).parent/'assets/style.css').read_text()
 
 def resolve(name,root=None):
     root=ROOT if root is None else root
@@ -34,9 +35,11 @@ def pdf_files():
         if p.suffix.lower()==".pdf" and p.is_file() and p.resolve().is_relative_to(PDF_ROOT)
         and not any(x.startswith(".") for x in p.relative_to(PDF_ROOT).parts))
 
-def page(title,body,raw=None):
-    download=f'<a href="/raw/{quote(raw,safe="/")}">Raw Markdown</a>' if raw else ''
-    return f'<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>{escape(title)} · Markdown server</title><link rel="stylesheet" href="/style.css"></head><body><nav><a href="/">Markdown server</a>{download}</nav><main>{body}</main></body></html>'.encode()
+def page(title,body,raw=None,active=None):
+    download=f'<p class="muted"><a href="/raw/{quote(raw,safe="/")}">Raw Markdown</a></p>' if raw else ''
+    if raw: body=f'<article class="document">{body}{download}</article>'
+    navigation=''.join(f'<a href="/{slug}/"'+(' aria-current="page"' if active==slug else '')+f'>{label}</a>' for slug,label in [('notes','Notes'),('research','Research'),('about','About')])
+    return f'''<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="Intuitive handwritten notes on optics and quantum physics, and research by Phi Hung Nguyen."><title>{escape(title)} · Phi Hung Nguyen</title><link rel="stylesheet" href="/style.css"></head><body><a class="skip-link" href="#main">Skip to content</a><header class="site-header"><div class="header-inner"><a class="brand" href="/">Phi Hung Nguyen</a><nav aria-label="Main navigation">{navigation}</nav></div></header><main id="main">{body}</main><footer><p>Phi Hung Nguyen · Optical Sciences · University of Arizona</p><p><a href="/notes/">A notebook in progress</a> · <a href="{escape(site_content.CATALOG['scholar'],quote=True)}">Scholar ↗</a> · <a href="{escape(site_content.CATALOG['linkedin'],quote=True)}">LinkedIn ↗</a></p></footer></body></html>'''.encode()
 
 def application(environ,start_response):
     method=environ.get("REQUEST_METHOD","GET")
@@ -53,24 +56,23 @@ def application(environ,start_response):
         elif path=="/api/files":
             kind="application/json; charset=utf-8"; body=json.dumps({"files":files()},ensure_ascii=False).encode()
         elif path.startswith(("/pdfs/","/notebooks/")):
-            viewer=path.startswith("/notebooks/"); name=path.split("/",2)[2]
+            viewer=path.startswith("/notebooks/"); name=path.split("/",2)[2].removesuffix("/")
             file=resolve(name,PDF_ROOT)
             if file.suffix.lower()!=".pdf": raise FileNotFoundError
             if file.stat().st_size>MAX_PDF: raise OverflowError
             if viewer:
-                url="/pdfs/"+quote(name,safe="/")
-                body=page(file.stem,f'<h1>{escape(file.stem)}</h1><p><a href="{url}">Open or download PDF</a></p><iframe title="{escape(file.stem,quote=True)}" src="{url}" width="100%" height="1100"></iframe>')
+                url="/pdfs/"+quote(name,safe="/")+"?v="+hashlib.sha256(file.read_bytes()).hexdigest()[:16]
+                body=page(file.stem,site_content.viewer(name,url),active='notes')
             else:
                 kind="application/pdf"; body=file.read_bytes()
-        elif path=="/":
-            names=files()
-            links=''.join(f'<li><a href="/docs/{quote(n,safe="/")}">{escape(n)}</a></li>' for n in names)
-            body=page("Files",f'<h1>Your Markdown files</h1><p class="muted">{len(names)} documents</p><ul class="files">{links}</ul>' if names else '<h1>Your Markdown files</h1><p>Add .md files to the content folder to get started.</p>')
-            notebooks=pdf_files()
-            links=''.join(f'<li><a href="/notebooks/{quote(n,safe="/")}">{escape(n)}</a></li>' for n in notebooks)
-            body=body.replace(b'</main>',f'<h2>Handwritten notebooks</h2><p class="muted">{len(notebooks)} PDFs</p><ul class="files">{links}</ul></main>'.encode())
+        elif path=="/" or path.strip("/") in {"notes","research","about"} or path.startswith("/notes/"):
+            route=path.strip("/")
+            editorial={slug.strip("/"):(title,content) for slug,title,content in site_content.pages(pdf_files(),files())}
+            if route not in editorial: raise FileNotFoundError
+            title,content=editorial[route]
+            body=page(title,content,active=route.split("/")[0])
         elif path.startswith(("/docs/","/raw/")):
-            raw=path.startswith("/raw/"); name=path.split("/",2)[2]; file=resolve(name)
+            raw=path.startswith("/raw/"); name=path.split("/",2)[2].removesuffix("/"); file=resolve(name)
             if file.suffix.lower()==".md":
                 if file.stat().st_size>MAX_TEXT: raise OverflowError
                 source=file.read_text(encoding="utf-8")

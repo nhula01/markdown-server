@@ -1,22 +1,13 @@
-# Welcome
+# Reading these notes
 
-Add your `.md` files to the **content** folder. Refresh the home page to see them.
+This is a growing collection of handwritten notes from my PhD in optical sciences. The aim is to make a physical idea understandable before following every step of its mathematics.
 
-## Supported formatting
+The notes are working pages. They may be brief, incomplete, or revised as my understanding develops. A topic outline shows the intended direction of the collection; it does not mean all those notes have been written.
 
-- Headings, lists, links, and images
-- Tables and fenced code blocks
-- **Bold**, *italic*, and ~~strikethrough~~
+## A useful way through
 
-```python
-print("Hello from Markdown")
-```
+Begin with the question a note is trying to answer. Look at its sketches, identify the physical system, and ask what should happen in a simple limiting case. Then return to the equations with that picture in mind.
 
-| Endpoint | Purpose |
-| --- | --- |
-| `/` | Browse all documents |
-| `/docs/welcome.md` | Read a rendered document |
-| `/raw/welcome.md` | Read the original Markdown |
-| `/api/files` | List document paths as JSON |
+The original handwritten PDFs preserve the diagrams, arrows, and equations together. You can read them in the browser or open the PDF separately.
 
-[Read the example note](notes/example.md)
+[How I want to structure a note](notes/example.md)

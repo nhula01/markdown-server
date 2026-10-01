@@ -32,7 +32,7 @@ class ServerTests(unittest.TestCase):
     def test_index_and_api(self):
         status,_,body=self.request('/api/files')
         self.assertEqual(status,'200 OK'); self.assertEqual(json.loads(body)['files'],['notes/tiếng Việt.md','welcome.md'])
-        self.assertIn(b'/docs/notes/ti%E1%BA%BFng%20Vi%E1%BB%87t.md',self.request('/')[2])
+        self.assertIn(b'/docs/notes/ti%E1%BA%BFng%20Vi%E1%BB%87t.md',self.request('/notes/')[2])
     def test_traversal_and_private_paths(self):
         for path in ['/docs/../secret.md','/docs/escape.md','/docs/.hidden.md','/docs/notes/../../secret.md','/docs//etc/passwd','/raw/pic.png','/docs/missing.md']:
             with self.subTest(path=path): self.assertEqual(self.request(path)[0],'404 Not Found')
@@ -49,7 +49,7 @@ class ServerTests(unittest.TestCase):
         self.assertEqual(status,'200 OK'); self.assertEqual(headers['Content-Type'],'application/pdf')
         self.assertEqual(body,pdf.read_bytes())
         self.assertIn(b'/pdfs/Open%20Systems/Input%20Output.pdf',self.request('/notebooks/Open Systems/Input Output.pdf')[2])
-        self.assertIn(b'/notebooks/Open%20Systems/Input%20Output.pdf',self.request('/')[2])
+        self.assertIn(b'/notebooks/Open%20Systems/Input%20Output.pdf',self.request('/notes/')[2])
         self.assertIn("frame-src 'self'",headers['Content-Security-Policy'])
         pdf.write_bytes(b'%PDF-1.4 changed')
         self.assertEqual(self.request('/pdfs/Open Systems/Input Output.pdf')[2],pdf.read_bytes())

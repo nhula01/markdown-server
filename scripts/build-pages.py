@@ -3,11 +3,13 @@ import argparse
 import hashlib
 import shutil
 import sys
+import re
 from pathlib import Path
 from urllib.parse import quote
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 import app
+import site_content
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--base-path', default='/markdown-server')
@@ -23,13 +25,12 @@ out.mkdir(parents=True, exist_ok=True)
 def write_page(path, title, body, raw=None):
     target = out / path
     target.parent.mkdir(parents=True, exist_ok=True)
-    html = app.page(title, body, raw).decode()
-    html = html.replace('href="/style.css"', f'href="{base}/style.css"')
-    html = html.replace('href="/"', f'href="{base}/"')
-    html = html.replace('href="/raw/', f'href="{base}/raw/')
+    active = "notes" if path.startswith(("notes/", "notebooks/")) else path.split("/")[0]
+    html = app.page(title, body, raw, active=active).decode()
+    # Prefix all local links, leaving external URLs and fragments intact.
+    html = re.sub(r'(href|src)="/(?!/)', lambda match: f'{match[1]}="{base}/', html)
     target.write_text(html, encoding='utf-8')
 
-links = []
 for name in app.files():
     source = app.resolve(name)
     if source.stat().st_size > app.MAX_TEXT:
@@ -40,7 +41,6 @@ for name in app.files():
     # Keep .md in the URL so relative Markdown links resolve consistently.
     write_page('docs/' + name + '/index.html', source.stem,
                app.PARSER.render(source.read_text(encoding='utf-8')), name)
-    links.append(f'<li><a href="{base}/docs/{quote(name,safe="/")}/">{app.escape(name)}</a></li>')
 
 # Rewrite relative Markdown/image links to match static directory routes.
 from posixpath import dirname, normpath
@@ -66,7 +66,6 @@ for source in app.ROOT.rglob('*'):
         target.parent.mkdir(parents=True, exist_ok=True)
         shutil.copyfile(source, target)
 
-pdf_links = []
 for name in app.pdf_files():
     source = app.resolve(name, app.PDF_ROOT)
     if source.stat().st_size > app.MAX_PDF:
@@ -75,11 +74,9 @@ for name in app.pdf_files():
     target.parent.mkdir(parents=True, exist_ok=True)
     shutil.copyfile(source, target)
     version = hashlib.sha256(source.read_bytes()).hexdigest()[:16]
-    url = f'{base}/pdfs/{quote(name,safe="/")}?v={version}'
+    url = f'/pdfs/{quote(name,safe="/")}?v={version}'
     write_page('notebooks/' + name + '/index.html', source.stem,
-               f'<h1>{app.escape(source.stem)}</h1><p><a href="{url}">Open or download PDF</a></p>'
-               f'<iframe title="{app.escape(source.stem,quote=True)}" src="{url}" width="100%" height="1100"></iframe>')
-    pdf_links.append(f'<li><a href="{base}/notebooks/{quote(name,safe="/")}/">{app.escape(name)}</a></li>')
-write_page('index.html', 'My book', '<h1>My book</h1><h2>Handwritten notebooks</h2><ul class="files">'
-           + ''.join(pdf_links) + '</ul><h2>Markdown documents</h2><ul class="files">' + ''.join(links) + '</ul>')
-print(f'Built {len(links)} Markdown documents and {len(pdf_links)} PDFs in {out}')
+               site_content.viewer(name, url))
+for route, title, body in site_content.pages(app.pdf_files(), app.files()):
+    write_page(route + 'index.html', title, body)
+print(f'Built {len(app.files())} Markdown documents and {len(app.pdf_files())} PDFs in {out}')
