@@ -149,25 +149,11 @@
     }
   ],
   "reading_guides": {
-    "Crystal": {
-      "start": "Why study a material through its absorption spectrum?",
-      "explains": "How fields, geometry, and confinement change the optical response; then how lattice vectors, a basis, primitive cells, and reciprocal space describe a solid.",
-      "connect": "Continue with Electrons in Crystals to connect atomic structure to bands."
-    },
-    "Electrons in Crystals": {
-      "start": "Begin with the hydrogen atom.",
-      "explains": "Use the atomic picture as a starting point for understanding electron states and band structure in a crystal.",
-      "connect": "Read after Crystal."
-    },
-    "Electromagnetic Pieces": {
-      "start": "Build the physical and mathematical pieces before assembling Maxwell’s equations.",
-      "explains": "Electric and magnetic fields, the meaning of the vacuum constants, material sources, and the intuition behind divergence, curl, Gauss’s theorem, and Stokes’s theorem.",
-      "connect": "Continue with Maxwell’s Equations."
-    },
-    "Maxwell's Equations": {
-      "start": "Ask how light interacts with matter on the macroscopic scale.",
-      "explains": "Read the equations as statements about sources and changes: charge, current, changing fields, and the connection to charge continuity.",
-      "connect": "Read after Electromagnetic Pieces."
-    }
+    "Crystal": "- We discover why materials are used since it creates linear absorption spectrum. One can change the spectrum based on voltage, ultrafast laser, geometry applied on the material. The geometry manipulation of materials usually shift the central frequencies of absorption to higher frequency. The geometry manipulations are called confinements: bulk, well, wire, dot.\n- We try to understand the real atomic structure. Bohr radius is on the order of 0.05nm=.5A for hydrogen atom while the proton has radius of .824fm. This is 60000 in ratio. This says atom is mostly \"empty\". The emphasis on emptiness here is that in quantum, the scales we mention can be interpreted as probability wave function in position. The space is filled with probability wave. In a solid structure, the space between two protons are usually .5nm which is about 10 times with the space of electron allowing some overlap, but not strongly so, a perfect case for tight binding model. We usually associate an electron with a specific momentum k, thus a wave length. It is more correct to say we have an electron with a small bandwidth. That is when the electron wave is extended over the whole solid (finite), its uncertainty in momentum can be small. This is the case for delocalized electron. When the electron is localized, its bandwidth is large creating an envelope. When we describe confinement, what happens is that we do not trap an electron of a specific frequency. We trap or create a superposition of an electron state. This distinction is important because we trap the superposition state, not the single k state. \n- We explain the basics that make up a solid. We begin with primitive vectors that create a whole lattice with minimized volume. These primitive vectors are not unique. A specific one usually used is Wigner Seitz Primitive Cell. In 3d, the most common ones are cubic, face centered cubic and body center cubic. Each lattice point has a basis as well which means each basis can contain many elements.\n- The reciprocal lattice is derived from saying that the solid has a symmetry such that we should not be able to tell the density at one location from another repeated location. This facts creates allowable shifts in frequency of electron, not saying that electron needs to have these allowable frequencies. ",
+    "Electrons in Crystals": "- To understand the band structure, we explore the hydrogen atom. ",
+    "Linear Light": "",
+    "Maxwell's Equations": "- We learn about the macroscopic equations where the light interacts with materials. The first equation states the origin of D field is the charge. The second equation shows the origin of magnetic curl is current and change of D field. The third equation shows the origin of electric curl is the change in magnetic field. The last equation states that no magnetic monopoles exist. The first and second equations lead to the charge continuity where change is free charge is the source of current/",
+    "Electromagnetic Pieces": "- We learn about the pieces used in light. How E and B fields are not two different things and they are also not compatible, but then explain why we also say we know both at the same time in classical limit. \n- We then explore what $\\epsilon_{0}, \\mu_{0}$ mean. When representing the coupling, they determine how quickly the disturbances move. When representing the scale, they represent the relative scale between E and B fields. They do not mean that $E\\gg B$ (their energy contribution is the same) and proceed to explain this misunderstanding. The reason is that when interacting with the material where the electron's speed $v\\ll c$, one can usually ignore the contribution of B field to the material's response.\n- We show there are four main material sources where the current is charge moving and..\n- We show the four main mathematics used in Maxwell's equations: Divergence, Theorem of Gauss, Curl, Theorem of Stokes. Divergence measures the total outflow of E field. The theorem of Gauss explains when only closed surface of the interested volume matters since the different adjacent volumes cancel. Curl measures how \"curve\" a vector field is. Theorem of Stokes explains why only outer loop matters. ",
+    "Oscillator Model": ""
   }
 }

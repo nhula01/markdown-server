@@ -124,11 +124,14 @@ the builder never reads or copies that vault. Only curated descriptions and
 existing official exports appear on the site. Planned pages are explicitly
 marked until notebooks exist.
 
-`reading_guides` in the catalog contains curated explanations from
+`reading_guides` in the catalog contains verbatim sections from
 MyBrain's `Optimum.md`. Titles show these guides on hover or keyboard focus;
 the **Reading guide** disclosure also works on touch screens. Empty source
 sections are marked as awaiting a guide. Topic notebook order follows the
 catalog's notebook assignments.
+Run `scripts/update-reading-guides.py /Users/nph/Documents/MyBrain/Optimum.md`
+with the project Python to refresh them. Preserve the author's exact wording
+for all current and future previews, including equations and unfinished text.
 
 Inside reMarkable, `Obsidian/Fields & waves` holds Electromagnetic Pieces and
 Maxwell's Equations; `Obsidian/Light & matter` holds Crystal, Electrons in

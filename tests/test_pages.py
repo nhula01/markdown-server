@@ -9,6 +9,14 @@ from pathlib import Path
 
 
 class PagesTests(unittest.TestCase):
+    def test_optimum_sections_preserve_author_text_and_empty_sections(self):
+        import runpy
+        sections = runpy.run_path('scripts/update-reading-guides.py')['sections']
+        text = 'Intro\n\nCrystals:\n- exact $E\\gg B$, typo.. \n- detail:\ncontinued\nLinear Light:\nLorentz Oscilator\n'
+        self.assertEqual(sections(text), {
+            'Crystal': '- exact $E\\gg B$, typo.. \n- detail:\ncontinued',
+            'Linear Light': '', 'Oscillator Model': ''})
+
     def test_static_library_preserves_pdf_and_project_links(self):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
@@ -63,7 +71,10 @@ class PagesTests(unittest.TestCase):
             self.assertIn('Outline · notes to come', notes)
             matter = (out / 'notes/light-and-matter/index.html').read_text()
             self.assertIn('/markdown-server/notebooks/Obsidian/Crystal.pdf/', matter)
-            self.assertIn('Why study a material through its absorption spectrum?', matter)
+            from site_content import CATALOG
+            from html import escape
+            self.assertIn(escape(CATALOG['reading_guides']['Crystal']), matter)
+            self.assertIn('To understand the band structure, we explore the hydrogen atom.', matter)
             self.assertIn('aria-describedby="guide-', matter)
             self.assertIn('<summary>Reading guide</summary>', matter)
             self.assertLess(matter.index('/notebooks/Obsidian/Crystal.pdf/'),

@@ -46,18 +46,16 @@ def notebook_list(names):
     import hashlib
     items = []
     for name in names:
-        topic = topic_for(name)
         stem = Path(name).stem
-        description = topic['notebooks'].get(stem, 'Handwritten working notes.') if topic else 'An unfiled notebook from the current collection.'
         guide = CATALOG.get('reading_guides', {}).get(stem)
         identifier = 'guide-' + hashlib.sha256(name.encode()).hexdigest()[:12]
-        if guide:
-            content = ''.join(f'<span class="guide-part"><strong>{label}</strong><span>{escape(guide[key])}</span></span>' for key, label in [('start', 'Start here'), ('explains', 'What this explains'), ('connect', 'Connections')])
+        if guide and guide.strip():
+            content = f'<span class="guide-verbatim">{escape(guide)}</span>'
         else:
             content = '<span class="guide-part"><strong>Guide in preparation</strong><span>This notebook does not have a reading guide in Optimum yet.</span></span>'
         items.append(f'''<li><div class="note-entry"><div class="note-title"><h3><a class="note-link" aria-describedby="{identifier}" href="/notebooks/{quote(name, safe='/')}/">{escape(stem)}</a></h3>
             <span class="note-popover" id="{identifier}" role="tooltip"><span class="guide-label">Reading guide · from Optimum</span>{content}</span></div>
-            <p>{escape(description)}</p><details class="reading-guide"><summary>Reading guide</summary><div class="guide-inline">{content}</div></details></div><span class="tag">PDF · handwritten</span></li>''')
+            <details class="reading-guide"><summary>Reading guide</summary><div class="guide-inline">{content}</div></details></div><span class="tag">PDF · handwritten</span></li>''')
     return '<ul class="notebook-list">' + ''.join(items) + '</ul>'
 
 
