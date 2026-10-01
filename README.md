@@ -132,6 +132,10 @@ catalog's notebook assignments.
 Run `scripts/update-reading-guides.py /Users/nph/Documents/MyBrain/Optimum.md`
 with the project Python to refresh them. Preserve the author's exact wording
 for all current and future previews, including equations and unfinished text.
+Preview equations use locally hosted KaTeX 0.19.0 (MIT license included).
+Inline `$...$` and `\(...\)`, plus display `$$...$$` and `\[...\]`, are
+typeset in both hover previews and expanded guides. The catalog retains the
+exact source text; rendering changes only its browser presentation.
 
 Inside reMarkable, `Obsidian/Fields & waves` holds Electromagnetic Pieces and
 Maxwell's Equations; `Obsidian/Light & matter` holds Crystal, Electrons in

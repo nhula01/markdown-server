@@ -66,6 +66,17 @@ class ServerTests(unittest.TestCase):
             (app.PDF_ROOT/'large.pdf').write_bytes(b'%PDF')
             self.assertEqual(self.request('/pdfs/large.pdf')[0],'413 Content Too Large')
         finally: app.MAX_PDF=previous
+    def test_preview_math_assets_and_policy(self):
+        for path, content_type in [('/assets/math.js', 'text/javascript'),
+                                   ('/assets/vendor/katex-0.19.0/katex.min.css', 'text/css'),
+                                   ('/assets/vendor/katex-0.19.0/katex.min.js', 'text/javascript'),
+                                   ('/assets/vendor/katex-0.19.0/fonts/KaTeX_Main-Regular.woff2', 'font/woff2')]:
+            status, headers, body = self.request(path)
+            self.assertEqual(status, '200 OK')
+            self.assertTrue(headers['Content-Type'].startswith(content_type))
+            self.assertTrue(body)
+            self.assertIn("script-src 'self'", headers['Content-Security-Policy'])
+        self.assertEqual(self.request('/assets/vendor/katex-0.19.0/../../app.py')[0], '404 Not Found')
     def test_size_limit(self):
         (app.ROOT/'big.md').write_bytes(b'x'*(app.MAX_TEXT+1))
         self.assertEqual(self.request('/docs/big.md')[0],'413 Content Too Large')

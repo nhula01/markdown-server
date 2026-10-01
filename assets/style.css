@@ -135,5 +135,7 @@ footer { margin: 0 65px; padding-bottom: 32px; }
 .reading-guide summary { font-family: Arial, sans-serif; font-size: 11px; color: var(--muted); width: fit-content; }
 .guide-inline { padding: 18px 20px; border-left: 1px solid #8a8f9b50; margin-top: 12px; font-size: 15px; line-height: 1.5; }
 .guide-verbatim { display: block; white-space: pre-wrap; overflow-wrap: anywhere; }
+.guide-verbatim .katex { white-space: normal; font-size: 1.05em; }
+.guide-verbatim .katex-display { overflow-x: auto; overflow-y: hidden; padding: 4px 0; }
 @media (hover: none) { .note-popover { display: none; } }
 @media (prefers-reduced-motion: reduce) { .note-popover { transition: none; } }
