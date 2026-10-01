@@ -59,44 +59,25 @@ python -m unittest discover -s tests -v
 
 ## reMarkable handwritten notebooks
 
-Export PDFs to `pdfs/` in this checkout. The home page automatically lists them;
-`/notebooks/Open%20Systems/Input%20Output.pdf` embeds the notebook and
-`/pdfs/Open%20Systems/Input%20Output.pdf` serves its original PDF. Refreshing
-shows updated exports at the same URL. `PDF_ROOT` overrides the PDF directory.
-PDFs are limited to 100 MiB. Only PDFs intended for publication belong here.
-Docker builds include `pdfs/`; rebuild/redeploy the image after each Git push,
-or mount a PDF directory at `/app/pdfs` for live filesystem updates.
+Use the official reMarkable desktop app for PDF export. In the Obsidian folder,
+select the notebooks, choose Export, keep PDF selected, and save into this
+checkout's `pdfs/Obsidian/` directory. Replace the existing files using the same
+names to preserve their website URLs. The website serves these PDFs unchanged.
 
-On your Mac:
+Run `zsh scripts/sync-remarkable.zsh` after export to commit PDF changes and push.
+Despite its legacy filename, this script only publishes existing PDFs. It never
+calls reMarkableSync or regenerates notebooks, so official exports stay intact.
+It preserves unrelated staged work and retries a previously failed push.
 
-```sh
-brew tap jeffsteinbok/remarkablesync
-brew install remarkablesync
-RemarkableSync config
-```
+The home page automatically lists PDFs; `/notebooks/<path>.pdf` embeds them and
+`/pdfs/<path>.pdf` serves their original bytes. `PDF_ROOT` overrides the server's
+PDF directory. PDFs are limited to 100 MiB. Only PDFs intended for publication
+belong here. Docker builds include `pdfs/`.
 
-The Homebrew formula uses `RemarkableSync` (capital R); other installations may
-use `reMarkableSync`. Choose Cloud in the wizard and complete pairing yourself.
-Set the PDF directory to this checkout's `pdfs/`, keep backups outside the repo,
-and disable Markdown/OCR export. Then run the default PDF-only pipeline:
-
-```sh
-RemarkableSync sync --cloud
-```
-
-Edit one notebook on the tablet, allow Cloud sync, rerun, and verify its PDF
-changes with `git status --short -- pdfs`. Open the PDF to confirm handwriting.
-Only after this succeeds, run `zsh scripts/sync-remarkable.zsh` to sync, commit
-PDF changes, and push. It preserves unrelated staged files and retries pushes.
-Git credentials must work without a prompt for scheduled runs.
-
-For daily sync at 18:00 local time, edit the absolute script/log paths in
-`scripts/com.nhula01.remarkable-sync.plist.example`, copy it to
-`~/Library/LaunchAgents/com.nhula01.remarkable-sync.plist`, then load it with
-`launchctl bootstrap gui/$(id -u) ~/Library/LaunchAgents/com.nhula01.remarkable-sync.plist`.
-The example is deliberately inactive until the changed-PDF test succeeds.
-The Mac must be available to run the job. Remove the job with
-`launchctl bootout gui/$(id -u)/com.nhula01.remarkable-sync`.
+The launchd example remains inactive. It can automate publishing saved PDFs,
+but it does not export updated notebooks from the desktop app. Automatic native
+export is not currently configured. The previously installed reMarkableSync can
+still back up raw files, but its third-party rendering is not used for this site.
 
 ### Free hosting with GitHub Pages
 
