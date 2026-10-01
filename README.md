@@ -81,7 +81,7 @@ Set the PDF directory to this checkout's `pdfs/`, keep backups outside the repo,
 and disable Markdown/OCR export. Then run the default PDF-only pipeline:
 
 ```sh
-RemarkableSync --output-dir "$PWD/pdfs"
+RemarkableSync sync --cloud
 ```
 
 Edit one notebook on the tablet, allow Cloud sync, rerun, and verify its PDF
