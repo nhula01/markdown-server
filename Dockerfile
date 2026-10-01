@@ -5,7 +5,6 @@ RUN pip install --no-cache-dir -r requirements.txt && useradd --uid 10001 --crea
 COPY --chown=markdown:markdown app.py site_content.py chapter_content.py ./
 COPY --chown=markdown:markdown assets ./assets
 COPY --chown=markdown:markdown site ./site
-COPY --chown=markdown:markdown chapters ./chapters
 COPY --chown=markdown:markdown content ./content
 COPY --chown=markdown:markdown pdfs ./pdfs
 USER markdown

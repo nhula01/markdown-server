@@ -25,7 +25,7 @@ out.mkdir(parents=True, exist_ok=True)
 site_version = hashlib.sha256(b''.join(
     (Path(app.__file__).parent / name).read_bytes()
     for name in ['app.py', 'site_content.py', 'chapter_content.py', 'assets/style.css', 'assets/math.js', 'assets/search.js', 'assets/pdf-reader.js', 'site/catalog.json', 'site/chapters.json', 'scripts/build-pages.py']
-) + b''.join(path.read_bytes() for path in sorted((Path(app.__file__).parent / 'chapters').glob('*.md')))
+)
   + b''.join(name.encode() + hashlib.sha256(app.resolve(name, root).read_bytes()).digest()
             for root, names in [(app.ROOT, app.files()), (app.PDF_ROOT, app.pdf_files())]
             for name in names)).hexdigest()[:16]

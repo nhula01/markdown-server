@@ -32,12 +32,6 @@ def math_renderer(text, options):
 MARKDOWN = MarkdownIt('js-default').use(dollarmath_plugin, renderer=math_renderer).use(anchors_plugin, min_level=2, max_level=3)
 
 
-def markdown(stem):
-    chapter = CHAPTERS.get(stem, {})
-    path = ROOT / 'chapters' / (chapter.get('slug', '') + '.md')
-    return path.read_text() if path.is_file() else ''
-
-
 def chapter_url(name):
     return '/notebooks/' + quote(name, safe='/') + '/'
 
@@ -129,10 +123,9 @@ def viewer(name, url, names, metadata=None):
         toc.append(f'<li><a data-pdf-page="{page}" href="{escape(url, quote=True)}#page={page}"><span>{escape(item["title"])}</span><small>p. {page}</small></a></li>')
     contents = '<ol class="chapter-contents">' + ''.join(toc) + '</ol>' if toc else '<p class="muted">Contents awaiting an outline.</p>'
     guide = site_content.CATALOG.get('reading_guides', {}).get(stem, '')
-    reading_guide = f'<details class="chapter-guide"><summary>Reading guide · verbatim from Optimum</summary><div class="guide-verbatim">{escape(guide)}</div></details>' if guide.strip() else ''
-    body = MARKDOWN.render(markdown(stem))
-    if not body:
-        body = '<h2 id="physical-picture">Physical picture</h2><p>The context for this working notebook is still taking shape.</p>'
+    reading_guide = f'<details id="reading-guide" class="chapter-guide"><summary>Reading guide · verbatim from Optimum</summary><div class="guide-verbatim">{escape(guide)}</div></details>' if guide.strip() else ''
+    guide_section = f'<div class="chapter-prose">{reading_guide}</div>' if reading_guide else ''
+    guide_link = '<a href="#reading-guide">Reading guide</a>' if reading_guide else ''
     groups = ''.join(f'<section><h3>{label}</h3>{connection_list(chapter.get(key, []), names)}</section>' for key, label in GROUPS)
     incoming = backlinks('note:' + stem, names)
     linked_from = f'<section class="linked-from"><h3>Linked from</h3>{connection_list(incoming, names)}</section>' if incoming else ''
@@ -150,11 +143,11 @@ def viewer(name, url, names, metadata=None):
         <div class="chapter-meta">{'<span aria-hidden="true"> · </span>'.join(facts)}</div>
         <div class="actions"><a class="button" href="#handwritten-notes">Read handwritten notes ↓</a><a class="section-link" href="#connections">Follow the connections →</a></div></header>
         <div class="chapter-layout"><aside class="chapter-sidebar" aria-label="Chapter contents"><h2>In this note</h2>{contents}
-        <nav aria-label="Chapter context"><a href="#physical-picture">Physical picture</a><a href="#connections">Key connections</a></nav><div class="chapter-tags">{tags}</div></aside>
+        <nav aria-label="Chapter context">{guide_link}<a href="#connections">Key connections</a></nav><div class="chapter-tags">{tags}</div></aside>
         <div class="chapter-main"><section id="handwritten-notes" class="handwriting"><div class="pdf-toolbar"><span class="kicker">The handwritten source</span><a href="{escape(url, quote=True)}">Open PDF ↗</a></div>
         <div class="pdf-reader" data-pdf-url="{escape(url, quote=True)}" data-title="{escape(stem, quote=True)}" data-page="1"><div class="pdf-controls"><div><button type="button" data-pdf-previous aria-label="Previous PDF page" disabled>←</button><select data-pdf-select aria-label="PDF page" disabled></select><button type="button" data-pdf-next aria-label="Next PDF page" disabled>→</button></div><div><button type="button" data-pdf-zoom-out aria-label="Zoom out" disabled>−</button><button type="button" data-pdf-zoom-in aria-label="Zoom in" disabled>+</button></div></div><p data-pdf-status role="status" aria-live="polite">Loading handwritten notes…</p><div class="pdf-surface"><canvas role="img" aria-label="{escape(stem, quote=True)} · handwritten page"></canvas></div></div>
         <noscript><iframe class="pdf-frame" title="{escape(stem, quote=True)} · handwritten notes" src="{escape(url, quote=True)}#page=1" width="100%" height="1100"></iframe></noscript><p class="file-source">Original reMarkable export. Use Open PDF to read or download the original file.</p></section>
-        <div class="chapter-prose">{body}{reading_guide}</div>
+        {guide_section}
         <section id="connections" class="chapter-connections"><h2>Key connections</h2><div class="connection-groups">{groups}</div>{linked_from}</section>
         <nav class="chapter-pagination" aria-label="Reading order">{''.join(neighbors)}</nav></div></div></article>'''
 
@@ -195,7 +188,7 @@ def search_index(names, documents=(), document_root=None):
         connections = [resolve_connection(target, names)[0] for key, _ in GROUPS for target in chapter.get(key, [])]
         entries.append({'title': stem, 'category': topic['title'] if topic else 'Notebook desk', 'url': chapter_url(name),
                         'status': 'Handwritten note', 'summary': chapter.get('question', ''), 'tags': chapter.get('tags', []),
-                        'text': '\n'.join([guide, plain_text(MARKDOWN.render(markdown(stem))), chapter.get('summary', ''), *connections, *(item['title'] for item in chapter.get('contents', []))])})
+                        'text': '\n'.join([guide, chapter.get('summary', ''), *connections, *(item['title'] for item in chapter.get('contents', []))])})
     for topic in site_content.TOPICS:
         entries.append({'title': topic['title'], 'category': 'Topics', 'url': '/notes/' + topic['slug'] + '/',
                         'status': 'Topic' if site_content.topic_notes(topic, names) else 'Outline',
