@@ -1,6 +1,10 @@
 #!/bin/zsh
 set -eu
 export PATH="/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:$PATH"
+# This Mac uses Application Support because ~/.config is owned by root.
+if [[ -z "${GH_CONFIG_DIR:-}" && -d "$HOME/Library/Application Support/gh" ]]; then
+  export GH_CONFIG_DIR="$HOME/Library/Application Support/gh"
+fi
 REPO="${0:A:h:h}"
 cd "$REPO"
 # Prevent overlapping scheduled/manual runs.
