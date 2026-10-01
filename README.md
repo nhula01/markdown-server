@@ -74,7 +74,7 @@ The home page automatically lists PDFs; `/notebooks/<path>.pdf` embeds them and
 PDF directory. PDFs are limited to 100 MiB. Only PDFs intended for publication
 belong here. Docker builds include `pdfs/`.
 
-A daily Codex scheduled task at 18:00 America/Phoenix exports the Obsidian
+A Codex scheduled task exports the Obsidian
 folder through the official desktop app and publishes changes. The Mac must be
 awake and unlocked, Codex running, and reMarkable signed in and synced.
 The task reports meaningful updates or failures and stays quiet when unchanged.
@@ -123,6 +123,21 @@ are not published. The MyBrain vault was used to plan the topic structure;
 the builder never reads or copies that vault. Only curated descriptions and
 existing official exports appear on the site. Planned pages are explicitly
 marked until notebooks exist.
+
+`reading_guides` in the catalog contains curated explanations from
+MyBrain's `Optimum.md`. Titles show these guides on hover or keyboard focus;
+the **Reading guide** disclosure also works on touch screens. Empty source
+sections are marked as awaiting a guide. Topic notebook order follows the
+catalog's notebook assignments.
+
+Inside reMarkable, `Obsidian/Fields & waves` holds Electromagnetic Pieces and
+Maxwell's Equations; `Obsidian/Light & matter` holds Crystal, Electrons in
+Crystals, Oscillator Model, and Linear Light. Other notebooks remain at the
+Obsidian root. The export task visits each folder individually because folder
+selection cannot export PDFs. Put each folder's official exports in a separate
+subdirectory of one fresh export directory. The importer reads these recursively,
+rejects duplicate filenames before changing the library, and keeps the existing
+flat PDF URLs stable.
 
 Edit `site_content.py` for page copy and selected research, and
 `assets/style.css` for presentation. Research entries link to their public

@@ -21,7 +21,9 @@ def topic_for(name):
 
 
 def topic_notes(topic, names):
-    return [name for name in names if topic_for(name) == topic]
+    matching = [name for name in names if topic_for(name) == topic]
+    order = list(topic['notebooks'])
+    return sorted(matching, key=lambda name: (order.index(Path(name).stem) if Path(name).stem in order else len(order), name))
 
 
 def topic_status(topic, names):
@@ -41,13 +43,21 @@ def topic_cards(names, selected=None):
 
 
 def notebook_list(names):
+    import hashlib
     items = []
     for name in names:
         topic = topic_for(name)
         stem = Path(name).stem
         description = topic['notebooks'].get(stem, 'Handwritten working notes.') if topic else 'An unfiled notebook from the current collection.'
-        items.append(f'''<li><div><h3><a href="/notebooks/{quote(name, safe='/')}/">{escape(stem)}</a></h3>
-            <p>{escape(description)}</p></div><span class="tag">PDF · handwritten</span></li>''')
+        guide = CATALOG.get('reading_guides', {}).get(stem)
+        identifier = 'guide-' + hashlib.sha256(name.encode()).hexdigest()[:12]
+        if guide:
+            content = ''.join(f'<span class="guide-part"><strong>{label}</strong><span>{escape(guide[key])}</span></span>' for key, label in [('start', 'Start here'), ('explains', 'What this explains'), ('connect', 'Connections')])
+        else:
+            content = '<span class="guide-part"><strong>Guide in preparation</strong><span>This notebook does not have a reading guide in Optimum yet.</span></span>'
+        items.append(f'''<li><div class="note-entry"><div class="note-title"><h3><a class="note-link" aria-describedby="{identifier}" href="/notebooks/{quote(name, safe='/')}/">{escape(stem)}</a></h3>
+            <span class="note-popover" id="{identifier}" role="tooltip"><span class="guide-label">Reading guide · from Optimum</span>{content}</span></div>
+            <p>{escape(description)}</p><details class="reading-guide"><summary>Reading guide</summary><div class="guide-inline">{content}</div></details></div><span class="tag">PDF · handwritten</span></li>''')
     return '<ul class="notebook-list">' + ''.join(items) + '</ul>'
 
 
@@ -96,7 +106,7 @@ def notes(names, documents=()):
 
 def topic_page(topic, names):
     available = topic_notes(topic, names)
-    current = ('<h2>Handwritten notes</h2>' + notebook_list(available)) if available else '<h2>Notes to come</h2><p>This topic is part of the planned collection. Its outline is a guide to future notes; there are no published notebooks here yet.</p>'
+    current = ('<h2>Handwritten notes</h2><p class="muted">A suggested reading order. Hover over a title, or open its reading guide, for the physical starting point.</p>' + notebook_list(available)) if available else '<h2>Notes to come</h2><p>This topic is part of the planned collection. Its outline is a guide to future notes; there are no published notebooks here yet.</p>'
     outline = ''.join(f'<li>{escape(item)}</li>' for item in topic['outline'])
     return f'''<div class="breadcrumbs"><a href="/notes/">Notes</a> / {escape(topic['title'])}</div>
         <header class="page-intro"><p class="eyebrow">Topic {TOPICS.index(topic)+1:02d} · <span aria-hidden="true">{topic['symbol']}</span></p><h1>{escape(topic['title'])}</h1><p class="lead">{escape(topic['question'])}</p><p>{escape(topic['description'])}</p><div class="meta">{topic_status(topic, names)}</div></header>

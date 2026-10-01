@@ -100,3 +100,37 @@ footer { margin: 0 65px; padding-bottom: 32px; }
   .page-intro h1 { font-size: 44px; }
   footer { margin: 0 25px; }
 }
+
+/* A small note in the margin: mouse hover, keyboard focus, or tap to expand. */
+.note-entry { min-width: 0; }
+.note-title { position: relative; width: fit-content; max-width: 100%; }
+.note-popover {
+  display: block;
+  position: absolute;
+  left: 12px;
+  top: calc(100% + 8px);
+  width: min(360px, 75vw);
+  padding: 20px 23px;
+  background: #fffef9;
+  border: 1px solid #cacbc8;
+  box-shadow: 0 8px 25px #30343718;
+  color: var(--body);
+  font-size: 15px;
+  line-height: 1.5;
+  z-index: 5;
+  visibility: hidden;
+  opacity: 0;
+  transition: opacity .12s ease;
+}
+.note-title:hover .note-popover,
+.note-title:focus-within .note-popover { visibility: visible; opacity: 1; }
+.guide-label { display: block; font-family: Arial, sans-serif; font-size: 10px; text-transform: uppercase; letter-spacing: 1px; color: var(--muted); margin-bottom: 14px; }
+.guide-part { display: block; margin-bottom: 14px; }
+.guide-part:last-child { margin-bottom: 0; }
+.guide-part strong { display: block; font-size: 14px; color: var(--accent); margin-bottom: 4px; }
+.guide-part > span { display: block; }
+.reading-guide { margin: 12px 0 0; }
+.reading-guide summary { font-family: Arial, sans-serif; font-size: 11px; color: var(--muted); width: fit-content; }
+.guide-inline { padding: 18px 20px; border-left: 1px solid #8a8f9b50; margin-top: 12px; font-size: 15px; line-height: 1.5; }
+@media (hover: none) { .note-popover { display: none; } }
+@media (prefers-reduced-motion: reduce) { .note-popover { transition: none; } }

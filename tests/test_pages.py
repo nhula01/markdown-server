@@ -47,6 +47,7 @@ class PagesTests(unittest.TestCase):
             content = root / 'content'; content.mkdir()
             pdfs = root / 'pdfs'; (pdfs / 'Obsidian').mkdir(parents=True)
             (pdfs / 'Obsidian/Crystal.pdf').write_bytes(b'%PDF original')
+            (pdfs / 'Obsidian/Electrons in Crystals.pdf').write_bytes(b'%PDF electrons')
             (pdfs / 'Obsidian/A new notebook.pdf').write_bytes(b'%PDF new')
             out = root / 'site'
             subprocess.run([sys.executable, 'scripts/build-pages.py', '--output', str(out)],
@@ -62,6 +63,11 @@ class PagesTests(unittest.TestCase):
             self.assertIn('Outline · notes to come', notes)
             matter = (out / 'notes/light-and-matter/index.html').read_text()
             self.assertIn('/markdown-server/notebooks/Obsidian/Crystal.pdf/', matter)
+            self.assertIn('Why study a material through its absorption spectrum?', matter)
+            self.assertIn('aria-describedby="guide-', matter)
+            self.assertIn('<summary>Reading guide</summary>', matter)
+            self.assertLess(matter.index('/notebooks/Obsidian/Crystal.pdf/'),
+                            matter.index('/notebooks/Obsidian/Electrons%20in%20Crystals.pdf/'))
             quantum = (out / 'notes/quantum-optics/index.html').read_text()
             self.assertIn('no published notebooks here yet', quantum)
             self.assertNotIn('<iframe', quantum)

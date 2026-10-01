@@ -3,14 +3,171 @@
   "scholar": "https://scholar.google.com/citations?user=QoKlMzMAAAAJ&hl=en",
   "linkedin": "https://www.linkedin.com/in/phi-hung-nguyen-419236202/",
   "topics": [
-    {"slug":"fields-and-waves", "title":"Fields & waves", "symbol":"∇", "question":"How does a field become a wave?", "description":"Maxwell’s equations, polarization, interference, and diffraction. Building a picture of light before following its equations.", "prerequisites":"Vector calculus and basic differential equations.", "outline":["Gradient, divergence, curl, and the integral theorems", "Maxwell’s equations: local rules, global consequences", "Plane waves, polarization, and Jones calculus", "Interference, diffraction, and optical resolution"], "notebooks":{"Electromagnetic Pieces":"The pieces that fit together into electromagnetism.", "Maxwell's Equations":"A handwritten starting point for the laws of the field."}},
-    {"slug":"light-and-matter", "title":"Light & matter", "symbol":"χ", "question":"What does light see inside a material?", "description":"From a driven electron to the collective response of a crystal. Connecting microscopic motion to the optical properties we measure.", "prerequisites":"Classical waves and introductory quantum mechanics.", "outline":["The oscillator picture of material response", "Linear susceptibility and dielectric response", "Crystal structure, periodicity, and reciprocal space", "Electrons in crystals and the origin of bands"], "notebooks":{"Oscillator Model":"Material response through the picture of a driven oscillator.", "Linear Light":"Notes on linear optical response.", "Crystal":"A first look at periodic structure.", "Electrons in Crystals":"Following electrons through a periodic material."}},
-    {"slug":"quantum-optics", "title":"Quantum optics", "symbol":"â", "question":"What changes when light comes in quanta?", "description":"Photons, optical states, and light–atom interactions. A route from field quadratures to the surprises of quantum light.", "prerequisites":"Quantum mechanics and classical electromagnetism.", "outline":["Modes, creation and annihilation operators", "Coherent and squeezed states; phase-space pictures", "Two-level atoms, Rabi oscillations, and spontaneous emission", "Photodetection, homodyne measurement, and coherence"], "notebooks":{}},
-    {"slug":"open-quantum-systems", "title":"Open quantum systems", "symbol":"ρ", "question":"Where does quantum information go?", "description":"Dissipation, noise, measurement, and memory. Understanding the environment as part of the physics, rather than an afterthought.", "prerequisites":"Density matrices and quantum dynamics.", "outline":["Density operators, quantum operations, and measurement", "Markovian master equations and the Lindblad picture", "Damped oscillators, thermal baths, and decoherence", "Correlation functions and resonance fluorescence", "Beyond the Markov approximation; diagrammatic approaches"], "notebooks":{}},
-    {"slug":"quantum-networks", "title":"Quantum networks", "symbol":"↔", "question":"How do small quantum systems become a network?", "description":"Inputs, outputs, and connections. Thinking about cavities, waveguides, and feedback as pieces of a larger dynamical system.", "prerequisites":"Open quantum systems and linear systems.", "outline":["Input–output relations and scattering", "The SLH description and composition rules", "Cascaded systems and coherent feedback", "Propagation, loss, and non-vacuum inputs"], "notebooks":{}},
-    {"slug":"quantum-information", "title":"Quantum information", "symbol":"ℐ", "question":"What can a quantum state tell us?", "description":"Information, distinguishability, and estimation. Connecting abstract bounds to the measurements that make them meaningful.", "prerequisites":"Linear algebra, probability, and quantum states.", "outline":["Channels, distinguishability, and the no-cloning theorem", "Gaussian states, covariance matrices, and symplectic maps", "Entanglement, squeezing, and noisy channels", "Fisher information and parameter estimation"], "notebooks":{}},
-    {"slug":"nonlinear-and-fiber-optics", "title":"Nonlinear & fiber optics", "symbol":"ω", "question":"When does light reshape itself?", "description":"Frequency conversion, dispersion, and nonlinear propagation. Following energy and phase through media that respond to the field.", "prerequisites":"Waves, material response, and optical modes.", "outline":["Nonlinear susceptibility and coupled-wave pictures", "Second-harmonic generation, SPDC, and phase matching", "Fiber modes, dispersion, and pulse propagation", "Self-phase modulation, four-wave mixing, and solitons"], "notebooks":{}},
-    {"slug":"learning-and-reservoirs", "title":"Learning & reservoirs", "symbol":"τ", "question":"Can a physical system learn from its own memory?", "description":"Dynamical systems as information processors. The meeting point of quantum physics, temporal learning, and physical computation.", "prerequisites":"Dynamics, probability, and basic machine learning.", "outline":["Linear readouts and temporal learning", "Reservoir dynamics and fading memory", "Quantum reservoirs and delayed feedback", "Measurement, noise, and computational performance"], "notebooks":{}},
-    {"slug":"mathematical-methods", "title":"Mathematical methods", "symbol":"∫", "question":"Which mathematical picture makes the physics clearer?", "description":"The tools behind the ideas: linear algebra, transforms, stochastic calculus, and approximation. Mathematics with a physical purpose.", "prerequisites":"Calculus and introductory linear algebra.", "outline":["Eigenvectors, singular values, and changes of basis", "Fourier pictures, spectra, and correlation functions", "Perturbation theory and useful approximations", "Stochastic equations and quantum noise"], "notebooks":{}}
-  ]
+    {
+      "slug": "fields-and-waves",
+      "title": "Fields & waves",
+      "symbol": "∇",
+      "question": "How does a field become a wave?",
+      "description": "Maxwell’s equations, polarization, interference, and diffraction. Building a picture of light before following its equations.",
+      "prerequisites": "Vector calculus and basic differential equations.",
+      "outline": [
+        "Gradient, divergence, curl, and the integral theorems",
+        "Maxwell’s equations: local rules, global consequences",
+        "Plane waves, polarization, and Jones calculus",
+        "Interference, diffraction, and optical resolution"
+      ],
+      "notebooks": {
+        "Electromagnetic Pieces": "The pieces that fit together into electromagnetism.",
+        "Maxwell's Equations": "A handwritten starting point for the laws of the field."
+      }
+    },
+    {
+      "slug": "light-and-matter",
+      "title": "Light & matter",
+      "symbol": "χ",
+      "question": "What does light see inside a material?",
+      "description": "From a driven electron to the collective response of a crystal. Connecting microscopic motion to the optical properties we measure.",
+      "prerequisites": "Classical waves and introductory quantum mechanics.",
+      "outline": [
+        "The oscillator picture of material response",
+        "Linear susceptibility and dielectric response",
+        "Crystal structure, periodicity, and reciprocal space",
+        "Electrons in crystals and the origin of bands"
+      ],
+      "notebooks": {
+        "Crystal": "A first look at periodic structure.",
+        "Electrons in Crystals": "Following electrons through a periodic material.",
+        "Oscillator Model": "Material response through the picture of a driven oscillator.",
+        "Linear Light": "Notes on linear optical response."
+      }
+    },
+    {
+      "slug": "quantum-optics",
+      "title": "Quantum optics",
+      "symbol": "â",
+      "question": "What changes when light comes in quanta?",
+      "description": "Photons, optical states, and light–atom interactions. A route from field quadratures to the surprises of quantum light.",
+      "prerequisites": "Quantum mechanics and classical electromagnetism.",
+      "outline": [
+        "Modes, creation and annihilation operators",
+        "Coherent and squeezed states; phase-space pictures",
+        "Two-level atoms, Rabi oscillations, and spontaneous emission",
+        "Photodetection, homodyne measurement, and coherence"
+      ],
+      "notebooks": {}
+    },
+    {
+      "slug": "open-quantum-systems",
+      "title": "Open quantum systems",
+      "symbol": "ρ",
+      "question": "Where does quantum information go?",
+      "description": "Dissipation, noise, measurement, and memory. Understanding the environment as part of the physics, rather than an afterthought.",
+      "prerequisites": "Density matrices and quantum dynamics.",
+      "outline": [
+        "Density operators, quantum operations, and measurement",
+        "Markovian master equations and the Lindblad picture",
+        "Damped oscillators, thermal baths, and decoherence",
+        "Correlation functions and resonance fluorescence",
+        "Beyond the Markov approximation; diagrammatic approaches"
+      ],
+      "notebooks": {}
+    },
+    {
+      "slug": "quantum-networks",
+      "title": "Quantum networks",
+      "symbol": "↔",
+      "question": "How do small quantum systems become a network?",
+      "description": "Inputs, outputs, and connections. Thinking about cavities, waveguides, and feedback as pieces of a larger dynamical system.",
+      "prerequisites": "Open quantum systems and linear systems.",
+      "outline": [
+        "Input–output relations and scattering",
+        "The SLH description and composition rules",
+        "Cascaded systems and coherent feedback",
+        "Propagation, loss, and non-vacuum inputs"
+      ],
+      "notebooks": {}
+    },
+    {
+      "slug": "quantum-information",
+      "title": "Quantum information",
+      "symbol": "ℐ",
+      "question": "What can a quantum state tell us?",
+      "description": "Information, distinguishability, and estimation. Connecting abstract bounds to the measurements that make them meaningful.",
+      "prerequisites": "Linear algebra, probability, and quantum states.",
+      "outline": [
+        "Channels, distinguishability, and the no-cloning theorem",
+        "Gaussian states, covariance matrices, and symplectic maps",
+        "Entanglement, squeezing, and noisy channels",
+        "Fisher information and parameter estimation"
+      ],
+      "notebooks": {}
+    },
+    {
+      "slug": "nonlinear-and-fiber-optics",
+      "title": "Nonlinear & fiber optics",
+      "symbol": "ω",
+      "question": "When does light reshape itself?",
+      "description": "Frequency conversion, dispersion, and nonlinear propagation. Following energy and phase through media that respond to the field.",
+      "prerequisites": "Waves, material response, and optical modes.",
+      "outline": [
+        "Nonlinear susceptibility and coupled-wave pictures",
+        "Second-harmonic generation, SPDC, and phase matching",
+        "Fiber modes, dispersion, and pulse propagation",
+        "Self-phase modulation, four-wave mixing, and solitons"
+      ],
+      "notebooks": {}
+    },
+    {
+      "slug": "learning-and-reservoirs",
+      "title": "Learning & reservoirs",
+      "symbol": "τ",
+      "question": "Can a physical system learn from its own memory?",
+      "description": "Dynamical systems as information processors. The meeting point of quantum physics, temporal learning, and physical computation.",
+      "prerequisites": "Dynamics, probability, and basic machine learning.",
+      "outline": [
+        "Linear readouts and temporal learning",
+        "Reservoir dynamics and fading memory",
+        "Quantum reservoirs and delayed feedback",
+        "Measurement, noise, and computational performance"
+      ],
+      "notebooks": {}
+    },
+    {
+      "slug": "mathematical-methods",
+      "title": "Mathematical methods",
+      "symbol": "∫",
+      "question": "Which mathematical picture makes the physics clearer?",
+      "description": "The tools behind the ideas: linear algebra, transforms, stochastic calculus, and approximation. Mathematics with a physical purpose.",
+      "prerequisites": "Calculus and introductory linear algebra.",
+      "outline": [
+        "Eigenvectors, singular values, and changes of basis",
+        "Fourier pictures, spectra, and correlation functions",
+        "Perturbation theory and useful approximations",
+        "Stochastic equations and quantum noise"
+      ],
+      "notebooks": {}
+    }
+  ],
+  "reading_guides": {
+    "Crystal": {
+      "start": "Why study a material through its absorption spectrum?",
+      "explains": "How fields, geometry, and confinement change the optical response; then how lattice vectors, a basis, primitive cells, and reciprocal space describe a solid.",
+      "connect": "Continue with Electrons in Crystals to connect atomic structure to bands."
+    },
+    "Electrons in Crystals": {
+      "start": "Begin with the hydrogen atom.",
+      "explains": "Use the atomic picture as a starting point for understanding electron states and band structure in a crystal.",
+      "connect": "Read after Crystal."
+    },
+    "Electromagnetic Pieces": {
+      "start": "Build the physical and mathematical pieces before assembling Maxwell’s equations.",
+      "explains": "Electric and magnetic fields, the meaning of the vacuum constants, material sources, and the intuition behind divergence, curl, Gauss’s theorem, and Stokes’s theorem.",
+      "connect": "Continue with Maxwell’s Equations."
+    },
+    "Maxwell's Equations": {
+      "start": "Ask how light interacts with matter on the macroscopic scale.",
+      "explains": "Read the equations as statements about sources and changes: charge, current, changing fields, and the connection to charge continuity.",
+      "connect": "Read after Electromagnetic Pieces."
+    }
+  }
 }

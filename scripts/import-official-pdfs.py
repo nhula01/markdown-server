@@ -23,14 +23,24 @@ def fingerprint(path):
 
 
 def import_pdfs(source, destination):
-    files = sorted(source.glob('*.pdf'))
+    files = sorted(source.rglob('*.pdf'))
     if not files:
         raise ValueError('No PDF exports found; leave the existing library intact')
     prepared = []
+    names = set()
     # Validate every source before replacing any existing file.
     for path in files:
-        if path.is_symlink() or path.name.startswith('.') or path.stat().st_size > 100 * 1024 * 1024:
+        relative = path.relative_to(source)
+        if (any(part.startswith('.') for part in relative.parts)
+                or source.is_symlink()
+                or any((source / Path(*relative.parts[:length])).is_symlink()
+                       for length in range(1, len(relative.parts) + 1))
+                or path.stat().st_size > 100 * 1024 * 1024):
             raise ValueError(f'Invalid export: {path.name}')
+        key = path.name.casefold()
+        if key in names:
+            raise ValueError(f'Duplicate notebook title across folders: {path.name}')
+        names.add(key)
         prepared.append((path, fingerprint(path)))
     destination.mkdir(parents=True, exist_ok=True)
     changed = []
