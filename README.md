@@ -107,9 +107,10 @@ and Docker deployment remain available as alternatives.
 
 ## Personal academic website
 
-The site has Home, Notes, Research, and About pages. It uses a quiet sage and
-ivory palette, serif typography, and an original field illustration, inspired
-by the organization of David Tong’s teaching website.
+The site has Home, Notes, Research, and About pages. It uses an original paper-and-ink design: a faint square grid inspired by the
+handwritten reMarkable PDFs, graphite text, and blue calligraphic capitals.
+Pinyon Script is served locally, with its SIL Open Font License included in
+`assets/fonts/OFL.txt`. The capital letters are selectable text.
 
 `site/catalog.json` controls the nine topic titles, descriptions, reading
 outlines, prerequisites, and notebook assignments. Exact notebook titles are

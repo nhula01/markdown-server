@@ -37,9 +37,10 @@ def pdf_files():
 
 def page(title,body,raw=None,active=None):
     download=f'<p class="muted"><a href="/raw/{quote(raw,safe="/")}">Raw Markdown</a></p>' if raw else ''
+    body=site_content.decorate_headings(body)
     if raw: body=f'<article class="document">{body}{download}</article>'
-    navigation=''.join(f'<a href="/{slug}/"'+(' aria-current="page"' if active==slug else '')+f'>{label}</a>' for slug,label in [('notes','Notes'),('research','Research'),('about','About')])
-    return f'''<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="Intuitive handwritten notes on optics and quantum physics, and research by Phi Hung Nguyen."><title>{escape(title)} · Phi Hung Nguyen</title><link rel="stylesheet" href="/style.css"></head><body><a class="skip-link" href="#main">Skip to content</a><header class="site-header"><div class="header-inner"><a class="brand" href="/">Phi Hung Nguyen</a><nav aria-label="Main navigation">{navigation}</nav></div></header><main id="main">{body}</main><footer><p>Phi Hung Nguyen · Optical Sciences · University of Arizona</p><p><a href="/notes/">A notebook in progress</a> · <a href="{escape(site_content.CATALOG['scholar'],quote=True)}">Scholar ↗</a> · <a href="{escape(site_content.CATALOG['linkedin'],quote=True)}">LinkedIn ↗</a></p></footer></body></html>'''.encode()
+    navigation=''.join(f'<a href="/{slug}/"'+(' aria-current="page"' if active==slug else '')+f'>{site_content.initials(label)}</a>' for slug,label in [('notes','Notes'),('research','Research'),('about','About')])
+    return f'''<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="Intuitive handwritten notes on optics and quantum physics, and research by Phi Hung Nguyen."><title>{escape(title)} · Phi Hung Nguyen</title><link rel="stylesheet" href="/style.css?v={hashlib.sha256(CSS.encode()).hexdigest()[:16]}"></head><body><a class="skip-link" href="#main">Skip to content</a><header class="site-header"><div class="header-inner"><a class="brand" href="/">{site_content.initials("Phi Hung Nguyen")}</a><nav aria-label="Main navigation">{navigation}</nav></div></header><main id="main">{body}</main><footer><p>Phi Hung Nguyen · Optical Sciences · University of Arizona</p><p><a href="/notes/">A notebook in progress</a> · <a href="{escape(site_content.CATALOG['scholar'],quote=True)}">Scholar ↗</a> · <a href="{escape(site_content.CATALOG['linkedin'],quote=True)}">LinkedIn ↗</a></p></footer></body></html>'''.encode()
 
 def application(environ,start_response):
     method=environ.get("REQUEST_METHOD","GET")
@@ -53,6 +54,11 @@ def application(environ,start_response):
             kind="application/json"; body=b'{"status":"ok"}'
         elif path=="/style.css":
             kind="text/css; charset=utf-8"; body=CSS.encode()
+        elif path.startswith("/assets/fonts/"):
+            file=resolve(path.removeprefix("/assets/"),Path(__file__).parent/'assets')
+            if file.suffix not in {'.ttf','.woff2'}: raise FileNotFoundError
+            kind="font/ttf" if file.suffix=='.ttf' else "font/woff2"
+            body=file.read_bytes()
         elif path=="/api/files":
             kind="application/json; charset=utf-8"; body=json.dumps({"files":files()},ensure_ascii=False).encode()
         elif path.startswith(("/pdfs/","/notebooks/")):
@@ -90,7 +96,7 @@ def application(environ,start_response):
         status="413 Content Too Large"; body=page("Too large","<h1>File exceeds the size limit</h1>")
     except OSError:
         status="500 Internal Server Error"; body=page("Unavailable","<h1>Unable to read this file</h1>")
-    headers=[("Content-Type",kind),("Content-Length",str(len(body))),("X-Content-Type-Options","nosniff"),("Cache-Control","no-cache"),("Content-Security-Policy","default-src 'none'; style-src 'self'; img-src 'self' https: data:; frame-src 'self'; base-uri 'none'; frame-ancestors 'self'; form-action 'none'")]+extra
+    headers=[("Content-Type",kind),("Content-Length",str(len(body))),("X-Content-Type-Options","nosniff"),("Cache-Control","no-cache"),("Content-Security-Policy","default-src 'none'; style-src 'self'; img-src 'self' https: data:; frame-src 'self'; font-src 'self'; base-uri 'none'; frame-ancestors 'self'; form-action 'none'")]+extra
     start_response(status,headers)
     return [] if method=="HEAD" else [body]
 

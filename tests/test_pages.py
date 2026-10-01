@@ -1,4 +1,5 @@
 import os
+import re
 import hashlib
 import subprocess
 import sys
@@ -52,7 +53,7 @@ class PagesTests(unittest.TestCase):
                            env={**os.environ, 'MD_ROOT': str(content), 'PDF_ROOT': str(pdfs)},
                            check=True, capture_output=True)
             notes = (out / 'notes/index.html').read_text()
-            self.assertIn('A new notebook', notes)
+            self.assertIn('A new notebook', re.sub('<[^>]+>', '', notes))
             self.assertIn('Outline · notes to come', notes)
             matter = (out / 'notes/light-and-matter/index.html').read_text()
             self.assertIn('/markdown-server/notebooks/Obsidian/Crystal.pdf/', matter)

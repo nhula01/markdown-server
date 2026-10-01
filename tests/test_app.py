@@ -1,4 +1,4 @@
-import json, tempfile, unittest
+import json, re, tempfile, unittest
 from pathlib import Path
 import app
 
@@ -23,12 +23,12 @@ class ServerTests(unittest.TestCase):
         return capture['status'],capture['headers'],body
     def test_rendering_and_sanitization(self):
         status,headers,body=self.request('/docs/welcome.md')
-        self.assertEqual(status,'200 OK'); self.assertIn(b'<h1>Hello</h1>',body); self.assertIn(b'<table>',body)
+        self.assertEqual(status,'200 OK'); self.assertIn('Hello',re.sub('<[^>]+>', '', body.decode())); self.assertIn(b'<table>',body)
         self.assertNotIn(b'<script>',body); self.assertNotIn(b'href="javascript:',body)
         self.assertIn('Content-Security-Policy',headers)
     def test_raw_and_unicode(self):
         self.assertEqual(self.request('/raw/welcome.md')[2],(app.ROOT/'welcome.md').read_bytes())
-        self.assertIn(b'<h2>Nested</h2>',self.request('/docs/notes/tiếng Việt.md')[2])
+        self.assertIn('Nested',re.sub('<[^>]+>', '', self.request('/docs/notes/tiếng Việt.md')[2].decode()))
     def test_index_and_api(self):
         status,_,body=self.request('/api/files')
         self.assertEqual(status,'200 OK'); self.assertEqual(json.loads(body)['files'],['notes/tiếng Việt.md','welcome.md'])

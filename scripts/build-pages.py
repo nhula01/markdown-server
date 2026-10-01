@@ -20,6 +20,7 @@ out = Path(args.output)
 out.mkdir(parents=True, exist_ok=True)
 (out / '.nojekyll').touch()
 (out / 'style.css').write_text(app.CSS)
+shutil.copytree(Path(app.__file__).parent / 'assets/fonts', out / 'assets/fonts', dirs_exist_ok=True)
 
 
 def write_page(path, title, body, raw=None):

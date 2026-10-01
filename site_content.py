@@ -51,34 +51,26 @@ def notebook_list(names):
     return '<ul class="notebook-list">' + ''.join(items) + '</ul>'
 
 
-def field_figure():
-    # Original vector illustration, not an illustration taken from the reference.
-    import math
-    wave = ' '.join(f'{"M" if x == 0 else "L"}{x+48:.1f},{200+28*math.sin(x/24):.1f}' for x in range(0, 385, 3))
-    return f'''<figure class="hero-art"><svg viewBox="0 0 500 385" role="img" aria-labelledby="field-title field-desc">
-        <title id="field-title">A field, a wave, a physical picture</title>
-        <desc id="field-desc">An original line drawing of wavefronts and an oscillating field, on a pale green notebook background.</desc>
-        <defs><pattern id="grid" width="25" height="25" patternUnits="userSpaceOnUse"><path d="M25 0H0V25" fill="none" stroke="#738365" stroke-opacity=".1" stroke-width=".7"/></pattern></defs>
-        <rect width="500" height="385" fill="url(#grid)"/>
-        <g fill="none" stroke="#728567" stroke-width="1.2" opacity=".6">
-        <ellipse cx="248" cy="170" rx="62" ry="120" transform="rotate(58 248 170)"/>
-        <ellipse cx="248" cy="170" rx="90" ry="152" transform="rotate(58 248 170)"/>
-        <ellipse cx="248" cy="170" rx="122" ry="181" transform="rotate(58 248 170)"/>
-        <ellipse cx="248" cy="170" rx="151" ry="211" transform="rotate(58 248 170)"/>
-        </g><path d="M48 200H446" stroke="#8d9b81" stroke-width=".8"/>
-        <path d="{wave}" stroke="#294b40" stroke-width="2.3" fill="none"/>
-        <circle cx="248" cy="200" r="5" fill="#9b694c"/><circle cx="248" cy="200" r="11" stroke="#9b694c" stroke-width=".8" fill="none"/>
-        <g font-family="Georgia,serif" fill="#536b57"><text x="38" y="44" font-size="15" font-style="italic">a physical picture</text>
-        <text x="350" y="328" font-size="25" font-style="italic">E(r, t)</text><text x="38" y="353" font-size="12">FIELDS / WAVES / INFORMATION</text></g>
-        </svg><figcaption>From a physical picture to a mathematical description.</figcaption></figure>'''
+def initials(text):
+    """Calligraphic capitals remain real text, including for screen readers."""
+    import re
+    return re.sub(r'\b([A-Z])(?=[a-z]|\b)', r'<span class="initial">\1</span>', text)
+
+
+def decorate_headings(body):
+    import re
+    def decorate(match):
+        parts = re.split(r'(<[^>]+>)', match[2])
+        return match[1] + ''.join(part if part.startswith('<') else initials(part) for part in parts) + match[3]
+    return re.sub(r'(<h[123]\b[^>]*>)(.*?)(</h[123]>)', decorate, body, flags=re.DOTALL)
 
 
 def home(names):
     return f'''<section class="hero"><div><p class="eyebrow">Optical sciences · Quantum physics</p>
-        <h1>Physics,<br>with <em>intuition.</em></h1>
+        <h1>Physics,<br>with <em>Intuition.</em></h1>
         <p class="lead">A growing notebook of what I’m learning through my PhD — the pictures, connections, and questions behind the equations.</p>
         <p class="muted">Phi Hung Nguyen · University of Arizona</p>
-        <div class="actions"><a class="button" href="/notes/">Explore the notes <span aria-hidden="true">↗</span></a><a class="section-link" href="/research/">My research <span class="arrow" aria-hidden="true">→</span></a></div></div>{field_figure()}</section>
+        <div class="actions"><a class="button" href="/notes/">Explore the notes <span aria-hidden="true">↗</span></a><a class="section-link" href="/research/">My research <span class="arrow" aria-hidden="true">→</span></a></div></div><aside class="margin-note"><p class="kicker">In the margins</p><p class="handwritten">What is the<br>physical picture?</p><p>A sketch. A limiting case.<br>A connection to something familiar.</p><span class="page-number">Notebook / 01</span></aside></section>
         <div class="intro-note"><span class="kicker">The approach</span><p>Start with a question. Build a physical picture. Then use the mathematics to make it precise. These are working notes, written by hand and revisited as my understanding grows.</p></div>
         <section class="section"><div class="section-head"><h2>A map of the ideas</h2><a class="section-link" href="/notes/">All nine topics <span class="arrow" aria-hidden="true">→</span></a></div>
         <div class="topic-grid home">{topic_cards(names, TOPICS[:6])}</div></section>
