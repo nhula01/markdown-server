@@ -168,6 +168,20 @@ def concept_page(slug, names):
         <p class="actions"><a class="section-link" href="/notes/{topic['slug']}/">Explore {escape(topic['title'])} →</a></p>'''
 
 
+def home_trails(names):
+    trails = []
+    for label, stems in [('From fields to material response', ['Electromagnetic Pieces', "Maxwell's Equations", 'Linear Light']),
+                         ('From atoms to optical properties', ['Crystal', 'Electrons in Crystals', 'Linear Light']),
+                         ('From motion to propagation', ['Oscillator Model', 'Linear Light'])]:
+        links = [f'<a href="{chapter_url(name)}">{escape(stem)}</a>' for stem in stems
+                 for name in names if Path(name).stem == stem]
+        if len(links) > 1:
+            trails.append(f'<article><h3>{label}</h3><p>{" <span aria-hidden=\"true\">→</span> ".join(links)}</p></article>')
+    if not trails:
+        return ''
+    return '<section class="section home-trails"><h2>Follow a thread</h2><p class="muted">Start with a physical picture, then follow it into a different part of the notebook.</p>' + ''.join(trails) + '</section>'
+
+
 def plain_text(html):
     from html import unescape
     return unescape(re.sub('<[^>]+>', ' ', html))

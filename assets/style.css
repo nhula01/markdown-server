@@ -196,6 +196,11 @@ footer { margin: 0 65px; padding-bottom: 32px; }
 .chapter-pagination a { text-decoration: none; font-size: 16px; }
 .chapter-pagination small { display: block; color: var(--muted); font: 10px Arial, sans-serif; margin-bottom: 8px; }
 .handwriting { scroll-margin-top: 25px; }
+.home-trails article { border-top: 1px solid var(--line); padding: 20px 0; }
+.home-trails h3 { font: 11px Arial, sans-serif; color: var(--muted); margin-bottom: 13px; }
+.home-trails article p { display: flex; flex-wrap: wrap; gap: 10px 16px; margin: 0; font-size: 20px; }
+.home-trails article a { text-decoration: none; }
+.home-trails article span { color: var(--muted); }
 
 /* Search reads a static index; all results stay on this notebook site. */
 .search-trigger { font: inherit; color: var(--ink); background: none; border: 0; cursor: pointer; padding: 0; }

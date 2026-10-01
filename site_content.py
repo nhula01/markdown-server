@@ -74,13 +74,15 @@ def decorate_headings(body):
 
 
 def home(names):
+    from chapter_content import home_trails
+    trails = home_trails(names)
     return f'''<section class="hero"><div><p class="eyebrow">Optical sciences · Quantum physics</p>
         <h1>Physics,<br>with <em>Intuition.</em></h1>
         <p class="lead">A growing notebook of what I’m learning through my PhD — the pictures, connections, and questions behind the equations.</p>
         <p class="muted">Phi Hung Nguyen · University of Arizona</p>
         <div class="actions"><a class="button" href="/notes/">Explore the notes <span aria-hidden="true">↗</span></a><a class="section-link" href="/research/">My research <span class="arrow" aria-hidden="true">→</span></a></div></div><aside class="margin-note"><p class="kicker">In the margins</p><p class="handwritten">What is the<br>physical picture?</p><p>A sketch. A limiting case.<br>A connection to something familiar.</p><span class="page-number">Notebook / 01</span></aside></section>
         <div class="intro-note"><span class="kicker">The approach</span><p>Start with a question. Build a physical picture. Then use the mathematics to make it precise. These are working notes, written by hand and revisited as my understanding grows.</p></div>
-        <section class="section"><div class="section-head"><h2>A map of the ideas</h2><a class="section-link" href="/notes/">All nine topics <span class="arrow" aria-hidden="true">→</span></a></div>
+        {trails}<section class="section"><div class="section-head"><h2>A map of the ideas</h2><a class="section-link" href="/notes/">All nine topics <span class="arrow" aria-hidden="true">→</span></a></div>
         <div class="topic-grid home">{topic_cards(names, TOPICS[:6])}</div></section>
         <section class="section research-feature"><div><p class="kicker">On the research side</p><h2>Memory as a<br>physical resource.</h2></div><div>
         <h3>Quantum systems that process information</h3><p>My research explores quantum reservoir computing: how the dynamics and memory of a small physical system can be used for computation.</p>
