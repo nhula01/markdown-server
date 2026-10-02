@@ -226,8 +226,11 @@ python -m unittest discover -s tests -v
 
 ## Optional reading music
 
-A small player appears on every page with play/pause and volume controls. It
-starts off, loads the locally hosted MP3 only after Play, and repeats Satie's
+A single circular play/pause button appears in the corner of every page. Faint
+music notes drift through the margins while playing, including immersive reading;
+they never intercept clicks. Reduced-motion preferences disable their animation.
+Playback starts off at a quiet 20% level, loads the locally hosted MP3 only after
+Play, and repeats Satie's
 Gymnopédie No. 1. The recording is CC0; source and licence are recorded in
 `assets/audio/CREDITS.md`. Playback continues within a review session or PDF
 reader. Navigating to a different page stops playback; the new page starts off.

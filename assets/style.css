@@ -436,4 +436,21 @@ body.ink-immersive { overflow: hidden; }
 .review-daily-list{list-style:none;padding:0;display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin:1.5rem 0}.review-daily-list li{border-top:1px solid var(--line);padding:1rem 0}.review-daily-list strong,.review-daily-list span{display:block}.review-daily-list span{font-size:.8rem;color:var(--muted);margin-top:.4rem}.review-upcoming{margin-bottom:1.5rem}.review-upcoming ol{list-style:none;padding:0}.review-upcoming li{display:flex;flex-wrap:wrap;gap:.5rem 1rem;padding:.75rem 0;border-bottom:1px solid var(--line);font-size:.85rem}.review-upcoming strong{min-width:4rem}@media(max-width:620px){.review-daily-list{grid-template-columns:1fr}}
 
 /* A quiet, optional player that follows the paper's light/dark appearance. */
-.reading-music{position:fixed;right:18px;bottom:max(14px,env(safe-area-inset-bottom));z-index:45;width:270px;max-width:calc(100vw - 32px);padding:11px 14px;border:1px solid var(--line);border-radius:8px;background:var(--paper);color:var(--body);box-shadow:0 3px 14px #00000012;font:12px/1.5 Arial,Helvetica,sans-serif}.music-bar{display:flex;align-items:center;justify-content:space-between;gap:12px}.music-bar button{padding:6px 10px;border:1px solid var(--line);border-radius:4px;font:inherit;background:transparent;color:var(--ink);cursor:pointer}.music-bar button[aria-pressed=true]{color:var(--accent);border-color:var(--accent)}.reading-music details{margin:7px 0 0}.reading-music summary{font:11px/1.5 Arial,Helvetica,sans-serif;color:var(--muted)}.reading-music p{margin:10px 0 0;font-size:11px}.reading-music label{display:block;margin-top:10px}.reading-music input{display:block;width:100%;accent-color:var(--accent)}.reading-music a{color:var(--muted)}body{padding-bottom:90px}.ink-immersive{padding-bottom:0}.pdf-reader[data-immersive=true] .pdf-surface{padding-bottom:110px}.reading-music button:focus-visible,.reading-music input:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+/* Music lives in the margin; its decorative notes never intercept reading. */
+.reading-music{position:fixed;right:16px;bottom:max(14px,env(safe-area-inset-bottom));z-index:45;line-height:1}
+.reading-music button{display:grid;place-items:center;width:38px;height:38px;padding:0;border:1px solid var(--line);border-radius:50%;background:var(--paper);color:var(--muted);box-shadow:0 2px 8px #00000010;cursor:pointer;font:14px Arial,Helvetica,sans-serif}
+.reading-music button[aria-pressed=true]{color:var(--accent);border-color:var(--accent)}
+.reading-music button:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+.music-status{position:absolute;width:1px;height:1px;padding:0;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
+.music-notes{position:fixed;inset:0;z-index:44;pointer-events:none;overflow:hidden;visibility:hidden;color:var(--accent)}
+.music-notes.is-playing{visibility:visible}
+.music-notes span{position:absolute;bottom:-45px;font:28px Georgia,serif;opacity:0;animation:music-drift 17s linear infinite;animation-play-state:paused}
+.music-notes.is-playing span{animation-play-state:running}
+.music-notes span:nth-child(1){left:2%;animation-delay:-3s}
+.music-notes span:nth-child(2){right:2%;animation-delay:-11s;font-size:23px}
+.music-notes span:nth-child(3){left:4%;animation-delay:-15s;font-size:20px}
+.music-notes span:nth-child(4){right:4%;animation-delay:-6s}
+.music-notes span:nth-child(5){left:1%;animation-delay:-9s;font-size:24px}
+.music-notes span:nth-child(6){right:1%;animation-delay:-1s;font-size:19px}
+@keyframes music-drift{0%{transform:translate3d(0,0,0) rotate(-12deg);opacity:0}12%{opacity:.22}50%{transform:translate3d(8px,-48vh,0) rotate(10deg);opacity:.18}88%{opacity:.16}100%{transform:translate3d(-5px,-105vh,0) rotate(-8deg);opacity:0}}
+@media(prefers-reduced-motion:reduce){.music-notes span{animation:none;bottom:25%;opacity:.15}.music-notes span:nth-child(even){bottom:65%}}
