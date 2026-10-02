@@ -489,3 +489,10 @@ body:not(.ink-immersive):not(.music-reading-shell){max-width:calc(100vw - 280px)
 .ink-immersive .margin-equations{display:none}
 }
 @media(prefers-reduced-motion:reduce){.margin-equations{display:none}}
+
+/* A persistent, unobtrusive switch for the optional margin reminders. */
+.equations-toggle{display:none;position:fixed;left:16px;bottom:max(14px,env(safe-area-inset-bottom));z-index:45;font:11px Arial,sans-serif;color:var(--muted);background:var(--paper);border:1px solid var(--line);padding:9px 10px;cursor:pointer}
+.equations-toggle:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+@media(min-width:1200px){.equations-toggle:not([hidden]){display:block}}
+.ink-immersive .equations-toggle{display:none}
+@media(prefers-reduced-motion:reduce){.equations-toggle{display:none!important}}

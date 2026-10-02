@@ -242,6 +242,9 @@ music. No external music service, account, or tracking is used.
 
 ## Physics in the margins
 
+The bottom-left “Equations on/off” button switches reminders off or on. Its choice
+is saved on this browser and follows section navigation.
+
 On browser windows at least 1200px wide, curated equation-and-intuition reminders overlap
 in the empty outer margins. Four independent positions start six seconds apart;
 each stays for 38 seconds and refreshes every 44 seconds. Mac laptop-sized windows reserve narrow side margins and use smaller formulas

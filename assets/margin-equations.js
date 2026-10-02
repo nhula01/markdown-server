@@ -1,6 +1,16 @@
 (async () => {
   const root = document.querySelector('[data-margin-equations]');
   if (!root || !window.katex) return;
+  const toggle = document.querySelector('[data-equations-toggle]');
+  const preferenceKey = 'notebook-margin-equations';
+  let enabled = true;
+  try {enabled = localStorage.getItem(preferenceKey) !== 'off';} catch {}
+  function updateToggle() {
+    toggle.hidden = false;
+    toggle.textContent = enabled ? 'Equations on' : 'Equations off';
+    toggle.setAttribute('aria-pressed',String(enabled));
+    toggle.setAttribute('aria-label',enabled ? 'Turn off equation reminders' : 'Turn on equation reminders');
+  }
   const source = new URL('margin-reminders.json',document.currentScript.src);
   let equations;
   try {
@@ -33,7 +43,7 @@
   function schedule() {
     timers.forEach(timer=>{clearTimeout(timer);clearInterval(timer);}); timers = [];
     slots.forEach(slot=>slot.classList.remove('equation-visible'));
-    if (!wide.matches || motion.matches || document.hidden || document.body.classList.contains('ink-immersive')) return;
+    if (!enabled || !wide.matches || motion.matches || document.hidden || document.body.classList.contains('ink-immersive')) return;
     const active = tall.matches ? slots : slots.slice(0,2);
     active.forEach((slot,i)=>{
       const start = ()=>{reveal(slot);timers.push(setInterval(()=>reveal(slot),44000));};
@@ -43,5 +53,18 @@
   [wide,tall,motion].forEach(query=>query.addEventListener('change',schedule));
   document.addEventListener('visibilitychange',schedule);
   new MutationObserver(schedule).observe(document.body,{attributes:true,attributeFilter:['class']});
+  toggle.addEventListener('click',()=>{
+    enabled = !enabled;
+    try {localStorage.setItem(preferenceKey,enabled ? 'on' : 'off');} catch {}
+    updateToggle();
+    schedule();
+  });
+  window.addEventListener('storage',event=>{
+    if(event.key !== preferenceKey) return;
+    enabled = event.newValue !== 'off';
+    updateToggle();
+    schedule();
+  });
+  updateToggle();
   schedule();
 })();
