@@ -10,6 +10,7 @@
 }
 :root {
   --paper: #fcfbf7;
+  --paper-grid: rgba(87, 102, 124, .035);
   --ink: #303437;
   --body: #414345;
   --sage: #fcfbf7;
@@ -289,6 +290,7 @@ kbd { font: 10px ui-monospace, monospace; color: var(--muted); border: 1px solid
 :root[data-theme="dark"] {
   color-scheme: dark;
   --paper: #242629;
+  --paper-grid: rgba(186, 196, 208, .035);
   --ink: #e8e4da;
   --body: #d0cec8;
   --muted: #a6aaad;
@@ -335,80 +337,69 @@ kbd { font: 10px ui-monospace, monospace; color: var(--muted); border: 1px solid
 .pdf-reader[data-floating="true"] .pdf-surface { padding: 12px 0; }
 @media (max-width: 620px) { .pdf-controls { flex-wrap: wrap; } }
 
-/* Preview: a full-window reading plane with luminous foreground ink. */
+/* Full-window ink, with optional directional reading light. */
 body.ink-immersive { overflow: hidden; }
 .pdf-reader[data-immersive="true"] {
   position: fixed; inset: 0; z-index: 40; margin: 0; border: 0;
-  display: flex; flex-direction: column; color: #e9ddc7;
-  background: radial-gradient(ellipse at 50% 22%, #3b3024 0%, #222121 44%, #13171b 100%);
+  display: flex; flex-direction: column; color: var(--body);
+  background-color: var(--paper);
+  background-image: linear-gradient(var(--paper-grid) 1px, transparent 1px), linear-gradient(90deg, var(--paper-grid) 1px, transparent 1px);
+  background-size: 24px 24px;
 }
 .pdf-reader[data-immersive="true"] .pdf-controls {
-  flex-shrink: 0; padding: 14px 24px; border: 0; border-bottom: 1px solid #d5b77e25;
-  background: #171a1dec; color: #e9ddc7;
+  flex-shrink: 0; flex-wrap: wrap; padding: 14px 24px; border: 0; border-bottom: 1px solid var(--line);
+  background: var(--paper); color: var(--body);
 }
 .pdf-reader[data-immersive="true"] .pdf-controls button,
-.pdf-reader[data-immersive="true"] .pdf-controls select { color: #e9ddc7; border-color: #d5b77e40; }
-.pdf-reader[data-immersive="true"] .pdf-controls select option { background: #222121; color: #e9ddc7; }
-.pdf-reader[data-immersive="true"] [data-pdf-status] { text-align: center; color: #b9ad99; margin: 10px; }
+.pdf-reader[data-immersive="true"] .pdf-controls select,
+.ink-rotation button { color: var(--ink); border-color: var(--line); }
+.pdf-reader[data-immersive="true"] button[aria-pressed="true"],
+.pdf-reader[data-immersive="true"] button[aria-expanded="true"] { border-color: var(--accent); color: var(--accent); }
+.pdf-reader[data-immersive="true"] .pdf-controls select option { background: var(--paper); color: var(--ink); }
+.pdf-reader[data-immersive="true"] [data-pdf-status] { text-align: center; color: var(--muted); margin: 10px; }
 .pdf-reader[data-immersive="true"] .pdf-surface {
-  flex: 1; min-height: 0; overflow: auto; padding: 12px max(20px, calc((100vw - 1150px)/2)) 70px;
+  flex: 1; min-height: 0; overflow: auto; padding: 28px max(20px, calc((100vw - 1150px)/2)) 70px;
   background: transparent;
 }
-.pdf-reader[data-immersive="true"][data-floating="true"] .pdf-surface canvas {
-  margin: 0 auto; transform: perspective(1800px) rotateX(.7deg); transform-origin: center top;
-  filter: drop-shadow(0 0 1px #fff7e5a0) drop-shadow(0 0 7px #e4b25650) drop-shadow(0 10px 18px #00000050);
+.pdf-reader[data-immersive="true"][data-reading-light="true"] .pdf-surface {
+  background: radial-gradient(ellipse at 18% -10%, #eed4a52b 0%, #dbc09816 30%, transparent 70%);
 }
-@media (max-width: 620px) {
-  .pdf-reader[data-immersive="true"] .pdf-controls { padding: 10px; gap: 8px; }
-  .pdf-reader[data-immersive="true"] .pdf-surface { padding-left: 12px; padding-right: 12px; }
-}
-@media (prefers-reduced-motion: reduce) { .pdf-reader[data-immersive="true"] .pdf-surface canvas { transform: none; } }
-
-/* Preview: stroke-shaped depth planes, rather than a tilted rectangular page. */
 .ink-depth-stage { position: relative; margin: 0 auto; }
-.ink-depth-shadow, .ink-depth-edge { display: none !important; }
-.pdf-reader[data-immersive="true"][data-depth="true"] .pdf-surface { perspective: 1500px; perspective-origin: 50% 25%; padding-top: 28px; }
+.pdf-reader[data-floating="true"] .ink-depth-stage > canvas { filter: none; transform: none; }
+.pdf-reader[data-immersive="true"][data-depth="true"] .pdf-surface { perspective: 1500px; perspective-origin: 50% 25%; }
 .pdf-reader[data-immersive="true"][data-depth="true"] .ink-depth-stage {
   transform-style: preserve-3d;
-  transform: rotateX(var(--ink-tilt-x, 5deg)) rotateY(var(--ink-tilt-y, -7deg));
-  transform-origin: center 25%; transition: transform .25s ease-out;
+  transform: rotateX(var(--ink-tilt-x, 0deg)) rotateY(var(--ink-tilt-y, 0deg));
+  transform-origin: center 25%; transition: transform .12s ease-out;
 }
-.pdf-reader[data-immersive="true"][data-depth="true"] .ink-depth-stage > canvas {
-  position: absolute; top: 0; left: 0; margin: 0;
+.pdf-reader[data-immersive="true"][data-depth="true"] .ink-depth-stage > canvas { transform: translateZ(24px); }
+/* Blur stays close to the ink: no offset copy or reflected writing. */
+.pdf-reader[data-immersive="true"][data-shading="true"] .ink-depth-stage > canvas {
+  filter: drop-shadow(0 1px 2px #0009) drop-shadow(0 0 4px #0006);
 }
-.pdf-reader[data-immersive="true"][data-depth="true"] .ink-depth-stage > canvas:not(.ink-depth-shadow):not(.ink-depth-edge) {
-  transform: translateZ(48px);
-  filter: drop-shadow(1px 1px 0 #b88137) drop-shadow(2px 2px 0 #a26d2c) drop-shadow(3px 3px 0 #8d5b25) drop-shadow(4px 4px 1px #68431f) drop-shadow(0 0 3px #fff6d666) drop-shadow(0 0 12px #e9b65a30);
-}
-.pdf-reader[data-immersive="true"][data-depth="true"] .ink-depth-stage > .ink-depth-edge {
-  display: block !important; transform: translate3d(5px, 8px, 34px); opacity: .85; filter: none;
-}
-.pdf-reader[data-immersive="true"][data-depth="true"] .ink-depth-stage > .ink-depth-shadow {
-  display: block !important; transform: translate3d(15px, 23px, -24px); opacity: .65; filter: blur(4px);
-}
-@media (prefers-reduced-motion: reduce) {
-  .pdf-reader[data-immersive="true"][data-depth="true"] .ink-depth-stage { transition: none; transform: rotateY(-4deg); }
-}
-
-/* A persistent appearance menu for daylight and night paper. */
-.theme-select { font: 13px Arial, sans-serif; color: var(--ink); background: var(--paper); border: 1px solid var(--line); padding: 8px 12px; cursor: pointer; border-radius: 0; }
-.theme-select:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; }
-/* Preserve source ink colors; neutral handwriting becomes white on dark surfaces. */
-.pdf-reader[data-floating="true"] .ink-depth-stage > canvas:not(.ink-depth-shadow):not(.ink-depth-edge) {
-  filter: none; transform: none;
-}
-.pdf-reader[data-immersive="true"][data-depth="true"] .ink-depth-stage > canvas:not(.ink-depth-shadow):not(.ink-depth-edge) {
-  transform: translateZ(48px);
-  filter: drop-shadow(1px 1px 0 #53545c) drop-shadow(2px 2px 0 #363943) drop-shadow(3px 3px 1px #242832);
-}
-/* A close, soft shadow gives lift without a second readable ink silhouette. */
-.pdf-reader[data-immersive="true"] .ink-depth-stage > .ink-depth-shadow { display: none !important; }
-.pdf-reader[data-immersive="true"][data-shading="true"] .ink-depth-stage > canvas:not(.ink-depth-shadow):not(.ink-depth-edge) {
-  filter: drop-shadow(0 2px 2px #0009) drop-shadow(0 0 5px #0006);
-}
-.pdf-reader[data-immersive="true"][data-depth="true"][data-shading="true"] .ink-depth-stage > canvas:not(.ink-depth-shadow):not(.ink-depth-edge) {
-  filter: drop-shadow(1px 1px 0 #53545c) drop-shadow(2px 2px 0 #363943) drop-shadow(3px 3px 1px #242832) drop-shadow(0 2px 3px #0008);
-}
+.ink-rotation { flex-shrink: 0; margin: 0; padding: 8px 24px 12px; border: 0; background: var(--paper); display: flex; gap: 24px; flex-wrap: wrap; align-items: center; }
+.ink-rotation[hidden] { display: none; }
+.ink-rotation legend { padding-top: 8px; font: 13px Arial, sans-serif; color: var(--muted); }
+.ink-rotation label { display: flex; align-items: center; gap: 10px; font: 13px Arial, sans-serif; }
+.ink-rotation input { width: 150px; accent-color: var(--accent); }
+.ink-rotation output { min-width: 32px; font-variant-numeric: tabular-nums; }
+.ink-rotation button { padding: 7px 12px; background: transparent; border: 1px solid var(--line); cursor: pointer; }
+.ink-rotation input:focus-visible, .ink-rotation button:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
 .ink-amplified { position: absolute; top: 0; left: 0; pointer-events: none; }
 .ink-amplified[hidden] { display: none !important; }
 .pdf-reader[data-amplified="true"] .ink-source { visibility: hidden; }
+@media (max-width: 620px) {
+  .pdf-reader[data-immersive="true"] .pdf-controls { padding: 10px; gap: 8px; }
+  .pdf-reader[data-immersive="true"] .pdf-surface { padding-left: 12px; padding-right: 12px; }
+  .ink-rotation { gap: 12px; padding: 8px 12px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .pdf-reader[data-immersive="true"][data-depth="true"] .ink-depth-stage { transition: none; }
+}
+/* A persistent appearance menu for daylight and night paper. */
+.theme-select { font: 13px Arial, sans-serif; color: var(--ink); background: var(--paper); border: 1px solid var(--line); padding: 8px 12px; cursor: pointer; border-radius: 0; }
+.theme-select:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; }
+
+:root:not([data-theme="dark"]) .pdf-reader[data-immersive="true"][data-shading="true"] .ink-depth-stage > canvas {
+  filter: drop-shadow(0 1px 2px #0003) drop-shadow(0 0 4px #0001);
+}

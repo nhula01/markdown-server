@@ -7,12 +7,10 @@ const canvas = reader.querySelector('canvas');
 const surface = reader.querySelector('.pdf-surface');
 const depthStage = document.createElement('div'); depthStage.className = 'ink-depth-stage';
 canvas.before(depthStage);
-const depthShadow = document.createElement('canvas'); depthShadow.className = 'ink-depth-shadow'; depthShadow.setAttribute('aria-hidden', 'true');
-const depthEdge = document.createElement('canvas'); depthEdge.className = 'ink-depth-edge'; depthEdge.setAttribute('aria-hidden', 'true');
 canvas.classList.add('ink-source');
 const amplifiedCanvas = document.createElement('canvas'); amplifiedCanvas.className = 'ink-amplified';
 amplifiedCanvas.hidden = true;
-depthStage.append(depthShadow, depthEdge, canvas, amplifiedCanvas);
+depthStage.append(canvas, amplifiedCanvas);
 const status = reader.querySelector('[data-pdf-status]');
 const selector = reader.querySelector('[data-pdf-select]');
 const previous = reader.querySelector('[data-pdf-previous]');
@@ -40,6 +38,8 @@ reader.dataset.depth = 'true';
 depthToggle.addEventListener('click', () => {
   depthEnabled = !depthEnabled; reader.dataset.depth = String(depthEnabled);
   depthToggle.setAttribute('aria-pressed', String(depthEnabled));
+  rotateToggle.disabled = !depthEnabled;
+  if (!depthEnabled) {rotationPanel.hidden = true; rotateToggle.setAttribute('aria-expanded', 'false');}
 });
 const shadeToggle = document.createElement('button'); shadeToggle.type = 'button';
 shadeToggle.textContent = 'Floating shadow'; shadeToggle.hidden = true;
@@ -59,7 +59,40 @@ function hideAmplification() {
 amplifyToggle.addEventListener('click', () => {
   amplifyEnabled = !amplifyEnabled; amplifyToggle.setAttribute('aria-pressed', String(amplifyEnabled)); hideAmplification();
 });
-reader.querySelector('.pdf-controls').append(floatingToggle, depthToggle, shadeToggle, amplifyToggle, immersiveToggle);
+const lightToggle = document.createElement('button'); lightToggle.type = 'button';
+lightToggle.textContent = 'Reading light'; lightToggle.hidden = true;
+lightToggle.setAttribute('aria-pressed', 'false'); reader.dataset.readingLight = 'false';
+lightToggle.addEventListener('click', () => {
+  const enabled = reader.dataset.readingLight !== 'true';
+  reader.dataset.readingLight = String(enabled); lightToggle.setAttribute('aria-pressed', String(enabled));
+});
+const rotateToggle = document.createElement('button'); rotateToggle.type = 'button';
+rotateToggle.textContent = 'Rotate'; rotateToggle.hidden = true;
+rotateToggle.setAttribute('aria-expanded', 'false'); rotateToggle.setAttribute('aria-controls', 'ink-rotation');
+const rotationPanel = document.createElement('fieldset'); rotationPanel.className = 'ink-rotation';
+rotationPanel.id = 'ink-rotation'; rotationPanel.hidden = true;
+const legend = document.createElement('legend'); legend.textContent = 'Page rotation'; rotationPanel.append(legend);
+const rotationInputs = [];
+for (const [labelText, property, limit] of [
+  ['Horizontal rotation', '--ink-tilt-y', 20], ['Vertical rotation', '--ink-tilt-x', 15]
+]) {
+  const label = document.createElement('label'); label.append(labelText);
+  const input = document.createElement('input'); input.type = 'range'; input.min = -limit; input.max = limit; input.value = 0;
+  const output = document.createElement('output'); output.textContent = '0°';
+  function update() {
+    depthStage.style.setProperty(property, `${input.value}deg`); output.textContent = `${input.value}°`; hideAmplification();
+  }
+  input.addEventListener('input', update);
+  rotationInputs.push({input, update}); label.append(input, output); rotationPanel.append(label);
+}
+const resetRotation = document.createElement('button'); resetRotation.type = 'button'; resetRotation.textContent = 'Reset rotation';
+resetRotation.addEventListener('click', () => {for (const {input, update} of rotationInputs) {input.value = 0; update();}});
+rotationPanel.append(resetRotation);
+reader.querySelector('.pdf-controls').after(rotationPanel);
+rotateToggle.addEventListener('click', () => {
+  rotationPanel.hidden = !rotationPanel.hidden; rotateToggle.setAttribute('aria-expanded', String(!rotationPanel.hidden));
+});
+reader.querySelector('.pdf-controls').append(floatingToggle, depthToggle, rotateToggle, shadeToggle, lightToggle, amplifyToggle, immersiveToggle);
 // A continuous local deformation of the same ink plane. The displacement
 // smoothly reaches zero at its edge, so there is no lens, seam, or duplicate.
 function emphasizeInk(clientX, clientY) {
@@ -107,22 +140,12 @@ surface.addEventListener('pointermove', event => {
   lensFrame = requestAnimationFrame(() => emphasizeInk(event.clientX, event.clientY));
 });
 surface.addEventListener('scroll', hideAmplification);
-const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
-surface.addEventListener('pointermove', event => {
-  if (!immersive || !depthEnabled || reduceMotion.matches || event.pointerType === 'touch') return;
-  const bounds = surface.getBoundingClientRect();
-  const x = Math.max(-1, Math.min(1, (event.clientX - bounds.left) / bounds.width * 2 - 1));
-  const y = Math.max(-1, Math.min(1, (event.clientY - bounds.top) / bounds.height * 2 - 1));
-  depthStage.style.setProperty('--ink-tilt-x', `${5 - y * 3}deg`);
-  depthStage.style.setProperty('--ink-tilt-y', `${-7 + x * 4}deg`);
-});
-surface.addEventListener('pointerleave', () => {
-  hideAmplification();
-  depthStage.style.removeProperty('--ink-tilt-x'); depthStage.style.removeProperty('--ink-tilt-y');
-});
+surface.addEventListener('pointerleave', hideAmplification);
 function setImmersive(enabled) {
   immersive = enabled;
   depthToggle.hidden = !enabled; shadeToggle.hidden = !enabled; amplifyToggle.hidden = !enabled;
+  rotateToggle.hidden = !enabled; lightToggle.hidden = !enabled;
+  if (!enabled) {rotationPanel.hidden = true; rotateToggle.setAttribute('aria-expanded', 'false');}
   hideAmplification();
   if (enabled) {previousFloating = floating; floating = true;}
   else floating = previousFloating;
@@ -139,7 +162,7 @@ function setImmersive(enabled) {
 immersiveToggle.addEventListener('click', () => setImmersive(!immersive));
 reader.addEventListener('keydown', event => {
   if (!immersive || event.key !== 'Tab') return;
-  const controls = [...reader.querySelectorAll('button:not(:disabled), select:not(:disabled)')];
+  const controls = [...reader.querySelectorAll('button:not(:disabled), select:not(:disabled), input:not(:disabled)')].filter(control => control.getClientRects().length);
   if (event.shiftKey && document.activeElement === controls[0]) {event.preventDefault(); controls.at(-1).focus();}
   else if (!event.shiftKey && document.activeElement === controls.at(-1)) {event.preventDefault(); controls[0].focus();}
 });
@@ -163,22 +186,12 @@ function extractInk() {
       pixels[i] = Math.max(0, Math.round((r - 255 * (1 - opacity)) / opacity));
       pixels[i + 1] = Math.max(0, Math.round((g - 255 * (1 - opacity)) / opacity));
       pixels[i + 2] = Math.max(0, Math.round((b - 255 * (1 - opacity)) / opacity));
-    } else if (immersive || document.documentElement.dataset.theme !== 'light') {
+    } else if (document.documentElement.dataset.theme !== 'light') {
       pixels[i] = pixels[i + 1] = pixels[i + 2] = 255;
     }
   }
   context.putImageData(frame, 0, 0);
-  for (const layer of [depthShadow, depthEdge]) {
-    layer.width = canvas.width; layer.height = canvas.height;
-    layer.style.width = canvas.style.width; layer.style.height = canvas.style.height;
-  }
-  if (immersive) {
-    // The very same transparent strokes form three physically separated planes.
-    for (let i = 0; i < pixels.length; i += 4) {pixels[i] *= .35; pixels[i+1] *= .35; pixels[i+2] *= .35;}
-    depthEdge.getContext('2d').putImageData(frame, 0, 0);
-    for (let i = 0; i < pixels.length; i += 4) {pixels[i] = 0; pixels[i+1] = 0; pixels[i+2] = 0;}
-    depthShadow.getContext('2d').putImageData(frame, 0, 0);
-  }
+
 }
 let documentPDF, requestedPage = Number(reader.dataset.page || 1), zoom = 1, revision = 0, renderTask;
 
