@@ -82,6 +82,7 @@ def home(names):
         <p class="muted">Phi Hung Nguyen · University of Arizona</p>
         <div class="actions"><a class="button" href="/notes/">Explore the notes <span aria-hidden="true">↗</span></a><a class="section-link" href="/research/">My research <span class="arrow" aria-hidden="true">→</span></a></div></div><aside class="margin-note"><p class="kicker">In the margins</p><p class="handwritten">What is the<br>physical picture?</p><p>A sketch. A limiting case.<br>A connection to something familiar.</p><span class="page-number">Notebook / 01</span></aside></section>
         <div class="intro-note"><span class="kicker">The approach</span><p>Start with a question. Build a physical picture. Then use the mathematics to make it precise. These are working notes, written by hand and revisited as my understanding grows.</p></div>
+        <section class="section review-invitation"><div><p class="kicker">A little, every day</p><h2>Return to an idea.</h2><p>Recall a physical picture. Check the notebook. Come back when it is time to remember again.</p></div><a class="button" href="/review/">Daily review →</a></section>
         {trails}<section class="section"><div class="section-head"><h2>A map of the ideas</h2><a class="section-link" href="/notes/">All nine topics <span class="arrow" aria-hidden="true">→</span></a></div>
         <div class="topic-grid home">{topic_cards(names, TOPICS[:6])}</div></section>
         <section class="section research-feature"><div><p class="kicker">On the research side</p><h2>Memory as a<br>physical resource.</h2></div><div>
@@ -137,6 +138,8 @@ def viewer(name, url, names=(), metadata=None):
 def pages(names, documents=()):
     yield '', 'Physics, with intuition', home(names)
     yield 'notes/', 'Notes', notes(names, documents)
+    import review_content
+    yield 'review/', 'Daily review', review_content.page()
     yield 'research/', 'Research', research()
     yield 'about/', 'About', about()
     for topic in TOPICS:

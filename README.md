@@ -201,3 +201,36 @@ refresh, run `python3 scripts/update-leads.py` then build/publish as usual. Only
 question headings and numbered links are imported into `site/leads.md`; other
 private vault content is excluded. An invalid trail aborts before overwriting
 the existing public copy. `LEADS_SOURCE` overrides the vault path for sync.
+
+## Daily notebook review
+
+`/review/` offers recall before revealing original handwriting, with verbatim
+Optimum guides for checking. Schedule records stay in localStorage on the
+reader’s device; recall text is neither saved nor transmitted. `/review/?demo=1`
+is a sample session that does not read or write schedule records.
+
+Public cards are generated from available PDFs and `site/chapters.json`; edit
+chapter questions there. Planned chapters are excluded. Scheduling rules live
+in `assets/review-schedule.mjs`: due-first topic mixing, at most two introductions
+per day, and up to five attempts per session (including missed-recall retries
+when there is room). Intervals use local calendar days.
+
+Verify scheduling with `node --test tests/review-schedule.test.mjs` and routes,
+verbatim guides, and static paths with `python -m unittest discover -s tests -v`.
+
+### Optional accounts (email delivery setup pending)
+
+Email/password sign-up, sign-in, recovery and per-account review sync use the
+locally bundled official Supabase SDK. Guest schedules remain separate.
+See [Supabase setup](supabase/SETUP.md) for the free-project setup, database
+rules, mail delivery configuration, and live acceptance checks. No account
+credentials or administrative keys belong in the repository.
+
+`site/auth.json` contains the public project URL and publishable key. The live
+review table and private access policies have been configured and verified.
+Custom mail delivery and browser account acceptance tests remain pending.
+Guest reviews work normally. Builds reject administrative secret keys.
+
+```sh
+node --test tests/review-schedule.test.mjs tests/review-events.test.mjs
+```

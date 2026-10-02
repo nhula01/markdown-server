@@ -403,3 +403,35 @@ body.ink-immersive { overflow: hidden; }
 :root:not([data-theme="dark"]) .pdf-reader[data-immersive="true"][data-shading="true"] .ink-depth-stage > canvas {
   filter: drop-shadow(0 1px 2px #0003) drop-shadow(0 0 4px #0001);
 }
+
+/* Daily review: a calm recall workspace around the handwritten source. */
+.review-invitation { display: flex; gap: 30px; align-items: center; justify-content: space-between; border-top: 1px solid var(--line); padding-top: 30px; }
+.review-invitation h2 { margin-bottom: 10px; }.review-invitation p { max-width: 620px; margin-bottom: 8px; }
+.review-invitation .button { white-space: nowrap; }
+.review-dashboard { display: grid; grid-template-columns: repeat(3, 1fr); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); padding: 24px 0; gap: 20px; }
+.review-stat { display: flex; flex-direction: column; }.review-stat strong { color: var(--ink); font: 30px Georgia, serif; }.review-stat span { font: 12px Arial, sans-serif; color: var(--muted); margin-top: 9px; }
+.review-workspace { margin-top: 38px; }.review-workspace [hidden] { display: none !important; }
+.review-setup { display: grid; grid-template-columns: 1.5fr 1fr; gap: 55px; align-items: center; }.review-setup h2 { margin-bottom: 16px; }.review-setup p { font-size: 16px; color: var(--muted); }
+.review-setup label, .review-card label { display: block; font: 12px Arial, sans-serif; color: var(--muted); margin-bottom: 10px; }
+#review-topic { width: 100%; padding: 12px; background: var(--paper); color: var(--ink); border: 1px solid var(--line); margin-bottom: 16px; font-size: 14px; }.review-setup .button { width: 100%; cursor: pointer; }
+[data-review-status] { font: 13px Arial, sans-serif; color: var(--muted); line-height: 1.6; margin: 24px 0; }
+.review-card { border: 1px solid var(--line); padding: 30px; background: var(--paper); }.review-card-top { display: flex; justify-content: space-between; gap: 15px; margin-bottom: 30px; }.review-source { color: var(--muted); font-size: 15px; margin-bottom: 8px; }
+.review-card h2 { max-width: 780px; font-size: 32px; }.review-recall { padding-left: 21px; font-size: 16px; margin: 25px 0; }.review-recall li { padding: 4px 0; }
+#review-response { resize: vertical; width: 100%; padding: 14px; border: 1px solid var(--line); background: transparent; color: var(--body); font: 16px Georgia, serif; line-height: 1.6; }
+.review-small { font: 11px Arial, sans-serif; color: var(--muted); margin: 8px 0 22px; }.review-card button { cursor: pointer; }.review-card button:disabled { cursor: default; opacity: .5; }
+.review-check { margin-top: 28px; border-top: 1px solid var(--line); padding-top: 26px; }.review-check h3 { font-size: 22px; }.review-check .section-head { flex-wrap: wrap; margin-bottom: 18px; }.review-check a { font: 12px Arial, sans-serif; }
+.review-pdf-controls { display: flex; gap: 18px; align-items: center; flex-wrap: wrap; font: 12px Arial, sans-serif; margin-bottom: 12px; }.review-pdf-controls button { color: var(--ink); border: 1px solid var(--line); padding: 8px 12px; background: transparent; }.review-pdf-controls a { margin-left: auto; }
+.review-pdf-surface { max-height: 620px; overflow: auto; border: 1px solid var(--line); padding: 12px; background: var(--paper); }.review-pdf-surface canvas { display: block; margin: auto; }
+[data-theme="dark"] .review-pdf-surface canvas { filter: invert(.9) hue-rotate(180deg); }
+.review-guide { margin-top: 20px; font-size: 14px; }.review-guide .guide-verbatim { white-space: pre-wrap; padding: 18px 0; }.review-reflect { font-size: 16px; margin: 24px 0; }
+.review-ratings { border: 0; padding: 0; margin: 0; display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }.review-ratings legend { font: 13px Arial, sans-serif; margin-bottom: 16px; color: var(--muted); }
+.review-ratings button { text-align: left; padding: 16px 12px; background: transparent; border: 1px solid var(--line); color: var(--ink); }.review-ratings strong { display: block; font: 13px Arial, sans-serif; }.review-ratings span { display: block; color: var(--muted); font: 11px Arial, sans-serif; margin-top: 7px; }.review-ratings button:hover { border-color: var(--accent); background: #8196ad0b; }
+.review-finished { padding: 35px 0; max-width: 650px; }.review-method { border-top: 1px solid var(--line); margin-top: 45px; padding-top: 20px; font-size: 15px; }.review-method .prose { margin-top: 20px; }.review-method .prose p { font-size: 15px; }
+.review-workspace :focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; }
+@media (max-width: 900px) { .header-inner nav { gap: 16px; flex-wrap: wrap; }.review-setup { grid-template-columns: 1fr; gap: 15px; }.review-ratings { grid-template-columns: repeat(2,1fr); } }
+@media (max-width: 620px) { .review-invitation { display: block; }.review-invitation .button { margin-top: 15px; }.review-card { padding: 20px 15px; }.review-card h2 { font-size: 27px; }.review-card-top { flex-direction: column; gap: 6px; }.review-stat strong { font-size: 24px; }.review-stat span { font-size: 11px; } }
+
+.review-demo-link { display: block; font: 11px Arial, sans-serif; color: var(--muted); margin-top: 12px; }
+
+/* Optional review account, using the same paper and ink as daily practice. */
+.review-account{margin:1.5rem 0;padding:1rem 1.25rem;border:1px solid var(--line);border-radius:8px}.review-account summary{cursor:pointer;font-size:1rem}.review-account p{font-size:.95rem}.review-account fieldset{border:0;padding:0;margin:1rem 0}.review-account legend{margin-bottom:1rem}.review-account label{display:block;margin:.75rem 0 .3rem}.review-account input{display:block;width:100%;max-width:28rem;padding:.7rem;background:var(--paper);color:var(--ink);border:1px solid var(--line);border-radius:4px;font:inherit}.account-actions{display:flex;gap:.65rem;flex-wrap:wrap;margin-top:1rem}.review-account button{font:inherit;color:var(--ink);background:transparent;border:1px solid var(--line);border-radius:4px;padding:.6rem .85rem;cursor:pointer}.review-account button:disabled{opacity:.5;cursor:default}.review-account [hidden]{display:none!important}

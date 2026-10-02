@@ -2,6 +2,7 @@ import hashlib, json, mimetypes, os
 import site_content
 import chapter_content
 import lead_content
+import review_content
 from html import escape
 from pathlib import Path
 from urllib.parse import quote
@@ -49,7 +50,7 @@ def page(title,body,raw=None,active=None):
     download=f'<p class="muted"><a href="/raw/{quote(raw,safe="/")}">Raw Markdown</a></p>' if raw else ''
     body=site_content.decorate_headings(body)
     if raw: body=f'<article class="document">{body}{download}</article>'
-    navigation=''.join(f'<a href="/{slug}/"'+(' aria-current="page"' if active==slug else '')+f'>{label}</a>' for slug,label in [('notes','Notes'),('research','Research'),('about','About')])
+    navigation=''.join(f'<a href="/{slug}/"'+(' aria-current="page"' if active==slug else '')+f'>{label}</a>' for slug,label in [('notes','Notes'),('review','Review'),('research','Research'),('about','About')])
     theme_version = hashlib.sha256((Path(__file__).parent/'assets/theme.js').read_bytes()).hexdigest()[:16]
     theme_script = f'<script src="/assets/theme.js?v={theme_version}"></script>'
     search_version = hashlib.sha256((Path(__file__).parent/'assets/search.js').read_bytes()).hexdigest()[:16]
@@ -57,6 +58,9 @@ def page(title,body,raw=None,active=None):
     if 'class="section thread-explorer"' in body:
         lead_version = hashlib.sha256((Path(__file__).parent/'assets/leads.js').read_bytes()).hexdigest()[:16]
         search_script += f'<script defer src="/assets/leads.js?v={lead_version}"></script>'
+    if 'id="daily-review"' in body:
+        review_version = hashlib.sha256((Path(__file__).parent/'assets/review.js').read_bytes() + (Path(__file__).parent/'assets/review-schedule.mjs').read_bytes()).hexdigest()[:16]
+        search_script += f'<script type="module" src="/assets/review.js?v={review_version}"></script>'
     if 'class="pdf-reader"' in body:
         pdf_version = hashlib.sha256((Path(__file__).parent/'assets/pdf-reader.js').read_bytes()).hexdigest()[:16]
         search_script += f'<script type="module" src="/assets/pdf-reader.js?v={pdf_version}"></script>'
@@ -75,7 +79,7 @@ def application(environ,start_response):
             kind="application/json"; body=b'{"status":"ok"}'
         elif path=="/style.css":
             kind="text/css; charset=utf-8"; body=CSS.encode()
-        elif path.startswith(("/assets/fonts/", "/assets/vendor/katex-0.19.0/", "/assets/vendor/pdfjs-6.3.289/")) or path in {'/assets/math.js', '/assets/search.js', '/assets/pdf-reader.js', '/assets/leads.js', '/assets/theme.js'}:
+        elif path.startswith(("/assets/fonts/", "/assets/vendor/katex-0.19.0/", "/assets/vendor/pdfjs-6.3.289/", "/assets/vendor/supabase/")) or path in {'/assets/math.js', '/assets/search.js', '/assets/pdf-reader.js', '/assets/leads.js', '/assets/theme.js', '/assets/review.js', '/assets/review-schedule.mjs', '/assets/review-account.mjs', '/assets/review-events.mjs', '/assets/review-cloud.mjs'}:
             file=resolve(path.removeprefix("/assets/"),Path(__file__).parent/'assets')
             types = {'.svg': 'image/svg+xml', '.ttf': 'font/ttf', '.woff2': 'font/woff2',
                      '.mjs': 'text/javascript; charset=utf-8', '.bcmap': 'application/octet-stream', '.pfb': 'application/octet-stream', '.wasm': 'application/wasm', '.js': 'text/javascript; charset=utf-8', '.css': 'text/css; charset=utf-8'}
@@ -84,6 +88,12 @@ def application(environ,start_response):
             body=file.read_bytes()
         elif path=="/api/files":
             kind="application/json; charset=utf-8"; body=json.dumps({"files":files()},ensure_ascii=False).encode()
+        elif path=="/auth-config.json":
+            kind="application/json; charset=utf-8"
+            body=json.dumps(review_content.auth_config()).encode()
+        elif path=="/review-index.json":
+            kind="application/json; charset=utf-8"
+            body=json.dumps(review_content.index(pdf_files()), ensure_ascii=False).encode()
         elif path=="/leads-index.json":
             kind="application/json; charset=utf-8"
             body=json.dumps(lead_content.index(pdf_files(), chapter_content.search_index(pdf_files(), files(), ROOT)), ensure_ascii=False).encode()
@@ -104,7 +114,7 @@ def application(environ,start_response):
                 body=page(file.stem,site_content.viewer(name,url,pdf_files(),chapter_content.pdf_metadata(file)),active='notes')
             else:
                 kind="application/pdf"; body=file.read_bytes()
-        elif path=="/" or path.strip("/") in {"notes","research","about"} or path.startswith("/notes/"):
+        elif path=="/" or path.strip("/") in {"notes","review","research","about"} or path.startswith("/notes/"):
             route=path.strip("/")
             editorial={slug.strip("/"):(title,content) for slug,title,content in site_content.pages(pdf_files(),files())}
             if route not in editorial: raise FileNotFoundError

@@ -12,6 +12,7 @@ import app
 import site_content
 import chapter_content
 import lead_content
+import review_content
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--base-path', default='/markdown-server')
@@ -25,7 +26,7 @@ out.mkdir(parents=True, exist_ok=True)
 # otherwise retain an old stylesheet URL when reached through the menu.
 site_version = hashlib.sha256(b''.join(
     (Path(app.__file__).parent / name).read_bytes()
-    for name in ['app.py', 'site_content.py', 'chapter_content.py', 'lead_content.py', 'site/leads.md', 'assets/leads.js', 'assets/theme.js', 'assets/style.css', 'assets/math.js', 'assets/search.js', 'assets/pdf-reader.js', 'site/catalog.json', 'site/chapters.json', 'scripts/build-pages.py']
+    for name in ['review_content.py', 'assets/review.js', 'assets/review-schedule.mjs', 'assets/review-account.mjs', 'assets/review-events.mjs', 'assets/review-cloud.mjs', 'site/auth.json', 'app.py', 'site_content.py', 'chapter_content.py', 'lead_content.py', 'site/leads.md', 'assets/leads.js', 'assets/theme.js', 'assets/style.css', 'assets/math.js', 'assets/search.js', 'assets/pdf-reader.js', 'site/catalog.json', 'site/chapters.json', 'scripts/build-pages.py']
 )
   + b''.join(name.encode() + hashlib.sha256(app.resolve(name, root).read_bytes()).digest()
             for root, names in [(app.ROOT, app.files()), (app.PDF_ROOT, app.pdf_files())]
@@ -38,6 +39,8 @@ shutil.copyfile(Path(app.__file__).parent / 'assets/search.js', out / 'assets/se
 shutil.copyfile(Path(app.__file__).parent / 'assets/leads.js', out / 'assets/leads.js')
 shutil.copyfile(Path(app.__file__).parent / 'assets/theme.js', out / 'assets/theme.js')
 shutil.copyfile(Path(app.__file__).parent / 'assets/pdf-reader.js', out / 'assets/pdf-reader.js')
+for name in ['review.js', 'review-schedule.mjs', 'review-account.mjs', 'review-events.mjs', 'review-cloud.mjs']:
+    shutil.copyfile(Path(app.__file__).parent / 'assets' / name, out / 'assets' / name)
 
 
 def write_page(path, title, body, raw=None):
@@ -114,4 +117,11 @@ for entry in index:
     entry['url'] = base + entry['url'] + '?v=' + site_version
 (out / 'leads-index.json').write_text(__import__('json').dumps(leads_index, ensure_ascii=False))
 (out / 'search-index.json').write_text(__import__('json').dumps(index, ensure_ascii=False))
+reviews = review_content.index(app.pdf_files())
+for card in reviews:
+    card['url'] = base + card['url']
+    card['pdf'] = base + card['pdf']
+(out / 'review-index.json').write_text(__import__('json').dumps(reviews, ensure_ascii=False))
 print(f'Built {len(app.files())} Markdown documents and {len(app.pdf_files())} PDFs in {out}')
+
+(out / 'auth-config.json').write_text(__import__('json').dumps(review_content.auth_config()))
