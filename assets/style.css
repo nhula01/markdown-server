@@ -496,3 +496,10 @@ body:not(.ink-immersive):not(.music-reading-shell){max-width:calc(100vw - 280px)
 @media(min-width:1200px){.equations-toggle:not([hidden]){display:block}}
 .ink-immersive .equations-toggle{display:none}
 @media(prefers-reduced-motion:reduce){.equations-toggle{display:none!important}}
+
+.header-inner .header-icon{display:grid;place-items:center;width:36px;height:36px;padding:6px;border:0;background:transparent;color:var(--ink);cursor:pointer}
+.header-icon svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}
+.header-icon:hover{color:var(--accent)}
+.header-icon:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+[data-theme="dark"] .bulb-rays{display:none}
+[data-theme="light"] [data-theme-toggle] svg{fill:var(--paper)}

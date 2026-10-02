@@ -12,14 +12,18 @@
   if (themes.includes(requested) || saved === 'wuxia') {try {localStorage.setItem('notebook-theme', initial);} catch (_) {}}
   function apply(theme) {
     root.dataset.theme = theme;
-    const picker = document.querySelector('[data-theme-select]');
-    if (picker) picker.value = theme;
+    const button = document.querySelector('[data-theme-toggle]');
+    if (button) {
+      const label = theme === 'light' ? 'Switch to dark mode' : 'Switch to light mode';
+      button.setAttribute('aria-label',label);
+      button.title = label;
+      button.setAttribute('aria-pressed',String(theme === 'light'));
+    }
   }
   document.addEventListener('DOMContentLoaded', () => {
     apply(initial);
-    document.querySelector('[data-theme-select]')?.addEventListener('change', event => {
-      const theme = event.target.value;
-      if (!themes.includes(theme)) return;
+    document.querySelector('[data-theme-toggle]')?.addEventListener('click', () => {
+      const theme = root.dataset.theme === 'light' ? 'dark' : 'light';
       apply(theme);
       try {localStorage.setItem('notebook-theme', theme);} catch (_) {}
       const url = new URL(location.href);
