@@ -1,36 +1,24 @@
-// Calendar days rather than 24-hour periods: works across local daylight changes.
-export function dayKey(date = new Date()) {
-  return `${date.getFullYear()}-${String(date.getMonth()+1).padStart(2,'0')}-${String(date.getDate()).padStart(2,'0')}`;
-}
+// A UTC calendar gives everyone the same selection regardless of location.
+export function dayKey(date = new Date()) {return date.toISOString().slice(0,10);}
 export function addDays(key, days) {
-  const [year, month, day] = key.split('-').map(Number);
-  return dayKey(new Date(year, month-1, day+days, 12));
+  const date = new Date(key+'T12:00:00Z'); date.setUTCDate(date.getUTCDate()+days);
+  return dayKey(date);
 }
-export function interval(previous, rating) {
-  if (rating === 'again' || rating === 'shaky') return 1;
-  const old = previous?.interval || 0;
-  if (rating === 'easy') return Math.min(90, Math.max(7, old * 2));
-  return [3, 7, 14, 30, 60, 90].find(days => days > old) || 90;
-}
-export function grade(previous, rating, today) {
-  const days = interval(previous, rating);
-  return {interval: days, due: addDays(today, days), last: today,
-    reviews: (previous?.reviews || 0)+1, introduced: previous?.introduced || today};
-}
-export function queue(cards, states, today, topic = '') {
-  const available = cards.filter(card => !topic || card.topic === topic);
-  const due = available.filter(card => states[card.id] && states[card.id].due <= today && states[card.id].last !== today)
-    .sort((a,b) => states[a.id].due.localeCompare(states[b.id].due));
-  const newToday = Object.values(states).filter(state => state.introduced === today).length;
-  const fresh = available.filter(card => !states[card.id]);
-  const ordered = [];
-  // Interleave within due cards first, then within new cards.
-  for (const [pending, limit] of [[due,5],[fresh,Math.max(0,2-newToday)]]) {
-    let remaining = limit;
-    while (remaining > 0 && pending.length && ordered.length < 5) {
-    const next = pending.findIndex(card => card.topic !== ordered.at(-1)?.topic);
-    ordered.push(pending.splice(next < 0 ? 0 : next, 1)[0]); remaining--;
-    }
+export function dailySet(cards, day = dayKey()) {
+  const groups = new Map(), unique = new Map(cards.map(card=>[card.id,card]));
+  const compare = (a,b) => a < b ? -1 : a > b ? 1 : 0;
+  for(const card of [...unique.values()].sort((a,b)=>compare(a.id,b.id))) {
+    const topic = card.topic || ''; if(!groups.has(topic)) groups.set(topic,[]); groups.get(topic).push(card);
   }
-  return ordered;
+  const buckets = [...groups].sort((a,b)=>compare(a[0],b[0])).map(([,notes])=>notes);
+  const rotation=[];
+  while(buckets.some(bucket=>bucket.length)) for(const bucket of buckets) if(bucket.length) rotation.push(bucket.shift());
+  if(!rotation.length) return [];
+  const elapsed = Math.floor((Date.parse(day+'T00:00:00Z')-Date.UTC(2026,9,2))/86_400_000);
+  if(!Number.isFinite(elapsed)) throw Error('Invalid review date');
+  const index = number => ((number % rotation.length)+rotation.length)%rotation.length;
+  const focus = rotation[index(elapsed)];
+  if(rotation.length===1) return [focus];
+  const revisit = rotation[index(elapsed-3)] || focus;
+  return [focus,revisit.id===focus.id?rotation[index(elapsed-1)]:revisit];
 }

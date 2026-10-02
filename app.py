@@ -79,7 +79,7 @@ def application(environ,start_response):
             kind="application/json"; body=b'{"status":"ok"}'
         elif path=="/style.css":
             kind="text/css; charset=utf-8"; body=CSS.encode()
-        elif path.startswith(("/assets/fonts/", "/assets/vendor/katex-0.19.0/", "/assets/vendor/pdfjs-6.3.289/", "/assets/vendor/supabase/")) or path in {'/assets/math.js', '/assets/search.js', '/assets/pdf-reader.js', '/assets/leads.js', '/assets/theme.js', '/assets/review.js', '/assets/review-schedule.mjs', '/assets/review-account.mjs', '/assets/review-events.mjs', '/assets/review-cloud.mjs'}:
+        elif path.startswith(("/assets/fonts/", "/assets/vendor/katex-0.19.0/", "/assets/vendor/pdfjs-6.3.289/")) or path in {'/assets/math.js', '/assets/search.js', '/assets/pdf-reader.js', '/assets/leads.js', '/assets/theme.js', '/assets/review.js', '/assets/review-schedule.mjs'}:
             file=resolve(path.removeprefix("/assets/"),Path(__file__).parent/'assets')
             types = {'.svg': 'image/svg+xml', '.ttf': 'font/ttf', '.woff2': 'font/woff2',
                      '.mjs': 'text/javascript; charset=utf-8', '.bcmap': 'application/octet-stream', '.pfb': 'application/octet-stream', '.wasm': 'application/wasm', '.js': 'text/javascript; charset=utf-8', '.css': 'text/css; charset=utf-8'}
@@ -88,9 +88,6 @@ def application(environ,start_response):
             body=file.read_bytes()
         elif path=="/api/files":
             kind="application/json; charset=utf-8"; body=json.dumps({"files":files()},ensure_ascii=False).encode()
-        elif path=="/auth-config.json":
-            kind="application/json; charset=utf-8"
-            body=json.dumps(review_content.auth_config()).encode()
         elif path=="/review-index.json":
             kind="application/json; charset=utf-8"
             body=json.dumps(review_content.index(pdf_files()), ensure_ascii=False).encode()

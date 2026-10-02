@@ -20,7 +20,7 @@ class ReviewTests(unittest.TestCase):
         self.assertEqual(review_content.index([]), [])
 
     def test_review_routes_and_static_project_paths(self):
-        for route in ['/review/', '/review-index.json', '/assets/review.js', '/assets/review-schedule.mjs', '/assets/review-account.mjs', '/assets/review-cloud.mjs', '/auth-config.json']:
+        for route in ['/review/', '/review-index.json', '/assets/review.js', '/assets/review-schedule.mjs']:
             response = {}
             def start(status, headers): response['status'] = status
             b''.join(app.application({'REQUEST_METHOD':'GET','PATH_INFO':route},start))
@@ -31,15 +31,17 @@ class ReviewTests(unittest.TestCase):
             page = (out/'review/index.html').read_text()
             self.assertIn('/markdown-server/assets/review.js',page)
             self.assertIn('/markdown-server/review/',(out/'index.html').read_text())
-            self.assertEqual(json.loads((out/'auth-config.json').read_text()), review_content.auth_config())
-            self.assertTrue((out/'assets/vendor/supabase/supabase.mjs').exists())
+            self.assertNotIn('data-account-',page)
+            self.assertIn('The same daily set for everyone',page)
+            self.assertFalse((out/'auth-config.json').exists())
+            self.assertFalse((out/'assets/vendor/supabase/supabase.mjs').exists())
             for card in json.loads((out/'review-index.json').read_text()):
                 self.assertTrue(card['url'].startswith('/markdown-server/notebooks/'))
                 self.assertTrue(card['pdf'].startswith('/markdown-server/pdfs/'))
 
-    def test_auth_build_rejects_secrets(self):
-        from unittest.mock import patch
-        with patch('review_content.json.loads', return_value={'url':'https://example.supabase.co','publishableKey':'sb_secret_example'}):
-            with self.assertRaises(ValueError): review_content.auth_config()
-        with patch('review_content.json.loads', return_value={'url':'','publishableKey':'','password':'private'}):
-            with self.assertRaises(ValueError): review_content.auth_config()
+    def test_removed_account_routes_are_unavailable(self):
+        for route in ['/auth-config.json','/assets/review-account.mjs','/assets/vendor/supabase/supabase.mjs']:
+            response = {}
+            def start(status,headers): response['status'] = status
+            b''.join(app.application({'REQUEST_METHOD':'GET','PATH_INFO':route},start))
+            self.assertEqual(response['status'],'404 Not Found')

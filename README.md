@@ -202,35 +202,24 @@ question headings and numbered links are imported into `site/leads.md`; other
 private vault content is excluded. An invalid trail aborts before overwriting
 the existing public copy. `LEADS_SOURCE` overrides the vault path for sync.
 
-## Daily notebook review
+## Shared daily notebook review
 
-`/review/` offers recall before revealing original handwriting, with verbatim
-Optimum guides for checking. Schedule records stay in localStorage on the
-reader’s device; recall text is neither saved nor transmitted. `/review/?demo=1`
-is a sample session that does not read or write schedule records.
+`/review/` offers the same daily notebooks to everyone, without accounts or a
+progress backend. Each UTC date selects one focus notebook and a return to a
+notebook from three days earlier. The rotation covers all available PDFs and
+alternates topics where possible. Small collections use a distinct fallback.
+The next seven daily selections are visible on the page. Ratings never change
+the shared calendar; missed recall allows one extra attempt in the session.
 
-Public cards are generated from available PDFs and `site/chapters.json`; edit
-chapter questions there. Planned chapters are excluded. Scheduling rules live
-in `assets/review-schedule.mjs`: due-first topic mixing, at most two introductions
-per day, and up to five attempts per session (including missed-recall retries
-when there is room). Intervals use local calendar days.
+Only today's completion checkmarks are saved in localStorage. The sample
+`/review/?demo=1` does not save checkmarks. Recall text is neither saved nor
+transmitted. PDFs are unchanged and Optimum guides remain verbatim.
 
-Verify scheduling with `node --test tests/review-schedule.test.mjs` and routes,
-verbatim guides, and static paths with `python -m unittest discover -s tests -v`.
-
-### Optional accounts (email delivery setup pending)
-
-Email/password sign-up, sign-in, recovery and per-account review sync use the
-locally bundled official Supabase SDK. Guest schedules remain separate.
-See [Supabase setup](supabase/SETUP.md) for the free-project setup, database
-rules, mail delivery configuration, and live acceptance checks. No account
-credentials or administrative keys belong in the repository.
-
-`site/auth.json` contains the public project URL and publishable key. The live
-review table and private access policies have been configured and verified.
-Custom mail delivery and browser account acceptance tests remain pending.
-Guest reviews work normally. Builds reject administrative secret keys.
+The website no longer loads Supabase or sends account/progress requests.
+Previously created Supabase resources remain in the user's project; the
+website does not use them or delete their data.
 
 ```sh
-node --test tests/review-schedule.test.mjs tests/review-events.test.mjs
+node --test tests/review-schedule.test.mjs
+python -m unittest discover -s tests -v
 ```

@@ -22,11 +22,17 @@ base = args.base_path.rstrip('/')
 out = Path(args.output)
 out.mkdir(parents=True, exist_ok=True)
 (out / '.nojekyll').touch()
+# Remove retired account assets from reused build directories too.
+(out / 'auth-config.json').unlink(missing_ok=True)
+for name in ['review-account.mjs', 'review-cloud.mjs', 'review-events.mjs']:
+    (out / 'assets' / name).unlink(missing_ok=True)
+shutil.rmtree(out / 'assets/vendor/supabase', ignore_errors=True)
+
 # Version HTML navigation as well as CSS/PDF assets. Previously cached pages
 # otherwise retain an old stylesheet URL when reached through the menu.
 site_version = hashlib.sha256(b''.join(
     (Path(app.__file__).parent / name).read_bytes()
-    for name in ['review_content.py', 'assets/review.js', 'assets/review-schedule.mjs', 'assets/review-account.mjs', 'assets/review-events.mjs', 'assets/review-cloud.mjs', 'site/auth.json', 'app.py', 'site_content.py', 'chapter_content.py', 'lead_content.py', 'site/leads.md', 'assets/leads.js', 'assets/theme.js', 'assets/style.css', 'assets/math.js', 'assets/search.js', 'assets/pdf-reader.js', 'site/catalog.json', 'site/chapters.json', 'scripts/build-pages.py']
+    for name in ['review_content.py', 'assets/review.js', 'assets/review-schedule.mjs', 'app.py', 'site_content.py', 'chapter_content.py', 'lead_content.py', 'site/leads.md', 'assets/leads.js', 'assets/theme.js', 'assets/style.css', 'assets/math.js', 'assets/search.js', 'assets/pdf-reader.js', 'site/catalog.json', 'site/chapters.json', 'scripts/build-pages.py']
 )
   + b''.join(name.encode() + hashlib.sha256(app.resolve(name, root).read_bytes()).digest()
             for root, names in [(app.ROOT, app.files()), (app.PDF_ROOT, app.pdf_files())]
@@ -39,7 +45,7 @@ shutil.copyfile(Path(app.__file__).parent / 'assets/search.js', out / 'assets/se
 shutil.copyfile(Path(app.__file__).parent / 'assets/leads.js', out / 'assets/leads.js')
 shutil.copyfile(Path(app.__file__).parent / 'assets/theme.js', out / 'assets/theme.js')
 shutil.copyfile(Path(app.__file__).parent / 'assets/pdf-reader.js', out / 'assets/pdf-reader.js')
-for name in ['review.js', 'review-schedule.mjs', 'review-account.mjs', 'review-events.mjs', 'review-cloud.mjs']:
+for name in ['review.js', 'review-schedule.mjs']:
     shutil.copyfile(Path(app.__file__).parent / 'assets' / name, out / 'assets' / name)
 
 
@@ -123,5 +129,3 @@ for card in reviews:
     card['pdf'] = base + card['pdf']
 (out / 'review-index.json').write_text(__import__('json').dumps(reviews, ensure_ascii=False))
 print(f'Built {len(app.files())} Markdown documents and {len(app.pdf_files())} PDFs in {out}')
-
-(out / 'auth-config.json').write_text(__import__('json').dumps(review_content.auth_config()))

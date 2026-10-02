@@ -1,16 +1,13 @@
-import {dayKey, interval, grade, queue} from './review-schedule.mjs';
-import {accountProgress} from './review-account.mjs';
+import {dayKey, addDays, dailySet} from './review-schedule.mjs';
 const root = document.querySelector('#daily-review');
 const find = selector => document.querySelector(selector);
 const base = new URL('../', import.meta.url);
-const storageKey = 'physics-notebook-review-v1:' + base.pathname;
+const storageKey = 'physics-shared-review-v1:' + base.pathname;
 const demo = new URL(location.href).searchParams.get('demo') === '1';
-let states = {}, persistent = true, cards = [], session = [], position = 0, completed = 0, retry = new Set();
+let states = {}, persistent = true, cards = [], session = [], position = 0, completed = 0, retry = new Set(), sessionDay = dayKey(), active = false;
 try {states = demo ? {} : JSON.parse(localStorage.getItem(storageKey) || '{}'); if (!states || typeof states !== 'object' || Array.isArray(states)) states = {};}
 catch {states = {}; persistent = false;}
-// Ignore damaged records; never let a browser-storage problem prevent reviewing.
-for (const [id,state] of Object.entries(states)) if (!state || !/^\d{4}-\d{2}-\d{2}$/.test(state.due) || !Number.isFinite(state.interval)) delete states[id];
-let account, accountId = null, accountBusy = false;
+if (states.day !== dayKey() || !Array.isArray(states.completed)) states = {day:dayKey(),completed:[]};
 let pdfjs, pdf, loadingTask, pageNumber = 1, renderTask, revision = 0;
 const card = () => session[position];
 const status = find('[data-review-status]');
@@ -18,14 +15,27 @@ const absolute = path => new URL(path, location.origin).href;
 function save() {
   if (demo) return;
   try {localStorage.setItem(storageKey, JSON.stringify(states));}
-  catch {persistent = false; status.textContent = 'Browser storage is unavailable. You can review, but your schedule will last only this visit.';}
+  catch {persistent = false; status.textContent = 'Browser storage is unavailable. You can review, but completion checkmarks will last only this visit.';}
 }
 function dashboard() {
-  const today = dayKey();
-  find('[data-review-due]').textContent = cards.filter(c => states[c.id]?.due <= today && states[c.id]?.last !== today).length;
-  find('[data-review-today]').textContent = cards.filter(c => states[c.id]?.last === today).length;
-  const next = cards.map(c => states[c.id]?.due).filter(Boolean).sort()[0];
-  find('[data-review-next]').textContent = next ? (next <= today ? 'Today' : new Date(next+'T12:00:00').toLocaleDateString(undefined,{month:'short',day:'numeric'})) : 'Start today';
+  const today = active ? sessionDay : dayKey(), selected = dailySet(cards,today);
+  find('[data-review-due]').textContent = selected.length;
+  find('[data-review-today]').textContent = states.day === today ? selected.filter(c => states.completed.includes(c.id)).length : 0;
+  find('[data-review-next]').textContent = 'Tomorrow';
+  find('[data-review-date]').textContent = new Date(today+'T12:00:00Z').toLocaleDateString(undefined,{timeZone:'UTC',month:'long',day:'numeric',year:'numeric'});
+  const list = find('[data-review-selection]'); list.replaceChildren();
+  for (const [index,note] of selected.entries()) {
+    const item = document.createElement('li'), name = document.createElement('strong'), label = document.createElement('span');
+    name.textContent = note.title; label.textContent = `${index===0?'Today’s focus':'Return to an idea'} · ${note.topic}`;
+    item.append(name,label); list.append(item);
+  }
+  const upcoming = find('[data-review-upcoming]'); upcoming.replaceChildren();
+  for(let offset=1;offset<=7;offset++) {
+    const day = addDays(today,offset), item = document.createElement('li');
+    const date = document.createElement('strong'); date.textContent = new Date(day+'T12:00:00Z').toLocaleDateString(undefined,{timeZone:'UTC',month:'short',day:'numeric'}); item.append(date);
+    for(const note of dailySet(cards,day)) {const link=document.createElement('a');link.textContent=note.title;link.href=absolute(note.url);item.append(link);}
+    upcoming.append(item);
+  }
 }
 async function releasePDF() {
   revision++;
@@ -38,7 +48,8 @@ async function showCard() {
   await releasePDF();
   if (position >= session.length) {
     find('.review-card').hidden = true; find('.review-finished').hidden = false;
-    find('[data-review-finished]').textContent = completed ? `${completed} recall attempts completed. ${demo ? 'This sample did not save a schedule' : accountId ? 'Your schedule is saved on this device; the account status below shows whether it has synced' : `Your next dates are saved${persistent ? ' in this browser' : ' for this visit'}`}.` : 'No notebooks are due in this collection. Your next review date is shown above.';
+    active = false;
+    find('[data-review-finished]').textContent = completed ? `${completed} recall attempts completed. ${demo ? 'This sample did not save checkmarks.' : persistent ? 'Today’s checkmarks are saved on this device.' : 'Checkmarks last only this visit.'} Tomorrow’s shared selection follows the same calendar for everyone.` : 'No handwritten notebooks are available yet.';
     status.textContent = ''; dashboard(); return;
   }
   find('.review-card').hidden = false; find('.review-check').hidden = true;
@@ -75,7 +86,8 @@ async function renderPage(number) {
   }
 }
 find('[data-review-start]').addEventListener('click',async()=>{
-  session = queue(cards,states,dayKey(),find('#review-topic').value); position = completed = 0; retry = new Set();
+  sessionDay = dayKey(); session = dailySet(cards,sessionDay); position = completed = 0; retry = new Set(); active = true;
+  if(states.day !== sessionDay) states = {day:sessionDay,completed:[]};
   find('.review-setup').hidden = true; find('.review-finished').hidden = true; await showCard();
 });
 find('[data-review-reveal]').addEventListener('click',async()=>{
@@ -87,10 +99,7 @@ find('[data-review-reveal]').addEventListener('click',async()=>{
   find('.review-guide').hidden = !card().guide.trim();
   find('.review-guide').open = false;
   if (window.renderMathInElement) window.renderMathInElement(guide,{delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false},{left:'\\(',right:'\\)',display:false},{left:'\\[',right:'\\]',display:true}],throwOnError:false,trust:false});
-  for (const choice of ['again','shaky','good','easy']) {
-    const days = interval(states[card().id],choice);
-    find(`[data-interval="${choice}"]`).textContent = `${choice === 'again' && !retry.has(card().id) && session.length < 5 ? 'Retry, then ' : ''}${days === 1 ? 'tomorrow' : `in ${days} days`}`;
-  }
+  find('[data-interval="again"]').textContent = retry.has(card().id) ? 'Finish this attempt' : 'Try again at the end';
   status.textContent = 'Compare your recall with the source. Assess your recall, not how familiar the page looks.';
   for (const button of root.querySelectorAll('[data-review-grade]')) button.disabled = true;
   try {
@@ -100,43 +109,22 @@ find('[data-review-reveal]').addEventListener('click',async()=>{
     pdf = await loadingTask.promise;
     await renderPage(1);
   } catch {find('[data-review-page]').textContent = 'Use Open original PDF to check the handwriting.';}
-  for (const button of root.querySelectorAll('[data-review-grade]')) button.disabled = accountBusy;
+  for (const button of root.querySelectorAll('[data-review-grade]')) button.disabled = false;
   find('[data-review-reveal]').hidden = true;
 });
 for (const button of root.querySelectorAll('[data-review-grade]')) button.addEventListener('click', async()=>{
   for (const control of root.querySelectorAll('[data-review-grade]')) control.disabled = true;
   const current = card(), rating = button.dataset.reviewGrade;
-  if (account?.signedIn()) account.record(current.id,rating,dayKey());
-  else {states[current.id] = grade(states[current.id],rating,dayKey()); save();}
-  if (rating === 'again' && !retry.has(current.id) && session.length < 5) {session.push(current); retry.add(current.id);}
+  if (!states.completed.includes(current.id)) states.completed.push(current.id); save();
+  if (rating === 'again' && !retry.has(current.id)) {session.push(current); retry.add(current.id);}
   position++; completed++; dashboard(); await showCard();
 });
 find('[data-review-prev]').addEventListener('click',()=>{if(pdf) renderPage(pageNumber-1);});
 find('[data-review-forward]').addEventListener('click',()=>{if(pdf) renderPage(pageNumber+1);});
 try {
   const response = await fetch(new URL('review-index.json',base)); if (!response.ok) throw Error(); cards = await response.json();
-  for (const topic of [...new Set(cards.map(c=>c.topic))]) {const option=document.createElement('option');option.value=option.textContent=topic;find('#review-topic').append(option);}
-  account = await accountProgress({base,demo,
-    changed(next, uid) {
-      const previous = accountId; accountId = uid || null;
-      if (next) states = next;
-      else {try {states = JSON.parse(localStorage.getItem(storageKey) || '{}');} catch {states={};}}
-      dashboard();
-      if (previous !== accountId) {
-        releasePDF(); session = []; position = completed = 0;
-        find('.review-card').hidden = find('.review-finished').hidden = true;
-        find('.review-setup').hidden = false;
-        status.textContent = accountId ? 'Account schedule · up to five notebooks. Your account status shows whether progress has synced.' : 'Guest schedule · your progress stays on this device.';
-      }
-    },
-    busy(value) {
-      accountBusy = value;
-      find('[data-review-start]').disabled = value;
-      for (const control of document.querySelectorAll('.review-account button')) control.disabled = value;
-      for (const control of root.querySelectorAll('[data-review-grade]')) control.disabled = value || !pdf;
-    }
-  });
-  dashboard(); find('[data-review-start]').disabled = false;
+  dashboard(); find('[data-review-start]').disabled = !cards.length;
   if (demo) {find('[data-review-start]').textContent = 'Start sample review →'; find('.review-demo-link').hidden = true;}
-  status.textContent = demo ? 'Sample session · original notebooks · no schedule is saved.' : accountId ? 'Account schedule · up to five notebooks. Your account status shows whether progress has synced.' : persistent ? 'Up to five notebooks · at most two new ones · your progress stays on this device.' : 'Your browser cannot save progress. You can still review during this visit.';
+  status.textContent = demo ? 'Sample session · today’s shared notebooks · no checkmarks are saved.' : persistent ? 'Everyone follows the same daily calendar. Your completion checkmarks stay on this device.' : 'Everyone follows the same daily calendar. This browser cannot save completion checkmarks.';
+  setInterval(()=>{if(!active) dashboard();},60_000);
 } catch {status.textContent = 'The review collection could not load. Browse Notes or reload to retry.';}
