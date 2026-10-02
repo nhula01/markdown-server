@@ -49,7 +49,8 @@ def page(title,body,raw=None,active=None):
     download=f'<p class="muted"><a href="/raw/{quote(raw,safe="/")}">Raw Markdown</a></p>' if raw else ''
     body=site_content.decorate_headings(body)
     if raw: body=f'<article class="document">{body}{download}</article>'
-    navigation=''.join(f'<a href="/{slug}/"'+(' aria-current="page"' if active==slug else '')+f'>{label}</a>' for slug,label in [('notes','Notes'),('review','Review'),('research','Research'),('about','About')])
+    active = {'review':'notes','research':'about'}.get(active,active)
+    navigation=''.join(f'<a href="/{slug}/"'+(' aria-current="page"' if active==slug else '')+f'>{label}</a>' for slug,label in [('notes','Notes'),('about','About')])
     theme_version = hashlib.sha256((Path(__file__).parent/'assets/theme.js').read_bytes()).hexdigest()[:16]
     theme_script = f'<script src="/assets/theme.js?v={theme_version}"></script>'
     search_version = hashlib.sha256((Path(__file__).parent/'assets/search.js').read_bytes()).hexdigest()[:16]

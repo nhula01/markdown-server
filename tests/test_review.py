@@ -30,7 +30,7 @@ class ReviewTests(unittest.TestCase):
             out = Path(directory)
             page = (out/'review/index.html').read_text()
             self.assertIn('/markdown-server/assets/review.js',page)
-            self.assertIn('/markdown-server/review/',(out/'index.html').read_text())
+            self.assertIn('/markdown-server/notes/review/',(out/'notes/index.html').read_text())
             self.assertNotIn('data-account-',page)
             self.assertIn('The same daily set for everyone',page)
             self.assertFalse((out/'auth-config.json').exists())

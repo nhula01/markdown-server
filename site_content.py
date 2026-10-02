@@ -80,14 +80,11 @@ def home(names):
         <h1>Physics,<br>with <em>Intuition.</em></h1>
         <p class="lead">A growing notebook of what I’m learning through my PhD — the pictures, connections, and questions behind the equations.</p>
         <p class="muted">Phi Hung Nguyen · University of Arizona</p>
-        <div class="actions"><a class="button" href="/notes/">Explore the notes <span aria-hidden="true">↗</span></a><a class="section-link" href="/research/">My research <span class="arrow" aria-hidden="true">→</span></a></div></div><aside class="margin-note"><p class="kicker">In the margins</p><p class="handwritten">What is the<br>physical picture?</p><p>A sketch. A limiting case.<br>A connection to something familiar.</p><span class="page-number">Notebook / 01</span></aside></section>
+        <div class="actions"><a class="button" href="/notes/">Explore the notes <span aria-hidden="true">↗</span></a></div></div><aside class="margin-note"><p class="kicker">In the margins</p><p class="handwritten">What is the<br>physical picture?</p><p>A sketch. A limiting case.<br>A connection to something familiar.</p><span class="page-number">Notebook / 01</span></aside></section>
         <div class="intro-note"><span class="kicker">The approach</span><p>Start with a question. Build a physical picture. Then use the mathematics to make it precise. These are working notes, written by hand and revisited as my understanding grows.</p></div>
-        <section class="section review-invitation"><div><p class="kicker">A little, every day</p><h2>Return to an idea.</h2><p>Recall a physical picture. Check the notebook. Come back when it is time to remember again.</p></div><a class="button" href="/review/">Daily review →</a></section>
+
         {trails}<section class="section"><div class="section-head"><h2>A map of the ideas</h2><a class="section-link" href="/notes/">All nine topics <span class="arrow" aria-hidden="true">→</span></a></div>
-        <div class="topic-grid home">{topic_cards(names, TOPICS[:6])}</div></section>
-        <section class="section research-feature"><div><p class="kicker">On the research side</p><h2>Memory as a<br>physical resource.</h2></div><div>
-        <h3>Quantum systems that process information</h3><p>My research explores quantum reservoir computing: how the dynamics and memory of a small physical system can be used for computation.</p>
-        <a class="section-link" href="/research/">Research &amp; selected work <span class="arrow" aria-hidden="true">→</span></a></div></section>'''
+        <div class="topic-grid home">{topic_cards(names, TOPICS[:6])}</div></section>'''
 
 
 def notes(names, documents=()):
@@ -102,6 +99,7 @@ def notes(names, documents=()):
     availability = ('Handwritten PDFs are available in ' + ', '.join(available_topics) + '; other topic pages outline notes to come.') if available_topics else 'The topic pages outline the planned notes; uncategorized exports appear on the notebook desk below.'
     return f'''<header class="page-intro"><p class="eyebrow">A PhD notebook</p><h1>Notes on the way.</h1><p class="lead">Ideas in optics and quantum physics, explained through the physical picture first. Choose a topic to follow its connections.</p>
         <p class="notice">The collection is taking shape. {escape(availability)}</p></header>
+                <section class="section review-invitation"><div><p class="kicker">A little, every day</p><h2>Return to an idea.</h2><p>Recall a physical picture. Check the notebook. Come back when it is time to remember again.</p></div><a class="button" href="/notes/review/">Daily review →</a></section>
         <div class="notes-layout">{sidebar}<div><div class="topic-grid">{topic_cards(names)}</div>{extras}</div></div>'''
 
 
@@ -115,19 +113,23 @@ def topic_page(topic, names):
         <div class="reading-note"><h3>Useful starting points</h3><p>{escape(topic['prerequisites'])}</p><p>Each future note will begin with a physical question, develop an intuitive picture, and then connect it to the essential equations.</p></div></aside></div>'''
 
 
-def research():
-    return '''<header class="page-intro"><p class="eyebrow">Research</p><h1>Dynamics, memory,<br>and information.</h1><p class="lead">I study quantum reservoir computing: using the evolution of a physical system to process information, with a particular interest in small quantum systems and delayed feedback.</p><a class="section-link" href="https://wp.optics.arizona.edu/danielsoh/people/">Soh Lab · University of Arizona ↗</a></header>
+def research(embedded=False):
+    content = '''<header class="page-intro"><p class="eyebrow">Research</p><h1>Dynamics, memory,<br>and information.</h1><p class="lead">I study quantum reservoir computing: using the evolution of a physical system to process information, with a particular interest in small quantum systems and delayed feedback.</p><a class="section-link" href="https://wp.optics.arizona.edu/danielsoh/people/">Soh Lab · University of Arizona ↗</a></header>
         <section><div class="section-head"><h2>Selected work</h2><a class="section-link" href="https://scholar.google.com/citations?user=QoKlMzMAAAAJ&amp;hl=en">Google Scholar ↗</a></div>
         <article class="publication"><div class="year">2026</div><div><p class="kicker">Preprint · arXiv:2610.00667</p><h2><a href="https://arxiv.org/abs/2610.00667">Operator-language Feynman rules for driven-dissipative quantum systems: from mean field to non-Gaussian photon correlations</a></h2><p class="authors">Peter Ehlers, <strong>Phi Hung Nguyen</strong>, and Daniel Soh</p><p>Feynman rules for Lindblad dynamics in the operator language of quantum optics. The framework uses perturbation theory around solvable generators to calculate non-Gaussian photon correlations and photon-counting cumulants in driven, dissipative systems.</p><div class="actions"><a class="section-link" href="https://arxiv.org/abs/2610.00667">Paper &amp; abstract ↗</a><a class="section-link" href="https://arxiv.org/pdf/2610.00667">PDF ↗</a></div></div></article>
         <article class="publication"><div class="year">2026</div><div><p class="kicker">Preprint · arXiv:2608.10382</p><h2><a href="https://arxiv.org/abs/2608.10382">A Single Atom in Front of a Mirror is a Universal Reservoir Computer</a></h2><p class="authors">Peter J. Ehlers, <strong>Phi Hung Nguyen</strong>, Kanu Sinha, Noelle Daigle, Travis W. Sawyer, Hendra I. Nurdin, and Daniel Soh</p><p>A minimal atom–mirror system as a reservoir for temporal computation. The work connects physical memory, accessible modes, and measurement settings to universal approximation under specified operating conditions.</p><div class="actions"><a class="section-link" href="https://arxiv.org/abs/2608.10382">Paper & abstract ↗</a><a class="section-link" href="https://arxiv.org/pdf/2608.10382">PDF ↗</a></div></div></article>
         <article class="publication"><div class="year">2026</div><div><p class="kicker">Conference proceeding · CLEO · JTU.96</p><h2><a href="https://doi.org/10.1364/CLEO_AT.2026.JTU.96">The Minimalistic Non-Markovian Quantum Reservoir Computer for Real-world Applications</a></h2><p class="authors"><strong>Phi Hung Nguyen</strong>, Peter J. Ehlers, Kanu Sinha, and Daniel Soh</p><p>Using an atom in front of a mirror for reservoir computing, with the sampling interval and atom–mirror distance as handles on the dynamics and performance.</p><div class="actions"><a class="section-link" href="https://doi.org/10.1364/CLEO_AT.2026.JTU.96">Publisher record ↗</a></div></div></article></section>
         <section class="section"><h2>Questions that connect the work</h2><div class="research-themes"><article><h3>Physical memory</h3><p>How can delayed feedback turn a small quantum system into a richer dynamical resource?</p><a class="section-link" href="/notes/open-quantum-systems/">Open quantum systems →</a></article><article><h3>Useful dynamics</h3><p>Which features of a physical response matter for learning from a time-dependent signal?</p><a class="section-link" href="/notes/learning-and-reservoirs/">Learning & reservoirs →</a></article><article><h3>What we measure</h3><p>How do measurement choices reveal the information available in a quantum system?</p><a class="section-link" href="/notes/quantum-information/">Quantum information →</a></article></div></section>'''
 
+    if embedded:
+        content = content.replace('<header class="page-intro">', '<header class="page-intro" id="research">', 1).replace('<h1>', '<h2>', 1).replace('</h1>', '</h2>', 1)
+    return content
+
 
 def about():
     return f'''<header class="page-intro"><p class="eyebrow">About</p><h1>Phi Hung Nguyen</h1><p class="lead">PhD student in Optical Sciences at the University of Arizona, and a member of the Soh Lab.</p></header>
-        <div class="profile-grid"><div class="prose"><h2>A notebook for understanding</h2><p>This site is where I’m collecting the ideas I learn through my PhD: from the foundations of optics to quantum dynamics and information.</p><p>I want the notes to preserve the intuition — what a system is doing, why an approximation works, and how one idea connects to another. The mathematics matters; the aim is to make its physical meaning visible.</p><blockquote class="quote">The physical picture first.<br>The equations to make it precise.</blockquote><h2>How to read the collection</h2><p>The handwritten notebooks are working notes rather than finished textbooks. Topic pages distinguish available PDFs from planned material, and the collection will grow as I write and revise.</p><p>For a starting point, explore <a href="/notes/fields-and-waves/">Fields & waves</a> or <a href="/notes/light-and-matter/">Light & matter</a>. For the connection to my current work, visit <a href="/research/">Research</a>.</p></div>
-        <aside class="profile-links"><p class="kicker">Elsewhere</p><a href="{escape(CATALOG['scholar'], quote=True)}">Google Scholar ↗</a><a href="{escape(CATALOG['linkedin'], quote=True)}">LinkedIn ↗</a><a href="https://optics.arizona.edu/person/phi-hung-nguyen">University profile ↗</a><a href="https://wp.optics.arizona.edu/danielsoh/people/">Soh Lab ↗</a></aside></div>'''
+        <div class="profile-grid"><div class="prose"><h2>A notebook for understanding</h2><p>This site is where I’m collecting the ideas I learn through my PhD: from the foundations of optics to quantum dynamics and information.</p><p>I want the notes to preserve the intuition — what a system is doing, why an approximation works, and how one idea connects to another. The mathematics matters; the aim is to make its physical meaning visible.</p><blockquote class="quote">The physical picture first.<br>The equations to make it precise.</blockquote><h2>How to read the collection</h2><p>The handwritten notebooks are working notes rather than finished textbooks. Topic pages distinguish available PDFs from planned material, and the collection will grow as I write and revise.</p><p>For a starting point, explore <a href="/notes/fields-and-waves/">Fields & waves</a> or <a href="/notes/light-and-matter/">Light & matter</a>. For the connection to my current work, see <a href="#research">my research below</a>.</p></div>
+        <aside class="profile-links"><p class="kicker">Elsewhere</p><a href="{escape(CATALOG['scholar'], quote=True)}">Google Scholar ↗</a><a href="{escape(CATALOG['linkedin'], quote=True)}">LinkedIn ↗</a><a href="https://optics.arizona.edu/person/phi-hung-nguyen">University profile ↗</a><a href="https://wp.optics.arizona.edu/danielsoh/people/">Soh Lab ↗</a></aside></div>{research(embedded=True)}'''
 
 
 def viewer(name, url, names=(), metadata=None):
@@ -139,8 +141,9 @@ def pages(names, documents=()):
     yield '', 'Physics, with intuition', home(names)
     yield 'notes/', 'Notes', notes(names, documents)
     import review_content
+    yield 'notes/review/', 'Daily review', review_content.page()
     yield 'review/', 'Daily review', review_content.page()
-    yield 'research/', 'Research', research()
+    yield 'research/', 'About', about()
     yield 'about/', 'About', about()
     for topic in TOPICS:
         yield 'notes/' + topic['slug'] + '/', topic['title'], topic_page(topic, names)

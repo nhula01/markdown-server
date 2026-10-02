@@ -65,8 +65,14 @@ class PagesTests(unittest.TestCase):
             # Menu navigation must bypass cached HTML, not just cached CSS.
             for route in ['index.html', 'notes/index.html', 'research/index.html', 'about/index.html']:
                 html = (out / route).read_text()
-                for section in ['notes', 'research', 'about']:
+                for section in ['notes', 'about']:
                     self.assertRegex(html, f'/markdown-server/{section}/\\?v=[a-f0-9]{{16}}')
+            home = (out / 'index.html').read_text()
+            self.assertNotIn('research-feature', home)
+            self.assertNotIn('review-invitation', home)
+            about = (out / 'about/index.html').read_text()
+            self.assertIn('id="research"', about)
+            self.assertIn('Operator-language Feynman rules', about)
             notes = (out / 'notes/index.html').read_text()
             self.assertIn('A new notebook', re.sub('<[^>]+>', '', notes))
             self.assertIn('Outline · notes to come', notes)

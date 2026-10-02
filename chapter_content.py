@@ -51,7 +51,7 @@ def resolve_connection(target, names):
         status = 'Topic' if site_content.topic_notes(topic, names) else 'Outline'
         return topic['title'], '/notes/' + key + '/', status
     if kind == 'page' and key == 'research':
-        return 'Reservoir computing · Research', '/research/', 'Research'
+        return 'Reservoir computing · Research', '/about/#research', 'Research'
     raise ValueError('Unknown connection: ' + target)
 
 
@@ -193,7 +193,7 @@ def search_index(names, documents=(), document_root=None):
     for slug, concept in CONCEPTS.items():
         entries.append({'title': concept['title'], 'category': 'Connections', 'url': '/connections/' + slug + '/',
                         'status': 'Planned chapter', 'summary': concept['description'], 'tags': [], 'text': ''})
-    entries.append({'title': 'Reservoir computing', 'category': 'Research', 'url': '/research/', 'status': 'Research',
+    entries.append({'title': 'Reservoir computing', 'category': 'Research', 'url': '/about/#research', 'status': 'Research',
                     'summary': 'Dynamics, memory, and information.', 'tags': ['quantum', 'reservoir', 'non-Markovian', 'feedback'],
                     'text': plain_text(site_content.research())})
     if document_root:
