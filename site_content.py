@@ -54,10 +54,11 @@ def notebook_list(names, numbered=False):
             content = f'<span class="guide-verbatim">{escape(guide)}</span>'
         else:
             content = '<span class="guide-part"><strong>Guide in preparation</strong><span>This notebook does not have a reading guide in Optimum yet.</span></span>'
+        artwork = diagram(topic_for(name), stem) if numbered else ''
         number = f'<span class="notebook-order" aria-label="Note {position}">{position:02d}</span>' if numbered else ''
         items.append(f'''<li>{number}<div class="note-entry"><div class="note-title"><h3><a class="note-link" aria-describedby="{identifier}" href="/notebooks/{quote(name, safe='/')}/">{escape(stem)}</a></h3>
             <span class="note-popover" id="{identifier}" role="tooltip"><span class="guide-label">Reading guide · from Optimum</span>{content}</span></div>
-            <details class="reading-guide"><summary>Reading guide</summary><div class="guide-inline">{content}</div></details></div></li>''')
+            <details class="reading-guide"><summary>Reading guide</summary><div class="guide-inline">{content}</div></details></div>{artwork}</li>''')
     list_class = 'notebook-list numbered' if numbered else 'notebook-list'
     return f'<ul class="{list_class}">' + ''.join(items) + '</ul>'
 
@@ -110,7 +111,7 @@ def topic_page(topic, names):
     available = topic_notes(topic, names)
     current = notebook_list(available, numbered=True) if available else '<p class="muted">No notebooks published yet.</p>'
     return f'''<div class="breadcrumbs"><a href="/notes/">Notes</a> / {escape(topic['title'])}</div>
-        <div class="illustrated-heading"><header class="page-intro"><p class="eyebrow">Topic {TOPICS.index(topic)+1:02d} · <span aria-hidden="true">{topic['symbol']}</span></p><h1>{escape(topic['title'])}</h1><p class="lead">{escape(topic['question'])}</p></header>{diagram(topic)}</div>
+        <header class="page-intro"><p class="eyebrow">Topic {TOPICS.index(topic)+1:02d} · <span aria-hidden="true">{topic['symbol']}</span></p><h1>{escape(topic['title'])}</h1><p class="lead">{escape(topic['question'])}</p></header>
         <section aria-label="Notebooks in reading order">{current}</section>'''
 
 

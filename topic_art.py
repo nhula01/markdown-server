@@ -17,7 +17,9 @@ def diagram(topic, title=''):
         return ''
     slug = topic['slug']
     key = slug
-    if title in {'Crystal', 'Electrons in Crystals'}:
+    if title == 'Electrons in Crystals':
+        key = 'bands'
+    elif title == 'Crystal':
         key = 'lattice'
     elif title == 'Oscillator Model':
         key = 'oscillator'
@@ -31,6 +33,7 @@ def diagram(topic, title=''):
         'light-and-matter': 'An incident field drives a bound charge, producing a material response.',
         'oscillator': 'A driven bound charge modeled as a mass on a spring.',
         'response': 'An incoming wave meets matter and emerges with a changed phase.',
+        'bands': 'Electronic energy bands arise from states in a periodic crystal.',
         'lattice': 'A periodic crystal lattice with a delocalized electronic wave.',
         'quantum-optics': 'A coherent state represented by a minimum-uncertainty region in quadrature space.',
         'open-quantum-systems': 'A quantum system exchanges energy and information with its environment.',
@@ -51,6 +54,8 @@ def diagram(topic, title=''):
         art = '<path class="art-axis" d="M60 50V150M48 55l12-5m-12 25 12-5m-12 25 12-5m-12 25 12-5m-12 25 12-5"/><path d="M60 100h20l10-18 18 36 18-36 18 36 18-36 18 36 10-18h22"/><circle cx="229" cy="100" r="17"/><path class="art-secondary" d="M265 100h63m-8-5 8 5-8 5"/>' + label(206,151,'charge') + label(264,75,'drive') + label(90,191,'motion → response')
     elif key == 'response':
         art = wave(105,26) + '<path class="art-secondary" d="M142 35V173M219 35V173"/><path class="art-axis" d="M143 173h75"/>' + label(154,194,'matter')
+    elif key == 'bands':
+        art = '<path class="art-axis" d="M35 170H330M45 185V25"/><path d="M60 58Q180 155 315 58M60 150Q180 53 315 150"/>' + label(20,33,'E') + label(315,191,'k')
     elif key == 'lattice':
         for x in (55,115,175,235,295):
             for y in (55,105,155):
