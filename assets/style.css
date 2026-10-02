@@ -324,3 +324,157 @@ kbd { font: 10px ui-monospace, monospace; color: var(--muted); border: 1px solid
 [data-theme="dark"] .pdf-surface canvas { filter: invert(.9) hue-rotate(180deg); }
 [data-theme="dark"] select option { background: var(--paper); color: var(--ink); }
 @media (max-width: 620px) { .header-inner nav { gap: 15px; flex-wrap: wrap; } .theme-toggle { font-size: 13px; padding: 4px 9px; } }
+
+/* Preview: optional ink-only projection, with no rectangular page surface. */
+.pdf-reader[data-floating="true"], .pdf-reader[data-floating="true"] .pdf-surface { background: transparent; }
+.pdf-reader[data-floating="true"] { border-color: transparent; }
+.pdf-floating-toggle { white-space: nowrap; }
+.pdf-floating-toggle[aria-pressed="true"] { border-color: var(--accent); color: var(--accent); }
+.pdf-reader[data-floating="true"] canvas { mix-blend-mode: normal; filter: drop-shadow(0 3px 3px #00000020); }
+[data-theme="dark"] .pdf-reader[data-floating="true"] canvas { filter: invert(1) hue-rotate(180deg) drop-shadow(0 0 5px #e5b96935); }
+.pdf-reader[data-floating="true"] .pdf-surface { padding: 12px 0; }
+@media (max-width: 620px) { .pdf-controls { flex-wrap: wrap; } }
+
+/* Preview: a full-window reading plane with luminous foreground ink. */
+body.ink-immersive { overflow: hidden; }
+.pdf-reader[data-immersive="true"] {
+  position: fixed; inset: 0; z-index: 40; margin: 0; border: 0;
+  display: flex; flex-direction: column; color: #e9ddc7;
+  background: radial-gradient(ellipse at 50% 22%, #3b3024 0%, #222121 44%, #13171b 100%);
+}
+.pdf-reader[data-immersive="true"] .pdf-controls {
+  flex-shrink: 0; padding: 14px 24px; border: 0; border-bottom: 1px solid #d5b77e25;
+  background: #171a1dec; color: #e9ddc7;
+}
+.pdf-reader[data-immersive="true"] .pdf-controls button,
+.pdf-reader[data-immersive="true"] .pdf-controls select { color: #e9ddc7; border-color: #d5b77e40; }
+.pdf-reader[data-immersive="true"] .pdf-controls select option { background: #222121; color: #e9ddc7; }
+.pdf-reader[data-immersive="true"] [data-pdf-status] { text-align: center; color: #b9ad99; margin: 10px; }
+.pdf-reader[data-immersive="true"] .pdf-surface {
+  flex: 1; min-height: 0; overflow: auto; padding: 12px max(20px, calc((100vw - 1150px)/2)) 70px;
+  background: transparent;
+}
+.pdf-reader[data-immersive="true"][data-floating="true"] .pdf-surface canvas {
+  margin: 0 auto; transform: perspective(1800px) rotateX(.7deg); transform-origin: center top;
+  filter: drop-shadow(0 0 1px #fff7e5a0) drop-shadow(0 0 7px #e4b25650) drop-shadow(0 10px 18px #00000050);
+}
+@media (max-width: 620px) {
+  .pdf-reader[data-immersive="true"] .pdf-controls { padding: 10px; gap: 8px; }
+  .pdf-reader[data-immersive="true"] .pdf-surface { padding-left: 12px; padding-right: 12px; }
+}
+@media (prefers-reduced-motion: reduce) { .pdf-reader[data-immersive="true"] .pdf-surface canvas { transform: none; } }
+
+/* Preview: stroke-shaped depth planes, rather than a tilted rectangular page. */
+.ink-depth-stage { position: relative; margin: 0 auto; }
+.ink-depth-shadow, .ink-depth-edge { display: none !important; }
+.pdf-reader[data-immersive="true"][data-depth="true"] .pdf-surface { perspective: 1500px; perspective-origin: 50% 25%; padding-top: 28px; }
+.pdf-reader[data-immersive="true"][data-depth="true"] .ink-depth-stage {
+  transform-style: preserve-3d;
+  transform: rotateX(var(--ink-tilt-x, 5deg)) rotateY(var(--ink-tilt-y, -7deg));
+  transform-origin: center 25%; transition: transform .25s ease-out;
+}
+.pdf-reader[data-immersive="true"][data-depth="true"] .ink-depth-stage > canvas {
+  position: absolute; top: 0; left: 0; margin: 0;
+}
+.pdf-reader[data-immersive="true"][data-depth="true"] .ink-depth-stage > canvas:not(.ink-depth-shadow):not(.ink-depth-edge) {
+  transform: translateZ(48px);
+  filter: drop-shadow(1px 1px 0 #b88137) drop-shadow(2px 2px 0 #a26d2c) drop-shadow(3px 3px 0 #8d5b25) drop-shadow(4px 4px 1px #68431f) drop-shadow(0 0 3px #fff6d666) drop-shadow(0 0 12px #e9b65a30);
+}
+.pdf-reader[data-immersive="true"][data-depth="true"] .ink-depth-stage > .ink-depth-edge {
+  display: block !important; transform: translate3d(5px, 8px, 34px); opacity: .85; filter: none;
+}
+.pdf-reader[data-immersive="true"][data-depth="true"] .ink-depth-stage > .ink-depth-shadow {
+  display: block !important; transform: translate3d(15px, 23px, -24px); opacity: .65; filter: blur(4px);
+}
+@media (prefers-reduced-motion: reduce) {
+  .pdf-reader[data-immersive="true"][data-depth="true"] .ink-depth-stage { transition: none; transform: rotateY(-4deg); }
+}
+
+/* Three places to read: daylight paper, night paper, and a moonlit sanctuary. */
+.theme-select { font: 13px Arial, sans-serif; color: var(--ink); background: var(--paper); border: 1px solid var(--line); padding: 8px 12px; cursor: pointer; border-radius: 0; }
+.theme-select:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; }
+:root[data-theme="wuxia"] {
+  color-scheme: dark;
+  --paper: #13232d; --ink: #efdfba; --body: #d9dfdb; --muted: #b0bec0;
+  --line: #b99a594a; --accent: #efd08b; --sage: #13232d;
+  background: #0b1622 url('assets/scenes/wuxia-landscape.svg') center bottom / cover fixed;
+}
+[data-theme="wuxia"] body {
+  background-color: #10212de6; background-image: none;
+  border: 1px solid #c9a45a65; box-shadow: 0 0 0 7px #08172250, 0 22px 90px #00000065;
+  position: relative;
+}
+[data-theme="wuxia"] body::before {
+  content: ''; position: absolute; inset: 8px; border: 1px solid #c4a25b25;
+  pointer-events: none; z-index: 0;
+}
+[data-theme="wuxia"] .site-header { background: #0c1a2380; border-bottom: 1px solid #c9a45a65; }
+[data-theme="wuxia"] .brand { color: #f0d498; }
+[data-theme="wuxia"] .initial { color: #f6d796; text-shadow: 0 0 17px #e2ae4535; }
+[data-theme="wuxia"] .hero h1 em { color: #d9e8e4; }
+[data-theme="wuxia"] .hero { position: relative; padding-top: 35px; }
+[data-theme="wuxia"] .hero::before { content: 'A PLACE TO CULTIVATE UNDERSTANDING'; position: absolute; top: -12px; left: 0; font: 10px Arial, sans-serif; letter-spacing: 3px; color: #d4b474; }
+[data-theme="wuxia"] .margin-note {
+  min-height: 290px; padding: 35px 25px; border: 1px solid #c9a45a50;
+  background: linear-gradient(#0b1b2455,#10212d55), url('assets/scenes/wuxia-landscape.svg') 72% center / auto 115%;
+  box-shadow: inset 0 0 60px #07131e80;
+}
+[data-theme="wuxia"] .margin-note .handwritten { color: #fff0cc; text-shadow: 0 2px 8px #07131e, 0 0 15px #e8b35c60; }
+[data-theme="wuxia"] .margin-note p:not(.handwritten), [data-theme="wuxia"] .margin-note .page-number { color: #dbe1d7; text-shadow: 0 1px 4px #000; }
+[data-theme="wuxia"] h2 { color: #ead5a9; }
+[data-theme="wuxia"] .eyebrow, [data-theme="wuxia"] .kicker { color: #d4b474; }
+[data-theme="wuxia"] .button { background: #d7b46d; color: #10202a; border-color: #e5c789; }
+[data-theme="wuxia"] .button:hover { background: #f0d59c; color: #10202a; }
+[data-theme="wuxia"] .theme-select { background: #0d1c26; border-color: #b99a5980; color: #f0d59c; }
+[data-theme="wuxia"] .topic-card { border-top-color: #c8aa6650; }
+[data-theme="wuxia"] .topic-card h3 a:hover { text-shadow: 0 0 12px #e2b45a55; }
+[data-theme="wuxia"] .symbol, [data-theme="wuxia"] .dot { color: #91ccd6; }
+[data-theme="wuxia"] .dot { background: #91ccd6; box-shadow: 0 0 8px #91ccd650; }
+[data-theme="wuxia"] .dot.planned { background: #b2a077; box-shadow: none; }
+[data-theme="wuxia"] .thread-input { background: #09172166; border-color: #d5b77e55; }
+[data-theme="wuxia"] .lead-card { background: linear-gradient(125deg,#ccb27208,#8fc6ce08); border-color: #d5b77e50; position: relative; }
+[data-theme="wuxia"] .lead-card::after { content: ''; position: absolute; right: 8px; top: 8px; width: 15px; height: 15px; border-top: 1px solid #d5b77e70; border-right: 1px solid #d5b77e70; pointer-events: none; }
+[data-theme="wuxia"] .lead-card:hover, [data-theme="wuxia"] #thread-options button:hover, [data-theme="wuxia"] #thread-options button:focus-visible { background: #d5b77e12; }
+[data-theme="wuxia"] .lead-number, [data-theme="wuxia"] .lead-action { color: #e6c581; }
+[data-theme="wuxia"] .trail-steps { border-color: #d5b77e70; }
+[data-theme="wuxia"] .trail-steps li::before { background: #e3bc6b; box-shadow: 0 0 10px #e3bc6b70; border-color: #e3bc6b; }
+[data-theme="wuxia"] .notice, [data-theme="wuxia"] .reading-note { background: #8bb6c40d; border-left-color: #d4b474; }
+[data-theme="wuxia"] .note-popover, [data-theme="wuxia"] #notebook-search { background: #10212df5; border-color: #c9a45a80; box-shadow: 0 15px 65px #00000070; }
+[data-theme="wuxia"] #notebook-search::backdrop { background: #030b14b0; backdrop-filter: blur(4px); }
+[data-theme="wuxia"] #search-query { background: #081822; color: var(--ink); border-color: #c9a45a70; }
+[data-theme="wuxia"] #search-results a:hover, [data-theme="wuxia"] #search-results a:focus-visible { background: #d5b77e0f; }
+[data-theme="wuxia"] .publication .year { color: #d4b474; }
+[data-theme="wuxia"] .pdf-reader, [data-theme="wuxia"] .pdf-controls, [data-theme="wuxia"] .pdf-surface { background: #0d1d26; }
+[data-theme="wuxia"] .pdf-surface canvas { filter: invert(.9) hue-rotate(180deg); }
+[data-theme="wuxia"] .pdf-reader[data-floating="true"], [data-theme="wuxia"] .pdf-reader[data-floating="true"] .pdf-surface { background: transparent; }
+[data-theme="wuxia"] .pdf-reader[data-floating="true"] .ink-depth-stage > canvas { filter: drop-shadow(0 0 5px #efc66c30); }
+[data-theme="wuxia"] .pdf-reader[data-immersive="true"] {
+  background: linear-gradient(#081622db,#101d28ee), url('assets/scenes/wuxia-landscape.svg') center / cover;
+}
+@media (max-width: 620px) {
+  .header-inner nav { gap: 13px; flex-wrap: wrap; }
+  .theme-select { padding: 6px 8px; }
+  [data-theme="wuxia"] body::before { inset: 5px; }
+  [data-theme="wuxia"] .hero::before { font-size: 9px; letter-spacing: 1.8px; }
+  [data-theme="wuxia"] .margin-note { margin-left: 0; }
+}
+
+/* Preserve source ink colors; neutral handwriting becomes white on dark surfaces. */
+.pdf-reader[data-floating="true"] .ink-depth-stage > canvas:not(.ink-depth-shadow):not(.ink-depth-edge) {
+  filter: none; transform: none;
+}
+.pdf-reader[data-immersive="true"][data-depth="true"] .ink-depth-stage > canvas:not(.ink-depth-shadow):not(.ink-depth-edge) {
+  transform: translateZ(48px);
+  filter: drop-shadow(1px 1px 0 #53545c) drop-shadow(2px 2px 0 #363943) drop-shadow(3px 3px 1px #242832);
+}
+/* A close, soft shadow gives lift without a second readable ink silhouette. */
+.pdf-reader[data-immersive="true"] .ink-depth-stage > .ink-depth-shadow { display: none !important; }
+.pdf-reader[data-immersive="true"][data-shading="true"] .ink-depth-stage > canvas:not(.ink-depth-shadow):not(.ink-depth-edge) {
+  filter: drop-shadow(0 2px 2px #0009) drop-shadow(0 0 5px #0006);
+}
+.pdf-reader[data-immersive="true"][data-depth="true"][data-shading="true"] .ink-depth-stage > canvas:not(.ink-depth-shadow):not(.ink-depth-edge) {
+  filter: drop-shadow(1px 1px 0 #53545c) drop-shadow(2px 2px 0 #363943) drop-shadow(3px 3px 1px #242832) drop-shadow(0 2px 3px #0008);
+}
+.ink-amplified { position: absolute; top: 0; left: 0; pointer-events: none; }
+.ink-amplified[hidden] { display: none !important; }
+.pdf-reader[data-amplified="true"] .ink-source { visibility: hidden; }

@@ -1,24 +1,24 @@
 (() => {
   const root = document.documentElement;
+  const themes = ['light', 'dark', 'wuxia'];
   const forced = new URL(location.href).searchParams.get('theme');
   let saved;
-  try { saved = localStorage.getItem('notebook-theme'); } catch (_) {}
-  const initial = ['dark', 'light'].includes(forced) ? forced : saved === 'dark' ? 'dark' : 'light';
+  try {saved = localStorage.getItem('notebook-theme');} catch (_) {}
+  const initial = themes.includes(forced) ? forced : themes.includes(saved) ? saved : 'light';
   root.dataset.theme = initial;
+  if (themes.includes(forced)) {try {localStorage.setItem('notebook-theme', initial);} catch (_) {}}
   function apply(theme) {
     root.dataset.theme = theme;
-    const button = document.querySelector('[data-theme-toggle]');
-    if (button) {
-      button.textContent = theme === 'dark' ? 'Light' : 'Dark';
-      button.setAttribute('aria-label', `Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`);
-    }
+    const picker = document.querySelector('[data-theme-select]');
+    if (picker) picker.value = theme;
   }
   document.addEventListener('DOMContentLoaded', () => {
     apply(initial);
-    document.querySelector('[data-theme-toggle]')?.addEventListener('click', () => {
-      const theme = root.dataset.theme === 'dark' ? 'light' : 'dark';
+    document.querySelector('[data-theme-select]')?.addEventListener('change', event => {
+      const theme = event.target.value;
+      if (!themes.includes(theme)) return;
       apply(theme);
-      try { localStorage.setItem('notebook-theme', theme); } catch (_) {}
+      try {localStorage.setItem('notebook-theme', theme);} catch (_) {}
       const url = new URL(location.href);
       if (url.searchParams.has('theme')) {url.searchParams.set('theme', theme); history.replaceState(null, '', url);}
     });
