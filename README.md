@@ -223,3 +223,12 @@ website does not use them or delete their data.
 node --test tests/review-schedule.test.mjs
 python -m unittest discover -s tests -v
 ```
+
+## Optional reading music
+
+A small player appears on every page with play/pause and volume controls. It
+starts off, loads the locally hosted MP3 only after Play, and repeats Satie's
+Gymnopédie No. 1. The recording is CC0; source and licence are recorded in
+`assets/audio/CREDITS.md`. Playback continues within a review session or PDF
+reader. Navigating to a different page stops playback; the new page starts off.
+No external music service, account, or tracking is used.
