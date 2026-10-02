@@ -524,3 +524,17 @@ body:not(.ink-immersive):not(.music-reading-shell){max-width:calc(100vw - 280px)
 .notebook-list.numbered li{grid-template-columns:36px minmax(0,1fr);gap:20px}
 .notebook-order{font:12px/1.5 Arial,sans-serif;letter-spacing:1px;color:var(--muted);padding-top:7px;font-variant-numeric:tabular-nums}
 @media(max-width:620px){.notebook-list.numbered li{grid-template-columns:26px minmax(0,1fr);gap:12px}}
+
+/* Schematic ink drawings use the same paper, with no separate illustration box. */
+.illustrated-heading{display:grid;grid-template-columns:minmax(0,1fr) 280px;gap:36px;align-items:center;margin-bottom:40px}
+.illustrated-heading .page-intro,.illustrated-heading .chapter-header{margin-bottom:0;max-width:none}
+.topic-heading-symbol{font:26px/1 Georgia,serif;vertical-align:middle;color:var(--accent);margin-left:8px;letter-spacing:0}
+.topic-art{position:relative;margin:0;color:var(--ink);isolation:isolate}
+.topic-art svg{display:block;width:100%;height:auto;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+.topic-art-symbol{position:absolute;right:8px;top:-26px;font:90px/1 Georgia,serif;color:var(--accent);opacity:.4;z-index:-1}
+.topic-art .art-secondary{color:var(--accent);stroke:var(--accent)}
+.topic-art .art-axis{opacity:.45;stroke-width:1}
+.topic-art .art-label{fill:var(--muted);stroke:none;font:13px Georgia,serif}
+.topic-art .art-area{fill:var(--accent);fill-opacity:.10;stroke:none}
+@media(max-width:1000px){.illustrated-heading{grid-template-columns:minmax(0,1fr) 220px;gap:24px}}
+@media(max-width:700px){.illustrated-heading{grid-template-columns:1fr;gap:28px;margin-bottom:30px}.topic-art{width:220px;justify-self:end}.topic-art-symbol{font-size:75px;top:-12px}}

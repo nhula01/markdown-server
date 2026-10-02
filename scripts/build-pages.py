@@ -32,7 +32,7 @@ shutil.rmtree(out / 'assets/vendor/supabase', ignore_errors=True)
 # otherwise retain an old stylesheet URL when reached through the menu.
 site_version = hashlib.sha256(b''.join(
     (Path(app.__file__).parent / name).read_bytes()
-    for name in ['review_content.py', 'assets/margin-reminders.json', 'assets/margin-equations.js', 'assets/music.js', 'assets/review.js', 'assets/review-schedule.mjs', 'app.py', 'site_content.py', 'chapter_content.py', 'lead_content.py', 'site/leads.md', 'assets/leads.js', 'assets/theme.js', 'assets/style.css', 'assets/math.js', 'assets/search.js', 'assets/pdf-reader.js', 'site/catalog.json', 'site/chapters.json', 'scripts/build-pages.py']
+    for name in ['topic_art.py', 'review_content.py', 'assets/margin-reminders.json', 'assets/margin-equations.js', 'assets/music.js', 'assets/review.js', 'assets/review-schedule.mjs', 'app.py', 'site_content.py', 'chapter_content.py', 'lead_content.py', 'site/leads.md', 'assets/leads.js', 'assets/theme.js', 'assets/style.css', 'assets/math.js', 'assets/search.js', 'assets/pdf-reader.js', 'site/catalog.json', 'site/chapters.json', 'scripts/build-pages.py']
 )
   + b''.join(name.encode() + hashlib.sha256(app.resolve(name, root).read_bytes()).digest()
             for root, names in [(app.ROOT, app.files()), (app.PDF_ROOT, app.pdf_files())]

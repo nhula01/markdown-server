@@ -140,10 +140,10 @@ def viewer(name, url, names, metadata=None):
     tags = ''.join(f'<span>{escape(tag)}</span>' for tag in chapter.get('tags', []))
     return f'''<article class="chapter">
         <div class="breadcrumbs"><a href="{parent}">← {escape(parent_title)}</a></div>
-        <header class="chapter-header"><p class="eyebrow">{escape(parent_title)} / {sequence}</p><h1>{escape(stem)}</h1>
+        <div class="illustrated-heading"><header class="chapter-header"><p class="eyebrow">{escape(parent_title)} / {sequence}</p><h1>{escape(stem)}</h1>
         <p class="lead">{escape(chapter.get('question', 'A handwritten working notebook.'))}</p>
         <div class="chapter-meta">{'<span aria-hidden="true"> · </span>'.join(facts)}</div>
-        <div class="actions"><a class="button" href="#handwritten-notes">Read handwritten notes ↓</a><a class="section-link" href="#connections">Follow the connections →</a></div></header>
+        <div class="actions"><a class="button" href="#handwritten-notes">Read handwritten notes ↓</a><a class="section-link" href="#connections">Follow the connections →</a></div></header>{site_content.diagram(topic, stem)}</div>
         <div class="chapter-layout"><aside class="chapter-sidebar" aria-label="Chapter contents"><h2>In this note</h2>{contents}
         <nav aria-label="Chapter context">{guide_link}<a href="#connections">Key connections</a><a href="#follow-lead">Follow a lead</a></nav><div class="chapter-tags">{tags}</div></aside>
         <div class="chapter-main"><section id="handwritten-notes" class="handwriting"><div class="pdf-toolbar"><span class="kicker">The handwritten source</span><a href="{escape(url, quote=True)}">Open PDF ↗</a></div>
