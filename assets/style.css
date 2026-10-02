@@ -503,3 +503,5 @@ body:not(.ink-immersive):not(.music-reading-shell){max-width:calc(100vw - 280px)
 .header-icon:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
 [data-theme="dark"] .bulb-rays{display:none}
 [data-theme="light"] [data-theme-toggle] svg{fill:var(--paper)}
+
+.margin-note .notebook-motto{font-size:clamp(26px,2.2vw,34px);line-height:1.4}
