@@ -226,9 +226,8 @@ python -m unittest discover -s tests -v
 
 ## Optional reading music
 
-A single circular play/pause button appears in the corner of every page. The
-button gently pulses with the recording’s amplitude, including immersive reading.
-Reduced-motion preferences disable the pulse.
+A single, still circular play/pause button appears in the corner of every page,
+including immersive reading.
 Playback starts off at a quiet 20% level, loads the locally hosted MP3 only after
 Play, and repeats Satie's
 Gymnopédie No. 1. The recording is CC0; source and licence are recorded in

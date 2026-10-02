@@ -436,12 +436,8 @@ body.ink-immersive { overflow: hidden; }
 .review-daily-list{list-style:none;padding:0;display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin:1.5rem 0}.review-daily-list li{border-top:1px solid var(--line);padding:1rem 0}.review-daily-list strong,.review-daily-list span{display:block}.review-daily-list span{font-size:.8rem;color:var(--muted);margin-top:.4rem}.review-upcoming{margin-bottom:1.5rem}.review-upcoming ol{list-style:none;padding:0}.review-upcoming li{display:flex;flex-wrap:wrap;gap:.5rem 1rem;padding:.75rem 0;border-bottom:1px solid var(--line);font-size:.85rem}.review-upcoming strong{min-width:4rem}@media(max-width:620px){.review-daily-list{grid-template-columns:1fr}}
 
 /* A quiet, optional player that follows the paper's light/dark appearance. */
-/* Only the button moves, responding to the recording’s amplitude. */
 .reading-music{position:fixed;right:16px;bottom:max(14px,env(safe-area-inset-bottom));z-index:45;line-height:1}
 .reading-music button{display:grid;place-items:center;width:38px;height:38px;padding:0;border:1px solid var(--line);border-radius:50%;background:var(--paper);color:var(--muted);box-shadow:0 2px 8px #00000010;cursor:pointer;font:14px Arial,Helvetica,sans-serif}
 .reading-music button[aria-pressed=true]{color:var(--accent);border-color:var(--accent)}
 .reading-music button:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
 .music-status{position:absolute;width:1px;height:1px;padding:0;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
- .reading-music button{transform:scale(var(--music-scale,1));transition:transform 80ms linear,box-shadow 80ms linear}
-.reading-music button[aria-pressed=true]{box-shadow:0 0 0 var(--music-halo,2px) color-mix(in srgb,var(--accent) 13%,transparent)}
-@media(prefers-reduced-motion:reduce){.reading-music button{transform:none;transition:none}.reading-music button[aria-pressed=true]{box-shadow:none}}
