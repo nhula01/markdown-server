@@ -105,12 +105,10 @@ def notes(names, documents=()):
 
 def topic_page(topic, names):
     available = topic_notes(topic, names)
-    current = ('<p class="muted">A suggested reading order. Hover over a title, or open its reading guide, for the intuitive starting point.</p>' + notebook_list(available)) if available else '<h2>Notes to come</h2><p>This topic is part of the planned collection. Its outline is a guide to future notes; there are no published notebooks here yet.</p>'
-    outline = ''.join(f'<li>{escape(item)}</li>' for item in topic['outline'])
+    current = notebook_list(available) if available else '<p class="muted">No notebooks published yet.</p>'
     return f'''<div class="breadcrumbs"><a href="/notes/">Notes</a> / {escape(topic['title'])}</div>
-        <header class="page-intro"><p class="eyebrow">Topic {TOPICS.index(topic)+1:02d} · <span aria-hidden="true">{topic['symbol']}</span></p><h1>{escape(topic['title'])}</h1><p class="lead">{escape(topic['question'])}</p><p>{escape(topic['description'])}</p><div class="meta">{topic_status(topic, names)}</div></header>
-        <div class="topic-detail"><section>{current}</section><aside><h2>The path through</h2><p class="muted">An evolving outline for this topic.</p><ol class="outline">{outline}</ol>
-        <div class="reading-note"><h3>Useful starting points</h3><p>{escape(topic['prerequisites'])}</p><p>Each future note will begin with a physical question, develop an intuitive picture, and then connect it to the essential equations.</p></div></aside></div>'''
+        <header class="page-intro"><p class="eyebrow">Topic {TOPICS.index(topic)+1:02d} · <span aria-hidden="true">{topic['symbol']}</span></p><h1>{escape(topic['title'])}</h1><p class="lead">{escape(topic['question'])}</p></header>
+        <section aria-label="Notebooks in reading order">{current}</section>'''
 
 
 def research(embedded=False):
