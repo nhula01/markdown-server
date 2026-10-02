@@ -242,8 +242,14 @@ music. No external music service, account, or tracking is used.
 
 ## Physics in the margins
 
-On screens at least 1540px wide, ten foundational equations alternate quietly
-between the empty outer margins. Each is typeset with local KaTeX and scales to
-fit outside the 1200px paper. The decoration never intercepts clicks, and is
-hidden on smaller screens, during immersive reading, and for reduced-motion
-preferences. Edit the labelled equations in `assets/margin-equations.js`.
+On screens at least 1540px wide, curated equation-and-intuition reminders overlap
+in the empty outer margins. Four independent positions start six seconds apart;
+each stays for 38 seconds and refreshes every 44 seconds. Short windows use two
+positions. Reminders hide during immersive reading and for reduced-motion settings.
+
+`assets/margin-reminders.json` contains 22 curated reminders based on selected
+Obsidian learning notes, with source-note titles for provenance. Only this public
+collection is deployed; the private vault and its unrelated content are not copied.
+These are concise display explanations, separate from the unchanged verbatim
+Optimum reading guides. The renderer uses local KaTeX, fits formulas to the margin,
+and pauses its timers when the tab is hidden.

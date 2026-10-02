@@ -454,13 +454,17 @@ body.ink-immersive { overflow: hidden; }
 @media(min-width:1540px){
 .margin-equations{display:block}
 .margin-equation{position:fixed;width:calc((100vw - 1200px)/2 - 32px);max-width:240px;color:var(--muted);text-align:center;opacity:0;pointer-events:none}
-.margin-equation-left{left:16px;top:34vh}
-.margin-equation-right{right:16px;top:59vh}
+.margin-equation:nth-child(1){left:16px;top:20vh}
+.margin-equation:nth-child(2){right:16px;top:27vh}
+.margin-equation:nth-child(3){left:16px;top:62vh}
+.margin-equation:nth-child(4){right:16px;top:69vh}
 .margin-equation-label{display:block;font:9px/1.5 Arial,sans-serif;letter-spacing:1.3px;text-transform:uppercase;margin-bottom:12px}
 .margin-equation-math{display:block;font-size:clamp(12px,1vw,17px)}
 .margin-equation .katex-display{margin:0}
-.margin-equation.equation-visible{animation:margin-equation-appear 11s ease-in-out both}
+.margin-equation.equation-visible{animation:margin-equation-appear 38s ease-in-out both}
 .ink-immersive .margin-equations{display:none}
 }
-@keyframes margin-equation-appear{0%{opacity:.25;transform:translateY(4px)}18%,65%{opacity:.5;transform:translateY(0)}90%,100%{opacity:0;transform:translateY(-2px)}}
+@keyframes margin-equation-appear{0%{opacity:.25;transform:translateY(4px)}10%,82%{opacity:.65;transform:translateY(0)}100%{opacity:0;transform:translateY(-2px)}}
 @media(prefers-reduced-motion:reduce){.margin-equations{display:none}}
+
+.margin-equation-intuition{display:block;margin-top:14px;font:13px/1.6 Georgia,serif;color:var(--body)}
