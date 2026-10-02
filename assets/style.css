@@ -448,3 +448,19 @@ body.ink-immersive { overflow: hidden; }
 .music-reading-frame{position:fixed;inset:0;width:100%;height:100%;height:100dvh;border:0;z-index:40;background:var(--paper)}
 .music-reading-shell{overflow:hidden}
 .music-reading-shell> :not(.reading-music):not(.music-reading-frame){display:none!important}
+
+/* Occasional equations occupy only the space outside the paper. */
+.margin-equations{display:none;pointer-events:none}
+@media(min-width:1540px){
+.margin-equations{display:block}
+.margin-equation{position:fixed;width:calc((100vw - 1200px)/2 - 32px);max-width:240px;color:var(--muted);text-align:center;opacity:0;pointer-events:none}
+.margin-equation-left{left:16px;top:34vh}
+.margin-equation-right{right:16px;top:59vh}
+.margin-equation-label{display:block;font:9px/1.5 Arial,sans-serif;letter-spacing:1.3px;text-transform:uppercase;margin-bottom:12px}
+.margin-equation-math{display:block;font-size:clamp(12px,1vw,17px)}
+.margin-equation .katex-display{margin:0}
+.margin-equation.equation-visible{animation:margin-equation-appear 11s ease-in-out both}
+.ink-immersive .margin-equations{display:none}
+}
+@keyframes margin-equation-appear{0%{opacity:.25;transform:translateY(4px)}18%,65%{opacity:.5;transform:translateY(0)}90%,100%{opacity:0;transform:translateY(-2px)}}
+@media(prefers-reduced-motion:reduce){.margin-equations{display:none}}

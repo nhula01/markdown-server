@@ -239,3 +239,11 @@ history work inside the frame while the same audio element keeps playing. The
 visible URL and theme follow the reading page. Embedded pages omit their own
 player, preventing duplicate playback. Reloading or leaving the website stops
 music. No external music service, account, or tracking is used.
+
+## Physics in the margins
+
+On screens at least 1540px wide, ten foundational equations alternate quietly
+between the empty outer margins. Each is typeset with local KaTeX and scales to
+fit outside the 1200px paper. The decoration never intercepts clicks, and is
+hidden on smaller screens, during immersive reading, and for reduced-motion
+preferences. Edit the labelled equations in `assets/margin-equations.js`.
