@@ -90,7 +90,7 @@ class PagesTests(unittest.TestCase):
             self.assertLess(matter.index('/notebooks/Obsidian/Crystal.pdf/'),
                             matter.index('/notebooks/Obsidian/Electrons%20in%20Crystals.pdf/'))
             quantum = (out / 'notes/quantum-optics/index.html').read_text()
-            self.assertIn('no published notebooks here yet', quantum)
+            self.assertIn('No notebooks published yet.', quantum)
             self.assertNotIn('<iframe', quantum)
             import json
             index = json.loads((out / 'search-index.json').read_text())
