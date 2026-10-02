@@ -69,7 +69,7 @@ def related_notes(title, names):
 
 def explorer():
     return '''<section id="follow-thread" class="section thread-explorer" aria-labelledby="thread-title">
-    <h2 id="thread-title">Follow a thread</h2><p class="lead">Choose a note. See where the idea leads.</p>
+    <h2 id="thread-title">Follow a thread where the idea leads</h2>
     <div class="thread-picker"><label for="thread-query">Where do you want to start?</label>
     <div class="thread-input"><input id="thread-query" type="search" autocomplete="off" placeholder="Search notes, ideas, or tags…" aria-controls="thread-options"><button type="button" id="thread-clear" aria-label="Choose another starting note" hidden>×</button></div>
     <p id="thread-status" class="muted" role="status" aria-live="polite">Loading starting notes…</p>
