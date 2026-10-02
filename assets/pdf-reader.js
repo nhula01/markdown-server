@@ -1,8 +1,9 @@
-import * as pdfjs from './vendor/pdfjs-6.3.289/build/pdf.min.mjs';
+async function initializeReader() {
+const pdfjs = await import('./vendor/pdfjs-6.3.289/build/pdf.min.mjs?build=legacy');
 
 const reader = document.querySelector('.pdf-reader');
 const vendor = new URL('./vendor/pdfjs-6.3.289/', import.meta.url);
-pdfjs.GlobalWorkerOptions.workerSrc = new URL('build/pdf.worker.min.mjs', vendor).href;
+pdfjs.GlobalWorkerOptions.workerSrc = new URL('build/pdf.worker.min.mjs?build=legacy', vendor).href;
 const canvas = reader.querySelector('canvas');
 const surface = reader.querySelector('.pdf-surface');
 const depthStage = document.createElement('div'); depthStage.className = 'ink-depth-stage';
@@ -208,7 +209,10 @@ async function render(number) {
     const availableWidth = surface.clientWidth - parseFloat(surfaceStyle.paddingLeft) - parseFloat(surfaceStyle.paddingRight) - 2;
     const fit = availableWidth / page.getViewport({scale: 1}).width;
     const viewport = page.getViewport({scale: fit * zoom});
-    const density = Math.min(window.devicePixelRatio || 1, 2);
+    // Keep a single page below mobile Safari's canvas area and dimension limits.
+    const density = Math.min(window.devicePixelRatio || 1, 2,
+      Math.sqrt(8_000_000 / (viewport.width * viewport.height)),
+      4096 / Math.max(viewport.width, viewport.height));
     canvas.width = Math.ceil(viewport.width * density);
     canvas.height = Math.ceil(viewport.height * density);
     canvas.style.width = `${viewport.width}px`;
@@ -290,3 +294,10 @@ try {
 new MutationObserver(() => {
   if (documentPDF) render(requestedPage);
 }).observe(document.documentElement, {attributes: true, attributeFilter: ['data-theme']});
+
+}
+initializeReader().catch(error => {
+  console.error('Unable to initialize handwritten PDF reader:', error);
+  const status = document.querySelector('[data-pdf-status]');
+  if (status) status.textContent = 'The reader could not load in this browser. Use Open PDF to read the original.';
+});
