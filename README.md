@@ -226,11 +226,16 @@ python -m unittest discover -s tests -v
 
 ## Optional reading music
 
-A single, still circular play/pause button appears in the corner of every page,
-including immersive reading.
-Playback starts off at a quiet 20% level, loads the locally hosted MP3 only after
-Play, and repeats Satie's
-Gymnopédie No. 1. The recording is CC0; source and licence are recorded in
-`assets/audio/CREDITS.md`. Playback continues within a review session or PDF
-reader. Navigating to a different page stops playback; the new page starts off.
-No external music service, account, or tracking is used.
+A still play/pause button appears in the corner, including immersive reading.
+Playback starts off at a quiet 20% level and loads music only after Play. A small
+next-song button skips through Satie's Gymnopédie No. 1, Beethoven's Moonlight
+Sonata (first movement), and Chopin's Prelude Op. 28 No. 17. The playlist advances
+and repeats automatically. Sources, performers, and licences are in
+`assets/audio/CREDITS.md`; Musopen is credited in the page footer.
+
+After Play, the first section change creates a persistent audio shell around a
+same-origin reading frame, keeping the current review untouched until navigation. Normal section navigation, search, PDF controls, and browser
+history work inside the frame while the same audio element keeps playing. The
+visible URL and theme follow the reading page. Embedded pages omit their own
+player, preventing duplicate playback. Reloading or leaving the website stops
+music. No external music service, account, or tracking is used.

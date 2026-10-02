@@ -441,3 +441,10 @@ body.ink-immersive { overflow: hidden; }
 .reading-music button[aria-pressed=true]{color:var(--accent);border-color:var(--accent)}
 .reading-music button:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
 .music-status{position:absolute;width:1px;height:1px;padding:0;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
+
+.reading-music{display:flex;align-items:center;gap:6px}
+.reading-music button[hidden]{display:none}
+.reading-music [data-music-next]{width:26px;height:26px;font-size:22px}
+.music-reading-frame{position:fixed;inset:0;width:100%;height:100%;height:100dvh;border:0;z-index:40;background:var(--paper)}
+.music-reading-shell{overflow:hidden}
+.music-reading-shell> :not(.reading-music):not(.music-reading-frame){display:none!important}
