@@ -22,8 +22,7 @@ const zoomIn = reader.querySelector('[data-pdf-zoom-in]');
 // Display-only cutout. Re-rendering restores the complete original page.
 let immersive = false, previousFloating;
 const floatingParam = new URL(location.href).searchParams.get('floating');
-let floatingChosen = floatingParam !== null;
-let floating = floatingParam === '1' || (floatingParam === null && document.documentElement.dataset.theme === 'wuxia');
+let floating = floatingParam === '1';
 const floatingToggle = document.createElement('button');
 floatingToggle.type = 'button'; floatingToggle.className = 'pdf-floating-toggle';
 floatingToggle.textContent = 'Floating ink'; floatingToggle.disabled = true;
@@ -238,7 +237,6 @@ async function render(number) {
 }
 
 floatingToggle.addEventListener('click', () => {
-  floatingChosen = true;
   floating = !floating;
   floatingToggle.setAttribute('aria-pressed', String(floating));
   if (documentPDF) render(requestedPage);
@@ -277,9 +275,5 @@ try {
 }
 
 new MutationObserver(() => {
-  if (!floatingChosen && !immersive) {
-    floating = document.documentElement.dataset.theme === 'wuxia';
-    floatingToggle.setAttribute('aria-pressed', String(floating));
-  }
   if (documentPDF) render(requestedPage);
 }).observe(document.documentElement, {attributes: true, attributeFilter: ['data-theme']});

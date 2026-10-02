@@ -25,13 +25,12 @@ out.mkdir(parents=True, exist_ok=True)
 # otherwise retain an old stylesheet URL when reached through the menu.
 site_version = hashlib.sha256(b''.join(
     (Path(app.__file__).parent / name).read_bytes()
-    for name in ['app.py', 'site_content.py', 'chapter_content.py', 'lead_content.py', 'site/leads.md', 'assets/leads.js', 'assets/theme.js', 'assets/scenes/wuxia-landscape.svg', 'assets/style.css', 'assets/math.js', 'assets/search.js', 'assets/pdf-reader.js', 'site/catalog.json', 'site/chapters.json', 'scripts/build-pages.py']
+    for name in ['app.py', 'site_content.py', 'chapter_content.py', 'lead_content.py', 'site/leads.md', 'assets/leads.js', 'assets/theme.js', 'assets/style.css', 'assets/math.js', 'assets/search.js', 'assets/pdf-reader.js', 'site/catalog.json', 'site/chapters.json', 'scripts/build-pages.py']
 )
   + b''.join(name.encode() + hashlib.sha256(app.resolve(name, root).read_bytes()).digest()
             for root, names in [(app.ROOT, app.files()), (app.PDF_ROOT, app.pdf_files())]
             for name in names)).hexdigest()[:16]
 (out / 'style.css').write_text(app.CSS)
-shutil.copytree(Path(app.__file__).parent / 'assets/scenes', out / 'assets/scenes', dirs_exist_ok=True)
 shutil.copytree(Path(app.__file__).parent / 'assets/fonts', out / 'assets/fonts', dirs_exist_ok=True)
 shutil.copytree(Path(app.__file__).parent / 'assets/vendor', out / 'assets/vendor', dirs_exist_ok=True)
 shutil.copyfile(Path(app.__file__).parent / 'assets/math.js', out / 'assets/math.js')

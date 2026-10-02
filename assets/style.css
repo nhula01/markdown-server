@@ -390,75 +390,9 @@ body.ink-immersive { overflow: hidden; }
   .pdf-reader[data-immersive="true"][data-depth="true"] .ink-depth-stage { transition: none; transform: rotateY(-4deg); }
 }
 
-/* Three places to read: daylight paper, night paper, and a moonlit sanctuary. */
+/* A persistent appearance menu for daylight and night paper. */
 .theme-select { font: 13px Arial, sans-serif; color: var(--ink); background: var(--paper); border: 1px solid var(--line); padding: 8px 12px; cursor: pointer; border-radius: 0; }
 .theme-select:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; }
-:root[data-theme="wuxia"] {
-  color-scheme: dark;
-  --paper: #13232d; --ink: #efdfba; --body: #d9dfdb; --muted: #b0bec0;
-  --line: #b99a594a; --accent: #efd08b; --sage: #13232d;
-  background: #0b1622 url('assets/scenes/wuxia-landscape.svg') center bottom / cover fixed;
-}
-[data-theme="wuxia"] body {
-  background-color: #10212de6; background-image: none;
-  border: 1px solid #c9a45a65; box-shadow: 0 0 0 7px #08172250, 0 22px 90px #00000065;
-  position: relative;
-}
-[data-theme="wuxia"] body::before {
-  content: ''; position: absolute; inset: 8px; border: 1px solid #c4a25b25;
-  pointer-events: none; z-index: 0;
-}
-[data-theme="wuxia"] .site-header { background: #0c1a2380; border-bottom: 1px solid #c9a45a65; }
-[data-theme="wuxia"] .brand { color: #f0d498; }
-[data-theme="wuxia"] .initial { color: #f6d796; text-shadow: 0 0 17px #e2ae4535; }
-[data-theme="wuxia"] .hero h1 em { color: #d9e8e4; }
-[data-theme="wuxia"] .hero { position: relative; padding-top: 35px; }
-[data-theme="wuxia"] .hero::before { content: 'A PLACE TO CULTIVATE UNDERSTANDING'; position: absolute; top: -12px; left: 0; font: 10px Arial, sans-serif; letter-spacing: 3px; color: #d4b474; }
-[data-theme="wuxia"] .margin-note {
-  min-height: 290px; padding: 35px 25px; border: 1px solid #c9a45a50;
-  background: linear-gradient(#0b1b2455,#10212d55), url('assets/scenes/wuxia-landscape.svg') 72% center / auto 115%;
-  box-shadow: inset 0 0 60px #07131e80;
-}
-[data-theme="wuxia"] .margin-note .handwritten { color: #fff0cc; text-shadow: 0 2px 8px #07131e, 0 0 15px #e8b35c60; }
-[data-theme="wuxia"] .margin-note p:not(.handwritten), [data-theme="wuxia"] .margin-note .page-number { color: #dbe1d7; text-shadow: 0 1px 4px #000; }
-[data-theme="wuxia"] h2 { color: #ead5a9; }
-[data-theme="wuxia"] .eyebrow, [data-theme="wuxia"] .kicker { color: #d4b474; }
-[data-theme="wuxia"] .button { background: #d7b46d; color: #10202a; border-color: #e5c789; }
-[data-theme="wuxia"] .button:hover { background: #f0d59c; color: #10202a; }
-[data-theme="wuxia"] .theme-select { background: #0d1c26; border-color: #b99a5980; color: #f0d59c; }
-[data-theme="wuxia"] .topic-card { border-top-color: #c8aa6650; }
-[data-theme="wuxia"] .topic-card h3 a:hover { text-shadow: 0 0 12px #e2b45a55; }
-[data-theme="wuxia"] .symbol, [data-theme="wuxia"] .dot { color: #91ccd6; }
-[data-theme="wuxia"] .dot { background: #91ccd6; box-shadow: 0 0 8px #91ccd650; }
-[data-theme="wuxia"] .dot.planned { background: #b2a077; box-shadow: none; }
-[data-theme="wuxia"] .thread-input { background: #09172166; border-color: #d5b77e55; }
-[data-theme="wuxia"] .lead-card { background: linear-gradient(125deg,#ccb27208,#8fc6ce08); border-color: #d5b77e50; position: relative; }
-[data-theme="wuxia"] .lead-card::after { content: ''; position: absolute; right: 8px; top: 8px; width: 15px; height: 15px; border-top: 1px solid #d5b77e70; border-right: 1px solid #d5b77e70; pointer-events: none; }
-[data-theme="wuxia"] .lead-card:hover, [data-theme="wuxia"] #thread-options button:hover, [data-theme="wuxia"] #thread-options button:focus-visible { background: #d5b77e12; }
-[data-theme="wuxia"] .lead-number, [data-theme="wuxia"] .lead-action { color: #e6c581; }
-[data-theme="wuxia"] .trail-steps { border-color: #d5b77e70; }
-[data-theme="wuxia"] .trail-steps li::before { background: #e3bc6b; box-shadow: 0 0 10px #e3bc6b70; border-color: #e3bc6b; }
-[data-theme="wuxia"] .notice, [data-theme="wuxia"] .reading-note { background: #8bb6c40d; border-left-color: #d4b474; }
-[data-theme="wuxia"] .note-popover, [data-theme="wuxia"] #notebook-search { background: #10212df5; border-color: #c9a45a80; box-shadow: 0 15px 65px #00000070; }
-[data-theme="wuxia"] #notebook-search::backdrop { background: #030b14b0; backdrop-filter: blur(4px); }
-[data-theme="wuxia"] #search-query { background: #081822; color: var(--ink); border-color: #c9a45a70; }
-[data-theme="wuxia"] #search-results a:hover, [data-theme="wuxia"] #search-results a:focus-visible { background: #d5b77e0f; }
-[data-theme="wuxia"] .publication .year { color: #d4b474; }
-[data-theme="wuxia"] .pdf-reader, [data-theme="wuxia"] .pdf-controls, [data-theme="wuxia"] .pdf-surface { background: #0d1d26; }
-[data-theme="wuxia"] .pdf-surface canvas { filter: invert(.9) hue-rotate(180deg); }
-[data-theme="wuxia"] .pdf-reader[data-floating="true"], [data-theme="wuxia"] .pdf-reader[data-floating="true"] .pdf-surface { background: transparent; }
-[data-theme="wuxia"] .pdf-reader[data-floating="true"] .ink-depth-stage > canvas { filter: drop-shadow(0 0 5px #efc66c30); }
-[data-theme="wuxia"] .pdf-reader[data-immersive="true"] {
-  background: linear-gradient(#081622db,#101d28ee), url('assets/scenes/wuxia-landscape.svg') center / cover;
-}
-@media (max-width: 620px) {
-  .header-inner nav { gap: 13px; flex-wrap: wrap; }
-  .theme-select { padding: 6px 8px; }
-  [data-theme="wuxia"] body::before { inset: 5px; }
-  [data-theme="wuxia"] .hero::before { font-size: 9px; letter-spacing: 1.8px; }
-  [data-theme="wuxia"] .margin-note { margin-left: 0; }
-}
-
 /* Preserve source ink colors; neutral handwriting becomes white on dark surfaces. */
 .pdf-reader[data-floating="true"] .ink-depth-stage > canvas:not(.ink-depth-shadow):not(.ink-depth-edge) {
   filter: none; transform: none;
