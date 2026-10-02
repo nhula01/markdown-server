@@ -110,7 +110,7 @@ def topic_page(topic, names):
     available = topic_notes(topic, names)
     current = notebook_list(available, numbered=True) if available else '<p class="muted">No notebooks published yet.</p>'
     return f'''<div class="breadcrumbs"><a href="/notes/">Notes</a> / {escape(topic['title'])}</div>
-        <div class="illustrated-heading"><header class="page-intro"><p class="eyebrow">Topic {TOPICS.index(topic)+1:02d} · <span class="topic-heading-symbol" aria-hidden="true">{topic['symbol']}</span></p><h1>{escape(topic['title'])}</h1><p class="lead">{escape(topic['question'])}</p></header>{diagram(topic)}</div>
+        <div class="illustrated-heading"><header class="page-intro"><p class="eyebrow">Topic {TOPICS.index(topic)+1:02d} · <span aria-hidden="true">{topic['symbol']}</span></p><h1>{escape(topic['title'])}</h1><p class="lead">{escape(topic['question'])}</p></header>{diagram(topic)}</div>
         <section aria-label="Notebooks in reading order">{current}</section>'''
 
 

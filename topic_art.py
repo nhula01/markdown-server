@@ -73,5 +73,4 @@ def diagram(topic, title=''):
         art = '<path class="art-axis" d="M25 65H335M25 150H335"/><path d="M25 107h95c22 0 26-54 52-54s27 54 52 54h111"/>' + label(133,192,'guided light')
     else:
         art = '<path class="art-axis" d="M35 165H335M45 180V25"/><path class="art-area" d="M45 165V133Q130 15 213 75T325 60V165Z"/><path d="M45 133Q130 15 213 75T325 60"/>' + label(309,189,'x') + label(18,38,'f(x)')
-    symbol = topic['symbol']
-    return f'<figure class="topic-art"><span class="topic-art-symbol" aria-hidden="true">{escape(symbol)}</span><svg viewBox="0 0 360 220" role="img" aria-label="{escape(descriptions[key],quote=True)}">{art}</svg></figure>'
+    return f'<figure class="topic-art"><svg viewBox="0 0 360 220" role="img" aria-label="{escape(descriptions[key],quote=True)}">{art}</svg></figure>'
