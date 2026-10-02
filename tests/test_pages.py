@@ -71,6 +71,9 @@ class PagesTests(unittest.TestCase):
             self.assertNotIn('research-feature', home)
             self.assertNotIn('review-invitation', home)
             about = (out / 'about/index.html').read_text()
+            for heading in ['A notebook for understanding', 'How to read the collection']:
+                self.assertEqual(home.count(heading), 1)
+                self.assertNotIn(heading, about)
             self.assertIn('id="research"', about)
             self.assertIn('Operator-language Feynman rules', about)
             notes = (out / 'notes/index.html').read_text()
