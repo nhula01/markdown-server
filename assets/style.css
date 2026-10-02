@@ -505,3 +505,7 @@ body:not(.ink-immersive):not(.music-reading-shell){max-width:calc(100vw - 280px)
 [data-theme="light"] [data-theme-toggle] svg{fill:var(--paper)}
 
 .margin-note .notebook-motto{font-size:clamp(26px,2.2vw,34px);line-height:1.4}
+
+.about-header{display:grid;grid-template-columns:minmax(0,1fr) 240px;gap:40px;align-items:start;margin-bottom:64px}
+.about-header .page-intro{margin-bottom:0}
+@media(max-width:900px){.about-header{grid-template-columns:1fr;gap:24px;margin-bottom:45px}.about-header .profile-links{max-width:420px}}

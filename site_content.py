@@ -127,8 +127,8 @@ def research(embedded=False):
 
 
 def about():
-    return f'''<header class="page-intro"><p class="eyebrow">About</p><h1>Phi Hung Nguyen</h1><p class="lead">PhD student in Optical Sciences at the University of Arizona, and a member of the Soh Lab.</p></header>
-        <aside class="profile-links"><p class="kicker">Elsewhere</p><a href="{escape(CATALOG['scholar'], quote=True)}">Google Scholar ↗</a><a href="{escape(CATALOG['linkedin'], quote=True)}">LinkedIn ↗</a><a href="https://optics.arizona.edu/person/phi-hung-nguyen">University profile ↗</a><a href="https://wp.optics.arizona.edu/danielsoh/people/">Soh Lab ↗</a></aside>{research(embedded=True)}'''
+    return f'''<div class="about-header"><header class="page-intro"><p class="eyebrow">About</p><h1>Phi Hung Nguyen</h1><p class="lead">PhD student in Optical Sciences at the University of Arizona, and a member of the Soh Lab.</p></header>
+        <aside class="profile-links"><p class="kicker">Elsewhere</p><a href="{escape(CATALOG['scholar'], quote=True)}">Google Scholar ↗</a><a href="{escape(CATALOG['linkedin'], quote=True)}">LinkedIn ↗</a><a href="https://optics.arizona.edu/person/phi-hung-nguyen">University profile ↗</a><a href="https://wp.optics.arizona.edu/danielsoh/people/">Soh Lab ↗</a></aside></div>{research(embedded=True)}'''
 
 
 def viewer(name, url, names=(), metadata=None):
