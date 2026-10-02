@@ -468,3 +468,24 @@ body.ink-immersive { overflow: hidden; }
 @media(prefers-reduced-motion:reduce){.margin-equations{display:none}}
 
 .margin-equation-intuition{display:block;margin-top:14px;font:13px/1.6 Georgia,serif;color:var(--body)}
+
+/* Reserve slim equation margins on common Mac laptop viewport sizes. */
+@media(min-width:1200px) and (max-width:1539px){
+body:not(.ink-immersive):not(.music-reading-shell){max-width:calc(100vw - 280px)}
+.header-inner{padding-left:32px;padding-right:32px;gap:16px}
+.header-inner nav{gap:16px;font-size:14px}
+.header-inner .brand{font-size:24px}
+.margin-equations{display:block}
+.margin-equation{position:fixed;width:116px;color:var(--muted);text-align:center;opacity:0;pointer-events:none}
+.margin-equation:nth-child(1){left:12px;top:20vh}
+.margin-equation:nth-child(2){right:12px;top:27vh}
+.margin-equation:nth-child(3){left:12px;top:62vh}
+.margin-equation:nth-child(4){right:12px;top:69vh}
+.margin-equation-label{display:block;font:8px/1.5 Arial,sans-serif;letter-spacing:.5px;text-transform:uppercase;margin-bottom:10px}
+.margin-equation-math{display:block;font-size:12px}
+.margin-equation .katex-display{margin:0}
+.margin-equation-intuition{font-size:11px;line-height:1.5;margin-top:10px}
+.margin-equation.equation-visible{animation:margin-equation-appear 38s ease-in-out both}
+.ink-immersive .margin-equations{display:none}
+}
+@media(prefers-reduced-motion:reduce){.margin-equations{display:none}}

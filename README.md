@@ -242,10 +242,10 @@ music. No external music service, account, or tracking is used.
 
 ## Physics in the margins
 
-On screens at least 1540px wide, curated equation-and-intuition reminders overlap
+On browser windows at least 1200px wide, curated equation-and-intuition reminders overlap
 in the empty outer margins. Four independent positions start six seconds apart;
-each stays for 38 seconds and refreshes every 44 seconds. Short windows use two
-positions. Reminders hide during immersive reading and for reduced-motion settings.
+each stays for 38 seconds and refreshes every 44 seconds. Mac laptop-sized windows reserve narrow side margins and use smaller formulas
+and explanations. Short windows use two positions. Reminders hide during immersive reading and for reduced-motion settings.
 
 `assets/margin-reminders.json` contains 22 curated reminders based on selected
 Obsidian learning notes, with source-note titles for provenance. Only this public

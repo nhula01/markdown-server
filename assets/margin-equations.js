@@ -11,7 +11,7 @@
   } catch {return;}
   if (!equations.length || !root.isConnected) return;
   const slots = [...root.querySelectorAll('.margin-equation')];
-  const wide = window.matchMedia('(min-width:1540px)');
+  const wide = window.matchMedia('(min-width:1200px)');
   const tall = window.matchMedia('(min-height:750px)');
   const motion = window.matchMedia('(prefers-reduced-motion: reduce)');
   let timers = [], index = 0;
