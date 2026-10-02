@@ -520,3 +520,7 @@ body:not(.ink-immersive):not(.music-reading-shell){max-width:calc(100vw - 280px)
 #research h2{max-width:850px;font-size:30px;line-height:1.25;margin-bottom:16px}
 #research .lead{max-width:none;font-size:18px;line-height:1.65;margin-bottom:0}
 @media(max-width:620px){#research h2{font-size:26px}.about-header{gap:20px}}
+
+.notebook-list.numbered li{grid-template-columns:36px minmax(0,1fr);gap:20px}
+.notebook-order{font:12px/1.5 Arial,sans-serif;letter-spacing:1px;color:var(--muted);padding-top:7px;font-variant-numeric:tabular-nums}
+@media(max-width:620px){.notebook-list.numbered li{grid-template-columns:26px minmax(0,1fr);gap:12px}}

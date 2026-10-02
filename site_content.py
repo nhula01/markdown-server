@@ -42,10 +42,10 @@ def topic_cards(names, selected=None):
         <div class="meta">{topic_status(topic, names)}</div></article>''' for topic in selected)
 
 
-def notebook_list(names):
+def notebook_list(names, numbered=False):
     import hashlib
     items = []
-    for name in names:
+    for position, name in enumerate(names, 1):
         stem = Path(name).stem
         guide = CATALOG.get('reading_guides', {}).get(stem)
         identifier = 'guide-' + hashlib.sha256(name.encode()).hexdigest()[:12]
@@ -53,10 +53,12 @@ def notebook_list(names):
             content = f'<span class="guide-verbatim">{escape(guide)}</span>'
         else:
             content = '<span class="guide-part"><strong>Guide in preparation</strong><span>This notebook does not have a reading guide in Optimum yet.</span></span>'
-        items.append(f'''<li><div class="note-entry"><div class="note-title"><h3><a class="note-link" aria-describedby="{identifier}" href="/notebooks/{quote(name, safe='/')}/">{escape(stem)}</a></h3>
+        number = f'<span class="notebook-order" aria-label="Note {position}">{position:02d}</span>' if numbered else ''
+        items.append(f'''<li>{number}<div class="note-entry"><div class="note-title"><h3><a class="note-link" aria-describedby="{identifier}" href="/notebooks/{quote(name, safe='/')}/">{escape(stem)}</a></h3>
             <span class="note-popover" id="{identifier}" role="tooltip"><span class="guide-label">Reading guide · from Optimum</span>{content}</span></div>
             <details class="reading-guide"><summary>Reading guide</summary><div class="guide-inline">{content}</div></details></div></li>''')
-    return '<ul class="notebook-list">' + ''.join(items) + '</ul>'
+    list_class = 'notebook-list numbered' if numbered else 'notebook-list'
+    return f'<ul class="{list_class}">' + ''.join(items) + '</ul>'
 
 
 def initials(text):
@@ -105,7 +107,7 @@ def notes(names, documents=()):
 
 def topic_page(topic, names):
     available = topic_notes(topic, names)
-    current = notebook_list(available) if available else '<p class="muted">No notebooks published yet.</p>'
+    current = notebook_list(available, numbered=True) if available else '<p class="muted">No notebooks published yet.</p>'
     return f'''<div class="breadcrumbs"><a href="/notes/">Notes</a> / {escape(topic['title'])}</div>
         <header class="page-intro"><p class="eyebrow">Topic {TOPICS.index(topic)+1:02d} · <span aria-hidden="true">{topic['symbol']}</span></p><h1>{escape(topic['title'])}</h1><p class="lead">{escape(topic['question'])}</p></header>
         <section aria-label="Notebooks in reading order">{current}</section>'''
