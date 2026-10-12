@@ -541,3 +541,7 @@ body:not(.ink-immersive):not(.music-reading-shell){max-width:calc(100vw - 280px)
 .notebook-list.numbered .topic-art{width:190px;align-self:center;justify-self:end}
 @media(max-width:620px){.notebook-list.numbered li{grid-template-columns:26px minmax(0,1fr) 100px;gap:12px}.notebook-list.numbered .topic-art{width:100px}.notebook-list.numbered .art-label{display:none}}
 @media(max-width:380px){.notebook-list.numbered li{grid-template-columns:22px minmax(0,1fr) 75px;gap:8px}.notebook-list.numbered .topic-art{width:75px}}
+
+.notebook-list:not(.numbered) .illustrated-note{grid-template-columns:minmax(0,1fr) 190px}
+.notebook-list:not(.numbered) .illustrated-note .topic-art{width:190px;align-self:center}
+@media(max-width:620px){.notebook-list:not(.numbered) .illustrated-note{grid-template-columns:minmax(0,1fr) 100px}.notebook-list:not(.numbered) .illustrated-note .topic-art{width:100px}}

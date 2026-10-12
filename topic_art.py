@@ -13,11 +13,15 @@ def label(x, y, text):
 
 
 def diagram(topic, title=''):
-    if not topic:
+    if not topic and title != 'Draft':
         return ''
-    slug = topic['slug']
+    slug = topic['slug'] if topic else 'draft'
     key = slug
-    if title == 'Electrons in Crystals':
+    if title == 'Polaritons':
+        key = 'polaritons'
+    elif title == 'Draft':
+        key = 'draft'
+    elif title == 'Electrons in Crystals':
         key = 'bands'
     elif title == 'Crystal':
         key = 'lattice'
@@ -28,6 +32,8 @@ def diagram(topic, title=''):
     elif title == "Maxwell's Equations":
         key = 'field'
     descriptions = {
+        'polaritons': 'Coupled light and material modes split into upper and lower polariton branches.',
+        'draft': 'A blank quiz card awaiting questions.',
         'fields-and-waves': 'Two field components sharing a wave: electric and magnetic fields.',
         'field': 'Field lines spreading from a positive charge and converging on a negative charge.',
         'light-and-matter': 'An incident field drives a bound charge, producing a material response.',
@@ -44,7 +50,19 @@ def diagram(topic, title=''):
         'mathematical-methods': 'The area beneath a curve represents its integral.',
     }
     art = ''
-    if key == 'fields-and-waves':
+    if key == 'polaritons':
+        art = '<path class="art-axis" d="M40 175H325M50 185V25"/><path class="art-axis" stroke-dasharray="4 5" d="M65 145 310 47M65 100H310"/>'
+        for sign in (-1,1):
+            points=[]
+            for x in range(65,311,3):
+                detune=(x-180)*.4
+                y=100-detune/2+sign*math.sqrt((detune/2)**2+18**2)
+                points.append(f'{x},{y:.1f}')
+            art += '<path class="art-secondary" d="M'+' L'.join(points)+'"/>'
+        art += label(24,31,'ω')+label(312,196,'k')+label(260,30,'upper')+label(260,145,'lower')
+    elif key == 'draft':
+        art = '<path class="art-axis" d="M105 25H230L255 50V190H105Z"/><path d="M230 25V50H255"/>'+label(145,65,'quiz')+'<text x="166" y="132" class="art-label" style="font-size:42px">?</text>'
+    elif key == 'fields-and-waves':
         art = '<path class="art-axis" d="M20 105H340"/>' + wave(93, 30) + '<g class="art-secondary">' + wave(127, 22) + '</g>' + label(28,52,'E') + label(28,166,'B') + '<path d="M270 185h55m-8-5 8 5-8 5"/>' + label(190,190,'propagation')
     elif key == 'field':
         for y in (35,65,145,175):
