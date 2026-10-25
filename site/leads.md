@@ -15,6 +15,7 @@ These are initial suggested trails: please change them to reflect your thinking.
 
 
 
+
 ## Why does light propagate?
 1. [[Electromagnetic Pieces]]
 2. [[Maxwell's Equations]]
