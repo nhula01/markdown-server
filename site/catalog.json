@@ -55,7 +55,9 @@
         "Two-level atoms, Rabi oscillations, and spontaneous emission",
         "Photodetection, homodyne measurement, and coherence"
       ],
-      "notebooks": {}
+      "notebooks": {
+        "Quantum Pictures": ""
+      }
     },
     {
       "slug": "open-quantum-systems",

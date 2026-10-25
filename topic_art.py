@@ -17,7 +17,9 @@ def diagram(topic, title=''):
         return ''
     slug = topic['slug'] if topic else 'draft'
     key = slug
-    if title == 'Polaritons':
+    if title == 'Quantum Pictures':
+        key = 'quantum-pictures'
+    elif title == 'Polaritons':
         key = 'polaritons'
     elif title == 'Draft':
         key = 'draft'
@@ -32,6 +34,7 @@ def diagram(topic, title=''):
     elif title == "Maxwell's Equations":
         key = 'field'
     descriptions = {
+        'quantum-pictures': 'Schrödinger and Heisenberg pictures assign time evolution to the state or the operator while preserving the same expectation value.',
         'polaritons': 'Coupled light and material modes split into upper and lower polariton branches.',
         'draft': 'A blank quiz card awaiting questions.',
         'fields-and-waves': 'Two field components sharing a wave: electric and magnetic fields.',
@@ -50,7 +53,14 @@ def diagram(topic, title=''):
         'mathematical-methods': 'The area beneath a curve represents its integral.',
     }
     art = ''
-    if key == 'polaritons':
+    if key == 'quantum-pictures':
+        for x in (90, 270):
+            art += f'<circle class="art-axis" cx="{x}" cy="92" r="40" stroke-dasharray="3 5"/><path class="art-axis" d="M{x-49} 92H{x+49}M{x} 43V141"/>'
+        art += '<path class="art-secondary" d="M90 92 119 64m-9 2 9-2-2 9M270 92 299 64m-9 2 9-2-2 9"/>'
+        art += label(43,28,'Schrödinger') + label(225,28,'Heisenberg')
+        art += label(55,160,'state moves') + label(222,160,'operator moves')
+        art += label(169,98,'=') + label(66,204,'same measurement: ⟨A⟩')
+    elif key == 'polaritons':
         art = '<path class="art-axis" d="M40 175H325M50 185V25"/><path class="art-axis" stroke-dasharray="4 5" d="M65 145 310 47M65 100H310"/>'
         for sign in (-1,1):
             points=[]
