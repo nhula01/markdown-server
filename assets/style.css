@@ -545,3 +545,28 @@ body:not(.ink-immersive):not(.music-reading-shell){max-width:calc(100vw - 280px)
 .notebook-list:not(.numbered) .illustrated-note{grid-template-columns:minmax(0,1fr) 190px}
 .notebook-list:not(.numbered) .illustrated-note .topic-art{width:190px;align-self:center}
 @media(max-width:620px){.notebook-list:not(.numbered) .illustrated-note{grid-template-columns:minmax(0,1fr) 100px}.notebook-list:not(.numbered) .illustrated-note .topic-art{width:100px}}
+
+/* The collected edition lives beside the introduction. */
+.collected-book { text-align: center; padding: 12px 12px 8px; }
+.book-object { display: block; position: relative; width: min(280px, 85%); aspect-ratio: .72; margin: 0 auto 30px; perspective: 1000px; text-decoration: none; transform: rotate(-5deg); transition: transform .3s ease; }
+.book-object:hover, .book-object:focus-visible { transform: rotate(-2deg) translateY(-5px); }
+.book-cover { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 30px 24px; border: 1px solid var(--accent); border-left: 12px double var(--accent); background: var(--paper, #faf9f5); color: var(--ink); box-shadow: 5px 3px 0 -1px var(--paper, #faf9f5), 6px 4px 0 var(--line), 10px 6px 0 -1px var(--paper, #faf9f5), 11px 7px 0 var(--line), 16px 18px 25px #0002; }
+.book-cover::after { content: ''; position: absolute; inset: 12px 12px 12px 8px; border: 1px solid var(--line); pointer-events: none; }
+.book-edition { font: 9px/1.5 sans-serif; letter-spacing: 2px; color: var(--muted); margin-bottom: 27px; }
+.book-title { font: 32px/1.12 Georgia, serif; letter-spacing: -1px; }
+.book-title em { color: var(--accent); font-weight: normal; }
+.book-rule { width: 44px; border-top: 1px solid var(--accent); margin: 25px 0; }
+.book-author { font: 14px Georgia, serif; }
+.book-caption { font: 9px/1.5 sans-serif; margin-top: 12px; color: var(--muted); }
+.book-description { font-size: 12px; color: var(--muted); }
+.book-contents > ol { list-style: none; padding: 0; }
+.book-contents li { margin: 15px 0; }
+.book-contents ol ol { padding-left: 16px; list-style: none; font-size: 13px; }
+.book-contents a { display: block; text-decoration: none; }
+.book-contents small { display: block; color: var(--muted); font-size: 11px; }
+[data-theme="dark"] .book-cover { background: #282b2e; box-shadow: 5px 3px 0 -1px #333639, 6px 4px 0 var(--line), 10px 6px 0 -1px #333639, 11px 7px 0 var(--line), 16px 18px 25px #0005; }
+@media (max-width: 620px) { .book-object { width: 225px; } .collected-book { padding-top: 25px; } }
+@media (prefers-reduced-motion: reduce) { .book-object { transition: none; } }
+.chapter-activator { border-block: 1px solid var(--line); padding: 25px 0; margin: 0 0 40px; max-width: 850px; }
+.chapter-activator > p:not(.kicker) { font: 22px/1.55 Georgia, serif; color: var(--ink); }
+.chapter-activator a { font-size: 12px; color: var(--muted); }

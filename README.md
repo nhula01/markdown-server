@@ -256,3 +256,19 @@ collection is deployed; the private vault and its unrelated content are not copi
 These are concise display explanations, separate from the unchanged verbatim
 Optimum reading guides. The renderer uses local KaTeX, fits formulas to the margin,
 and pauses its timers when the tab is hidden.
+
+
+### Collected book and weekly chapter context
+
+The homepage book opens `/book/`, an accessible PDF.js reader with a topic contents
+list and a PDF download. Each site build assembles categorized public notebooks
+in catalog order using `book_content.py`. Cover/contents/topic dividers and PDF
+bookmarks are added around the original handwritten pages. Notebook-desk files
+are excluded. Empty topics stay marked “notes to come.” A content hash versions
+the download and reader URL. Individual official PDFs are never rewritten.
+
+The weekly official export task now also reviews verified chapter contents,
+Key connections, Follow a lead, and handwritten activators. Activators are exact
+transcriptions in `site/chapters.json` (`activator.text`, `activator.page`), not
+substitutes for the verbatim Optimum guides. Generated leads remain editable in
+`Follow a thread.md` in Obsidian. Daily review scheduling is unchanged.

@@ -124,6 +124,8 @@ def viewer(name, url, names, metadata=None):
     contents = '<ol class="chapter-contents">' + ''.join(toc) + '</ol>' if toc else '<p class="muted">Contents awaiting an outline.</p>'
     guide = site_content.CATALOG.get('reading_guides', {}).get(stem, '')
     reading_guide = f'<details id="reading-guide" class="chapter-guide"><summary>Reading guide · verbatim from Optimum</summary><div class="guide-verbatim">{escape(guide)}</div></details>' if guide.strip() else ''
+    activator = chapter.get('activator', {})
+    activator_html = (f'<section class="chapter-activator" aria-labelledby="activator-title"><p class="kicker" id="activator-title">Activator</p><p>{escape(activator["text"])}</p><a data-pdf-page="{activator["page"]}" href="{escape(url, quote=True)}#page={activator["page"]}">From the handwritten note · p. {activator["page"]} ↗</a></section>' if activator.get('text') else '')
     guide_section = f'<div class="chapter-prose">{reading_guide}</div>' if reading_guide else ''
     guide_link = '<a href="#reading-guide">Reading guide</a>' if reading_guide else ''
     groups = ''.join(f'<section><h3>{label}</h3>{connection_list(chapter.get(key, []), names)}</section>' for key, label in GROUPS)
@@ -144,7 +146,7 @@ def viewer(name, url, names, metadata=None):
         <p class="lead">{escape(chapter.get('question', 'A handwritten working notebook.'))}</p>
         <div class="chapter-meta">{'<span aria-hidden="true"> · </span>'.join(facts)}</div>
         <div class="actions"><a class="button" href="#handwritten-notes">Read handwritten notes ↓</a><a class="section-link" href="#connections">Follow the connections →</a></div></header>{site_content.diagram(topic, stem)}</div>
-        <div class="chapter-layout"><aside class="chapter-sidebar" aria-label="Chapter contents"><h2>In this note</h2>{contents}
+        {activator_html}<div class="chapter-layout"><aside class="chapter-sidebar" aria-label="Chapter contents"><h2>In this note</h2>{contents}
         <nav aria-label="Chapter context">{guide_link}<a href="#connections">Key connections</a><a href="#follow-lead">Follow a lead</a></nav><div class="chapter-tags">{tags}</div></aside>
         <div class="chapter-main"><section id="handwritten-notes" class="handwriting"><div class="pdf-toolbar"><span class="kicker">The handwritten source</span><a href="{escape(url, quote=True)}">Open PDF ↗</a></div>
         <div class="pdf-reader" data-pdf-url="{escape(url, quote=True)}" data-title="{escape(stem, quote=True)}" data-page="1"><div class="pdf-controls"><div><button type="button" data-pdf-previous aria-label="Previous PDF page" disabled>←</button><select data-pdf-select aria-label="PDF page" disabled></select><button type="button" data-pdf-next aria-label="Next PDF page" disabled>→</button></div><div><button type="button" data-pdf-zoom-out aria-label="Zoom out" disabled>−</button><button type="button" data-pdf-zoom-in aria-label="Zoom in" disabled>+</button></div></div><p data-pdf-status role="status" aria-live="polite">Loading handwritten notes…</p><div class="pdf-surface"><canvas role="img" aria-label="{escape(stem, quote=True)} · handwritten page"></canvas></div></div>
@@ -185,7 +187,7 @@ def search_index(names, documents=(), document_root=None):
         connections = [resolve_connection(target, names)[0] for key, _ in GROUPS for target in chapter.get(key, [])]
         entries.append({'title': stem, 'category': topic['title'] if topic else 'Notebook desk', 'url': chapter_url(name),
                         'status': 'Handwritten note', 'summary': chapter.get('question', ''), 'tags': chapter.get('tags', []),
-                        'text': '\n'.join([guide, *(lead['question'] + ' ' + ' '.join(lead['steps']) for lead in for_note(stem)), chapter.get('summary', ''), *connections, *(item['title'] for item in chapter.get('contents', []))])})
+                        'text': '\n'.join([guide, chapter.get('activator', {}).get('text', ''), *(lead['question'] + ' ' + ' '.join(lead['steps']) for lead in for_note(stem)), chapter.get('summary', ''), *connections, *(item['title'] for item in chapter.get('contents', []))])})
     for topic in site_content.TOPICS:
         entries.append({'title': topic['title'], 'category': 'Topics', 'url': '/notes/' + topic['slug'] + '/',
                         'status': 'Topic' if site_content.topic_notes(topic, names) else 'Outline',

@@ -13,7 +13,7 @@ if __name__ == '__main__':
     # Validate everything before writing. Other vault prose is never imported.
     leads = parse_leads(args.source.read_text())
     target = Path(__file__).resolve().parents[1] / 'site/leads.md'
-    intro = target.read_text().split('\n## ', 1)[0]
+    intro = target.read_text().split('\n## ', 1)[0].rstrip()
     text = intro + '\n\n' + '\n\n'.join('## ' + lead['question'] + '\n' + '\n'.join(f'{i}. [[{title}]]' for i, title in enumerate(lead['steps'], 1)) for lead in leads) + '\n'
     if target.read_text() != text:
         target.write_text(text)

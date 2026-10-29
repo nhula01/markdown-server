@@ -254,6 +254,75 @@
         "topic:quantum-optics",
         "topic:nonlinear-and-fiber-optics"
       ]
+    },
+    "Quantum Pictures": {
+      "slug": "quantum-pictures",
+      "question": "What changes when we change the quantum reference frame?",
+      "tags": [
+        "Schrödinger picture",
+        "Heisenberg picture",
+        "interaction picture",
+        "reference frames"
+      ],
+      "activator": {
+        "text": "Quantum pictures arise from our freedom to choose different reference frames in hilbert space. The physical evolution remains the same, but what appears to evolve depends on the frame from which we describe the system.",
+        "page": 1
+      },
+      "contents": [
+        {
+          "title": "Quantum pictures and reference frames",
+          "page": 1
+        },
+        {
+          "title": "Heisenberg picture",
+          "page": 2
+        },
+        {
+          "title": "Interaction picture",
+          "page": 3
+        }
+      ],
+      "prerequisites": [
+        "concept:harmonic-oscillator"
+      ],
+      "leads_to": [
+        "concept:cavity-qed",
+        "topic:open-quantum-systems"
+      ],
+      "appears_in": [
+        "topic:quantum-optics",
+        "concept:input-output"
+      ]
+    },
+    "Polaritons": {
+      "slug": "polaritons",
+      "question": "When do light and matter become a single excitation?",
+      "tags": [
+        "polaritons",
+        "coupled modes",
+        "dispersion",
+        "avoided crossing"
+      ],
+      "contents": [
+        {
+          "title": "Coupled electromagnetic and material modes",
+          "page": 1
+        },
+        {
+          "title": "Upper and lower branches; avoided crossing",
+          "page": 1
+        }
+      ],
+      "prerequisites": [
+        "note:Oscillator Model",
+        "note:Linear Light"
+      ],
+      "leads_to": [
+        "concept:cavity-qed"
+      ],
+      "appears_in": [
+        "topic:quantum-optics"
+      ]
     }
   },
   "concepts": {

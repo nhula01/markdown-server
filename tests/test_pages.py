@@ -55,8 +55,11 @@ class PagesTests(unittest.TestCase):
             root = Path(directory)
             content = root / 'content'; content.mkdir()
             pdfs = root / 'pdfs'; (pdfs / 'Obsidian').mkdir(parents=True)
-            (pdfs / 'Obsidian/Crystal.pdf').write_bytes(b'%PDF original')
-            (pdfs / 'Obsidian/Electrons in Crystals.pdf').write_bytes(b'%PDF electrons')
+            from pypdf import PdfWriter
+            for title in ('Crystal', 'Electrons in Crystals'):
+                writer = PdfWriter()
+                for _ in range(5): writer.add_blank_page(width=595, height=842)
+                writer.write(pdfs / ('Obsidian/' + title + '.pdf'))
             (pdfs / 'Obsidian/A new notebook.pdf').write_bytes(b'%PDF new')
             out = root / 'site'
             subprocess.run([sys.executable, 'scripts/build-pages.py', '--output', str(out)],

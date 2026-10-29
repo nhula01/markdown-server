@@ -78,13 +78,14 @@ def decorate_headings(body):
 
 
 def home(names):
+    from book_content import cover_card
     from chapter_content import home_trails
     trails = home_trails(names)
     return f'''<section class="hero"><div><p class="eyebrow">Optical sciences · Quantum physics</p>
         <h1>Physics,<br>with <em>Intuition.</em></h1>
         <p class="lead">Handwritten notes on optics and quantum physics.</p>
         <p class="muted">Phi Hung Nguyen · University of Arizona</p>
-        <div class="actions"><a class="button" href="/notes/">Explore the notes <span aria-hidden="true">↗</span></a></div></div><aside class="margin-note"><p class="kicker">In the margins</p><p class="handwritten notebook-motto">Without a physical picture what actually is happening in the world, mathematics are just numbers, beautiful numbers, but no science.</p><span class="page-number">Notebook / 01</span></aside></section>
+        <div class="actions"><a class="button" href="/notes/">Explore the notes <span aria-hidden="true">↗</span></a></div></div>{cover_card(names)}</section>
         <section class="section profile-grid"><div class="prose"><h2>A notebook for understanding</h2><p>This site is where I’m collecting the ideas I learn through my PhD: from the foundations of optics to quantum dynamics and information.</p><p>I want the notes to preserve the intuition — what a system is doing, why an approximation works, and how one idea connects to another. The mathematics matters; the aim is to make its physical meaning visible.</p></div><div class="prose"><h2>How to read the collection</h2><p>The handwritten notebooks are working notes rather than finished textbooks. Topic pages distinguish available PDFs from planned material, and the collection will grow as I write and revise.</p><p>For a starting point, explore <a href="/notes/fields-and-waves/">Fields & waves</a> or <a href="/notes/light-and-matter/">Light & matter</a>.</p></div></section>
 
         {trails}<section class="section"><div class="section-head"><h2>A map of the ideas</h2><a class="section-link" href="/notes/">All nine topics <span class="arrow" aria-hidden="true">→</span></a></div>

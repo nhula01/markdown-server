@@ -3,6 +3,7 @@ import site_content
 import chapter_content
 import lead_content
 import review_content
+import book_content
 from html import escape
 from pathlib import Path
 from urllib.parse import quote
@@ -91,6 +92,12 @@ def application(environ,start_response):
             if file.suffix not in types: raise FileNotFoundError
             kind=types[file.suffix]
             body=file.read_bytes()
+        elif path in {"/book/", book_content.BOOK_PATH}:
+            book, entries = book_content.edition(pdf_files(), PDF_ROOT)
+            if path == book_content.BOOK_PATH:
+                kind="application/pdf"; body=book
+            else:
+                body=page("The collected notebook", book_content.page(entries, hashlib.sha256(book).hexdigest()[:16]), active="notes")
         elif path=="/api/files":
             kind="application/json; charset=utf-8"; body=json.dumps({"files":files()},ensure_ascii=False).encode()
         elif path=="/review-index.json":

@@ -1,5 +1,5 @@
 // Typeset the copied source only for display; leave Optimum and the catalog intact.
-document.querySelectorAll('.guide-verbatim, .chapter-prose, .math-source').forEach((guide) => {
+document.querySelectorAll('.guide-verbatim, .chapter-prose, .chapter-activator, .math-source').forEach((guide) => {
   renderMathInElement(guide, {
     delimiters: [
       {left: '$$', right: '$$', display: true},

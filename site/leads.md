@@ -13,9 +13,6 @@ outside question headings and numbered lists. The existing scheduled publishing
 script imports this file; you can also run `scripts/update-leads.py` manually.
 These are initial suggested trails: please change them to reflect your thinking.
 
-
-
-
 ## Why does light propagate?
 1. [[Electromagnetic Pieces]]
 2. [[Maxwell's Equations]]
@@ -78,3 +75,14 @@ These are initial suggested trails: please change them to reflect your thinking.
 2. [[Cavity QED]]
 3. [[Input–Output Theory]]
 4. [[Quantum Networks]]
+
+## When do light and matter become one excitation?
+1. [[Oscillator Model]]
+2. [[Linear Light]]
+3. [[Polaritons]]
+4. [[Cavity QED]]
+
+## How can different quantum pictures describe the same physics?
+1. [[Quantum Pictures]]
+2. [[Harmonic Oscillator]]
+3. [[Cavity QED]]

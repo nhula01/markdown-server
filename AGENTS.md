@@ -43,3 +43,25 @@ is refreshed by `scripts/update-leads.py`; only `##` questions and numbered
 import other vault prose. Published PDFs automatically replace planned steps.
 Every chapter links into the same homepage explorer. Keep the verbatim Optimum
 guides separate; do not restore Physical picture or Key idea sections.
+
+
+# Scheduled chapter context and collected book
+
+The weekly official-export routine must also review chapter context for every new
+or substantively changed notebook: verified contents page numbers, Key connections,
+Follow a lead, and any handwritten Activator. Read the authorized PDF first.
+Transcribe an activator verbatim into `site/chapters.json` as
+`"activator": {"text": "exact source wording", "page": 1}` with its actual page.
+Do not invent an activator for a note that has none. Keep Optimum guides separate
+and verbatim. Curate connections and question leads from the notebook's actual
+content; preserve the user's edits. Add generated leads to the editable
+`/Users/nph/Documents/MyBrain/Follow a thread.md` and refresh `site/leads.md`.
+Commit reviewed chapter/catalog/art files in a scoped context commit before
+running the PDF publishing script. Never include unrelated changes.
+
+`book_content.py` assembles only published notebooks assigned to the public topic
+catalog, in catalog order. Notebook-desk files are excluded until categorized.
+The site build automatically regenerates `/book/physics-with-intuition.pdf` with
+a cover, contents, topic dividers, and bookmarks. Original notebook pages are
+appended without rasterizing; original PDF files remain byte-identical. Verify
+book navigation and page destinations after adding or reordering notes.

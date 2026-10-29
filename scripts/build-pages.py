@@ -13,6 +13,7 @@ import site_content
 import chapter_content
 import lead_content
 import review_content
+import book_content
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--base-path', default='/markdown-server')
@@ -32,7 +33,7 @@ shutil.rmtree(out / 'assets/vendor/supabase', ignore_errors=True)
 # otherwise retain an old stylesheet URL when reached through the menu.
 site_version = hashlib.sha256(b''.join(
     (Path(app.__file__).parent / name).read_bytes()
-    for name in ['topic_art.py', 'review_content.py', 'assets/margin-reminders.json', 'assets/margin-equations.js', 'assets/music.js', 'assets/review.js', 'assets/review-schedule.mjs', 'app.py', 'site_content.py', 'chapter_content.py', 'lead_content.py', 'site/leads.md', 'assets/leads.js', 'assets/theme.js', 'assets/style.css', 'assets/math.js', 'assets/search.js', 'assets/pdf-reader.js', 'site/catalog.json', 'site/chapters.json', 'scripts/build-pages.py']
+    for name in ['book_content.py', 'topic_art.py', 'review_content.py', 'assets/margin-reminders.json', 'assets/margin-equations.js', 'assets/music.js', 'assets/review.js', 'assets/review-schedule.mjs', 'app.py', 'site_content.py', 'chapter_content.py', 'lead_content.py', 'site/leads.md', 'assets/leads.js', 'assets/theme.js', 'assets/style.css', 'assets/math.js', 'assets/search.js', 'assets/pdf-reader.js', 'site/catalog.json', 'site/chapters.json', 'scripts/build-pages.py']
 )
   + b''.join(name.encode() + hashlib.sha256(app.resolve(name, root).read_bytes()).digest()
             for root, names in [(app.ROOT, app.files()), (app.PDF_ROOT, app.pdf_files())]
@@ -64,6 +65,11 @@ def write_page(path, title, body, raw=None):
         return match[0]
     html = re.sub(r'href="([^"]+)"', version_page_link, html)
     target.write_text(html, encoding='utf-8')
+
+book, book_entries = book_content.edition(app.pdf_files(), app.PDF_ROOT)
+(out / "book").mkdir(exist_ok=True)
+(out / "book/physics-with-intuition.pdf").write_bytes(book)
+write_page("book/index.html", "The collected notebook", book_content.page(book_entries, hashlib.sha256(book).hexdigest()[:16]))
 
 for name in app.files():
     source = app.resolve(name)
