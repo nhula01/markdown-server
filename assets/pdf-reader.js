@@ -12,6 +12,55 @@ canvas.classList.add('ink-source');
 const amplifiedCanvas = document.createElement('canvas'); amplifiedCanvas.className = 'ink-amplified';
 amplifiedCanvas.hidden = true;
 depthStage.append(canvas, amplifiedCanvas);
+const linkedBook = reader.dataset.bookLinks === 'true';
+const pdfLinks = document.createElement('div'); pdfLinks.className = 'pdf-link-layer';
+if (linkedBook) depthStage.append(pdfLinks);
+const readingHistory = [];
+const backLink = document.createElement('button'); backLink.type = 'button';
+backLink.textContent = '↶ Return'; backLink.setAttribute('aria-label','Back to where I was'); backLink.title = 'Back to where I was'; backLink.disabled = true;
+if (linkedBook) reader.querySelector('.pdf-controls').append(backLink);
+function visitPage(number) {
+  if (number !== requestedPage) readingHistory.push(requestedPage);
+  backLink.disabled = !readingHistory.length;
+  render(number);
+}
+backLink.addEventListener('click', () => {
+  const page = readingHistory.pop(); backLink.disabled = !readingHistory.length;
+  if (page !== undefined) render(page);
+});
+async function renderLinks(page, viewport, ticket) {
+  pdfLinks.replaceChildren();
+  if (!linkedBook) return;
+  const annotations = await page.getAnnotations({intent:'display'});
+  if (ticket !== revision) return;
+  for (const annotation of annotations) {
+    if (annotation.subtype !== 'Link' || (!annotation.dest && !annotation.url)) continue;
+    const [x1,y1] = viewport.convertToViewportPoint(annotation.rect[0],annotation.rect[1]);
+    const [x2,y2] = viewport.convertToViewportPoint(annotation.rect[2],annotation.rect[3]);
+    const link = document.createElement('a');
+    const label = annotation.contentsObj?.str || 'Follow this connection';
+    link.setAttribute('aria-label', label); link.title = label;
+    link.style.left = `${Math.min(x1,x2)/viewport.width*100}%`;
+    link.style.top = `${Math.min(y1,y2)/viewport.height*100}%`;
+    link.style.width = `${Math.abs(x2-x1)/viewport.width*100}%`;
+    link.style.height = `${Math.abs(y2-y1)/viewport.height*100}%`;
+    if (annotation.dest) {
+      const destination = typeof annotation.dest === 'string' ? await documentPDF.getDestination(annotation.dest) : annotation.dest;
+      if (ticket !== revision) return;
+      if (!destination) continue;
+      const ref = destination[0];
+      const index = typeof ref === 'number' ? ref : await documentPDF.getPageIndex(ref);
+      if (ticket !== revision) return;
+      link.href = '#page=' + (index+1);
+      link.addEventListener('click', event => {event.preventDefault(); visitPage(index+1);});
+    } else {
+      const url = new URL(annotation.url);
+      if (!['https:','http:'].includes(url.protocol)) continue;
+      link.href = url.href; link.target = '_blank'; link.rel = 'noopener';
+    }
+    pdfLinks.append(link);
+  }
+}
 const status = reader.querySelector('[data-pdf-status]');
 const selector = reader.querySelector('[data-pdf-select]');
 const previous = reader.querySelector('[data-pdf-previous]');
@@ -163,7 +212,7 @@ function setImmersive(enabled) {
 immersiveToggle.addEventListener('click', () => setImmersive(!immersive));
 reader.addEventListener('keydown', event => {
   if (!immersive || event.key !== 'Tab') return;
-  const controls = [...reader.querySelectorAll('button:not(:disabled), select:not(:disabled), input:not(:disabled)')].filter(control => control.getClientRects().length);
+  const controls = [...reader.querySelectorAll('button:not(:disabled), select:not(:disabled), input:not(:disabled), a[href]')].filter(control => control.getClientRects().length);
   if (event.shiftKey && document.activeElement === controls[0]) {event.preventDefault(); controls.at(-1).focus();}
   else if (!event.shiftKey && document.activeElement === controls.at(-1)) {event.preventDefault(); controls[0].focus();}
 });
@@ -194,12 +243,12 @@ function extractInk() {
   context.putImageData(frame, 0, 0);
 
 }
-let documentPDF, requestedPage = Number(reader.dataset.page || 1), zoom = 1, revision = 0, renderTask;
+let documentPDF, requestedPage = Number((linkedBook && location.hash.match(/^#page=(\d+)$/)?.[1]) || reader.dataset.page || 1), zoom = 1, revision = 0, renderTask;
 
 async function render(number) {
   requestedPage = Math.max(1, Math.min(number, documentPDF.numPages));
   const ticket = ++revision;
-  hideAmplification(); sourceFrame = null;
+  hideAmplification(); sourceFrame = null; pdfLinks.replaceChildren();
   status.textContent = `Loading page ${requestedPage}…`;
   try {
     if (renderTask) {renderTask.cancel(); await renderTask.promise.catch(() => {});}
@@ -225,6 +274,8 @@ async function render(number) {
       transform: [density, 0, 0, density, 0, 0]});
     await renderTask.promise;
     if (ticket !== revision) return;
+    await renderLinks(page, viewport, ticket);
+    if (ticket !== revision) return;
     if (floating) extractInk();
     if (immersive) {
       sourceFrame = canvas.getContext('2d').getImageData(0, 0, canvas.width, canvas.height);
@@ -248,6 +299,7 @@ async function render(number) {
     });
   } catch (error) {
     if (error.name !== 'RenderingCancelledException' && ticket === revision) {
+      console.error('Unable to render PDF page:', error);
       status.textContent = 'This page could not display. Use Open PDF to read the original.';
     }
   }
@@ -260,12 +312,12 @@ floatingToggle.addEventListener('click', () => {
 });
 
 reader.addEventListener('chapter-pdf-page', event => {
-  requestedPage = event.detail;
-  if (documentPDF) render(requestedPage);
+  if (documentPDF) visitPage(event.detail);
+  else requestedPage = event.detail;
 });
 previous.addEventListener('click', () => render(requestedPage - 1));
 next.addEventListener('click', () => render(requestedPage + 1));
-selector.addEventListener('change', () => render(Number(selector.value)));
+selector.addEventListener('change', () => visitPage(Number(selector.value)));
 zoomOut.addEventListener('click', () => {zoom = Math.max(1, zoom - .25); render(requestedPage);});
 zoomIn.addEventListener('click', () => {zoom = Math.min(2.5, zoom + .25); render(requestedPage);});
 

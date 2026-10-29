@@ -272,3 +272,11 @@ Key connections, Follow a lead, and handwritten activators. Activators are exact
 transcriptions in `site/chapters.json` (`activator.text`, `activator.page`), not
 substitutes for the verbatim Optimum guides. Generated leads remain editable in
 `Follow a thread.md` in Obsidian. Daily review scheduling is unchanged.
+
+
+The collected edition's chapter pages use activators as their central idea and
+link prerequisites, subsequent ideas, recurring concepts, and curated question
+leads as branches. Contents and topic dividers are clickable in the downloaded
+PDF. Published chapter targets stay inside the book; planned targets open the
+public website outline. A PDF annotation overlay supports the same links in the
+online reader, including a Return control for internal jumps.

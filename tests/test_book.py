@@ -21,13 +21,22 @@ class CollectedBookTests(unittest.TestCase):
             data, entries = book_content.build(names, root)
             import io
             reader = PdfReader(io.BytesIO(data))
-            self.assertEqual(len(reader.pages), 6)  # 2 front matter + 2 dividers + 2 notes
             matter, quantum = entries[1:3]
-            self.assertEqual(matter['notes'][0]['page'], 4)
-            self.assertEqual(quantum['notes'][0]['page'], 6)
-            self.assertEqual(float(reader.pages[3].mediabox.width), 501)
-            self.assertEqual(float(reader.pages[5].mediabox.width), 500)
-            self.assertEqual(len(reader.outline), 4)  # topic and nested note per section
+            for entry, width in [(matter,501),(quantum,500)]:
+                note=entry['notes'][0]
+                self.assertGreater(note['source_page'],note['page'])
+                self.assertEqual(float(reader.pages[note['source_page']-1].mediabox.width),width)
+            destinations={page.indirect_reference.idnum:i for i,page in enumerate(reader.pages)}
+            links=[a.get_object() for page in reader.pages if '/Annots' in page for a in page['/Annots']]
+            internal=[a for a in links if '/Dest' in a]
+            self.assertGreater(len(internal),3)
+            for annotation in internal:
+                self.assertIn(annotation['/Dest'][0].idnum,destinations)
+            qp=quantum['notes'][0]
+            activators=[a for a in internal if a.get('/Contents')=='Read the original activator']
+            self.assertEqual(len(activators),1)
+            self.assertEqual(destinations[activators[0]['/Dest'][0].idnum],qp['source_page']-1)
+            self.assertTrue(any('/A' in a and a['/A'].get('/URI','').startswith('https://nhula01.github.io/markdown-server/') for a in links))
             for name, original in originals.items():
                 self.assertEqual((root/name).read_bytes(), original)
             self.assertEqual(data, book_content.build(names, root)[0])

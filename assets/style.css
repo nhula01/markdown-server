@@ -570,3 +570,10 @@ body:not(.ink-immersive):not(.music-reading-shell){max-width:calc(100vw - 280px)
 .chapter-activator { border-block: 1px solid var(--line); padding: 25px 0; margin: 0 0 40px; max-width: 850px; }
 .chapter-activator > p:not(.kicker) { font: 22px/1.55 Georgia, serif; color: var(--ink); }
 .chapter-activator a { font-size: 12px; color: var(--muted); }
+.pdf-link-layer { position: absolute; inset: 0; pointer-events: none; z-index: 4; }
+.pdf-link-layer a { position: absolute; display: block; pointer-events: auto; border-radius: 3px; }
+.pdf-link-layer a:hover { background: #7894ad20; outline: 1px solid #7894ad70; }
+.pdf-link-layer a:focus-visible { background: #7894ad30; outline: 2px solid var(--accent); }
+.pdf-reader[data-immersive="true"][data-depth="true"] .pdf-link-layer { transform: translateZ(25px); }
+.pdf-reader[data-book-links="true"] .pdf-controls { flex-wrap: wrap; }
+.pdf-reader[data-book-links="true"] .pdf-controls > button { white-space: nowrap; }

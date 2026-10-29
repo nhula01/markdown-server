@@ -65,3 +65,13 @@ The site build automatically regenerates `/book/physics-with-intuition.pdf` with
 a cover, contents, topic dividers, and bookmarks. Original notebook pages are
 appended without rasterizing; original PDF files remain byte-identical. Verify
 book navigation and page destinations after adding or reordering notes.
+
+
+The collected book also contains connected chapter pages. Treat an existing
+verbatim handwritten activator as the central idea; Key connections and curated
+leads branch from it. Do not invent activators for other notebooks. Native PDF
+hyperlinks must jump to published chapters or the activator's original page;
+planned destinations remain labeled and link to their website outlines. Rebuild
+and verify link destinations when pagination changes. The website PDF reader's
+annotation layer makes these same links usable online and provides a return
+button; original handwritten pages are still appended without alterations.
