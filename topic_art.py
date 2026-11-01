@@ -13,11 +13,14 @@ def label(x, y, text):
 
 
 def diagram(topic, title=''):
-    if not topic and title != 'Draft':
+    if not topic and title not in {'Draft', 'Science of Review'}:
         return ''
     slug = topic['slug'] if topic else 'draft'
     key = slug
-    if title == 'Quantum Pictures':
+    explicit = {'Phonons':'phonons', 'Plasmons':'plasmons', 'Plasmonics':'surface-wave', 'Foundations of SLH':'slh', 'Duan Kimble':'cavity-phase', 'Coherent State':'mode-basis', 'Science of Review':'recall'}
+    if title in explicit:
+        key = explicit[title]
+    elif title == 'Quantum Pictures':
         key = 'quantum-pictures'
     elif title == 'Polaritons':
         key = 'polaritons'
@@ -34,6 +37,13 @@ def diagram(topic, title=''):
     elif title == "Maxwell's Equations":
         key = 'field'
     descriptions = {
+        'phonons': 'Atoms coupled by restoring forces support collective lattice vibrations.',
+        'plasmons': 'Longitudinal electron-density modulation creates a restoring electric field.',
+        'surface-wave': 'A surface plasmon polariton travels along an interface with fields decaying away from it.',
+        'slh': 'Modular quantum components described by S, L and H connect through a propagating field.',
+        'cavity-phase': 'An atom inside a one-sided cavity changes the reflection phase of a photon.',
+        'mode-basis': 'Distinct optical modes form a basis for describing the electromagnetic field.',
+        'recall': 'An activator links an idea to recall, checking, and a later return.',
         'quantum-pictures': 'Schrödinger and Heisenberg pictures assign time evolution to the state or the operator while preserving the same expectation value.',
         'polaritons': 'Coupled light and material modes split into upper and lower polariton branches.',
         'draft': 'A blank quiz card awaiting questions.',
@@ -53,7 +63,35 @@ def diagram(topic, title=''):
         'mathematical-methods': 'The area beneath a curve represents its integral.',
     }
     art = ''
-    if key == 'quantum-pictures':
+    if key == 'phonons':
+        for i,x in enumerate((55,115,175,235,295)):
+            art += f'<circle cx="{x}" cy="105" r="10"/>'
+            if i<4: art += f'<path d="M{x+10} 105h5l5-8 8 16 8-16 8 16 6-8"/>'
+            dx=15 if i%2==0 else -15
+            art += f'<path class="art-secondary" d="M{x-dx} 68h{dx*2}m{-5 if dx>0 else 5}-4 {5 if dx>0 else -5} 4 {-5 if dx>0 else 5} 4"/>'
+        art += label(80,172,'collective displacement')
+    elif key == 'plasmons':
+        for x in (35,48,62,80,110,145,160,173,185,199,225,257,285,300,313):
+            art += f'<circle cx="{x}" cy="90" r="3"/>'
+        art += '<g class="art-secondary">'+wave(135,18)+'</g><path d="M115 53h70m-7-4 7 4-7 4"/>'+label(124,40,'E ∥ k')+label(80,195,'electron-density wave')
+    elif key == 'surface-wave':
+        art = '<path class="art-axis" d="M25 112H335"/>'+label(28,48,'dielectric')+label(28,190,'metal')
+        for y,a in ((78,13),(100,24),(130,15),(150,6)):
+            art += '<g class="art-secondary">'+wave(y,a)+'</g>'
+        art += '<path d="M255 39h60m-7-4 7 4-7 4"/>'+label(207,25,'along surface')
+    elif key == 'slh':
+        art = '<rect x="50" y="60" width="95" height="80" rx="5"/><rect x="210" y="60" width="95" height="80" rx="5"/><path class="art-secondary" d="M15 100h35m95 0h65m-7-4 7 4-7 4m102 0h33"/>'+label(67,107,'S, L, H')+label(228,107,'S, L, H')+label(83,186,'connect the components')
+    elif key == 'cavity-phase':
+        art = '<path d="M135 55V155M235 55V155"/><path class="art-secondary" d="M128 55V155M242 55V155"/><circle cx="185" cy="105" r="9"/><path d="M25 85h95m-7-4 7 4-7 4M120 125H25m7-4-7 4 7 4"/>'+label(37,67,'in')+label(28,151,'reflected')+label(170,88,'atom')+label(82,197,'state → reflection phase')
+    elif key == 'mode-basis':
+        art = '<path class="art-axis" d="M50 70H320M50 145H320"/>'
+        for y,freq in ((70,1),(145,2)):
+            points=[f'{x},{y-22*math.sin((x-50)/270*2*math.pi*freq):.1f}' for x in range(50,321,3)]
+            art += '<path class="art-secondary" d="M'+' L'.join(points)+'"/>'
+        art += label(18,75,'φ₁')+label(18,150,'φ₂')+label(82,201,'a basis for the field')
+    elif key == 'recall':
+        art = '<circle cx="175" cy="100" r="31"/><path class="art-secondary" d="M50 100h94M206 100h104m-7-4 7 4-7 4M300 123C265 192 85 192 50 123m0 8v-8h8"/>'+label(150,105,'idea')+label(24,78,'activator')+label(264,78,'recall')+label(130,198,'check & return')
+    elif key == 'quantum-pictures':
         for x in (90, 270):
             art += f'<circle class="art-axis" cx="{x}" cy="92" r="40" stroke-dasharray="3 5"/><path class="art-axis" d="M{x-49} 92H{x+49}M{x} 43V141"/>'
         art += '<path class="art-secondary" d="M90 92 119 64m-9 2 9-2-2 9M270 92 299 64m-9 2 9-2-2 9"/>'

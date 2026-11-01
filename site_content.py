@@ -54,7 +54,7 @@ def notebook_list(names, numbered=False):
             content = f'<span class="guide-verbatim">{escape(guide)}</span>'
         else:
             content = '<span class="guide-part"><strong>Guide in preparation</strong><span>This notebook does not have a reading guide in Optimum yet.</span></span>'
-        artwork = diagram(topic_for(name), stem) if numbered or stem == 'Draft' else ''
+        artwork = diagram(topic_for(name), stem) if numbered or stem in {'Draft', 'Science of Review'} else ''
         number = f'<span class="notebook-order" aria-label="Note {position}">{position:02d}</span>' if numbered else ''
         items.append(f'''<li class="{'illustrated-note' if artwork else ''}">{number}<div class="note-entry"><div class="note-title"><h3><a class="note-link" aria-describedby="{identifier}" href="/notebooks/{quote(name, safe='/')}/">{escape(stem)}</a></h3>
             <span class="note-popover" id="{identifier}" role="tooltip"><span class="guide-label">Reading guide · from Optimum</span>{content}</span></div>

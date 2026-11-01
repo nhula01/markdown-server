@@ -39,7 +39,10 @@
         "Electrons in Crystals": "Following electrons through a periodic material.",
         "Oscillator Model": "Material response through the picture of a driven oscillator.",
         "Linear Light": "Notes on linear optical response.",
-        "Polaritons": ""
+        "Polaritons": "",
+        "Phonons": "",
+        "Plasmons": "",
+        "Plasmonics": ""
       }
     },
     {
@@ -56,7 +59,8 @@
         "Photodetection, homodyne measurement, and coherence"
       ],
       "notebooks": {
-        "Quantum Pictures": ""
+        "Quantum Pictures": "",
+        "Coherent State": ""
       }
     },
     {
@@ -88,7 +92,10 @@
         "Cascaded systems and coherent feedback",
         "Propagation, loss, and non-vacuum inputs"
       ],
-      "notebooks": {}
+      "notebooks": {
+        "Foundations of SLH": "",
+        "Duan Kimble": ""
+      }
     },
     {
       "slug": "quantum-information",
