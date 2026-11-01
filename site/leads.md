@@ -86,3 +86,27 @@ These are initial suggested trails: please change them to reflect your thinking.
 1. [[Quantum Pictures]]
 2. [[Harmonic Oscillator]]
 3. [[Cavity QED]]
+
+## How does collective motion connect atoms, electrons, and light?
+1. [[Crystal]]
+2. [[Phonons]]
+3. [[Polaritons]]
+4. [[Plasmons]]
+5. [[Plasmonics]]
+
+## How does a surface wave become an optical sensor?
+1. [[Plasmons]]
+2. [[Plasmonics]]
+
+## How do optical modes connect to a photon–atom gate?
+1. [[Quantum Pictures]]
+2. [[Coherent State]]
+3. [[Duan Kimble]]
+
+## How do modular quantum components connect distant memories?
+1. [[Foundations of SLH]]
+2. [[Duan Kimble]]
+
+## How can an activator guide a return to quantum pictures?
+1. [[Science of Review]]
+2. [[Quantum Pictures]]
