@@ -24,6 +24,10 @@ CONCEPTS = CONFIG['concepts']
 GROUPS = [('prerequisites', 'Prerequisites'), ('leads_to', 'Leads to'), ('appears_in', 'Appears again in')]
 
 
+def activators(chapter):
+    return [a for a in [chapter.get('activator', {}), *chapter.get('additional_activators', [])] if a.get('text')]
+
+
 def math_renderer(text, options):
     delimiter = '$$' if options['display_mode'] else '$'
     return '<span class="math-source">' + escape(delimiter + text + delimiter) + '</span>'
@@ -124,8 +128,7 @@ def viewer(name, url, names, metadata=None):
     contents = '<ol class="chapter-contents">' + ''.join(toc) + '</ol>' if toc else '<p class="muted">Contents awaiting an outline.</p>'
     guide = site_content.CATALOG.get('reading_guides', {}).get(stem, '')
     reading_guide = f'<details id="reading-guide" class="chapter-guide"><summary>Reading guide · verbatim from Optimum</summary><div class="guide-verbatim">{escape(guide)}</div></details>' if guide.strip() else ''
-    activator = chapter.get('activator', {})
-    activator_html = (f'<section class="chapter-activator" aria-labelledby="activator-title"><p class="kicker" id="activator-title">Activator</p><p>{escape(activator["text"])}</p><a data-pdf-page="{activator["page"]}" href="{escape(url, quote=True)}#page={activator["page"]}">From the handwritten note · p. {activator["page"]} ↗</a></section>' if activator.get('text') else '')
+    activator_html = ''.join(f'<section class="chapter-activator" aria-labelledby="activator-title-{i}"><p class="kicker" id="activator-title-{i}">Activator</p><p>{escape(a["text"])}</p><a data-pdf-page="{a["page"]}" href="{escape(url, quote=True)}#page={a["page"]}">From the handwritten note · p. {a["page"]} ↗</a></section>' for i,a in enumerate(activators(chapter),1))
     guide_section = f'<div class="chapter-prose">{reading_guide}</div>' if reading_guide else ''
     guide_link = '<a href="#reading-guide">Reading guide</a>' if reading_guide else ''
     groups = ''.join(f'<section><h3>{label}</h3>{connection_list(chapter.get(key, []), names)}</section>' for key, label in GROUPS)
@@ -187,7 +190,7 @@ def search_index(names, documents=(), document_root=None):
         connections = [resolve_connection(target, names)[0] for key, _ in GROUPS for target in chapter.get(key, [])]
         entries.append({'title': stem, 'category': topic['title'] if topic else 'Notebook desk', 'url': chapter_url(name),
                         'status': 'Handwritten note', 'summary': chapter.get('question', ''), 'tags': chapter.get('tags', []),
-                        'text': '\n'.join([guide, chapter.get('activator', {}).get('text', ''), *(lead['question'] + ' ' + ' '.join(lead['steps']) for lead in for_note(stem)), chapter.get('summary', ''), *connections, *(item['title'] for item in chapter.get('contents', []))])})
+                        'text': '\n'.join([guide, *(a['text'] for a in activators(chapter)), *(lead['question'] + ' ' + ' '.join(lead['steps']) for lead in for_note(stem)), chapter.get('summary', ''), *connections, *(item['title'] for item in chapter.get('contents', []))])})
     for topic in site_content.TOPICS:
         entries.append({'title': topic['title'], 'category': 'Topics', 'url': '/notes/' + topic['slug'] + '/',
                         'status': 'Topic' if site_content.topic_notes(topic, names) else 'Outline',

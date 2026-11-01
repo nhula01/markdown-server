@@ -49,3 +49,6 @@ class CollectedBookTests(unittest.TestCase):
         self.assertIn('Activator</p>', chapter)
         self.assertIn(chapter_content.CHAPTERS['Quantum Pictures']['activator']['text'], chapter)
         self.assertIn('data-pdf-page="1"', chapter)
+        for activator in chapter_content.activators(chapter_content.CHAPTERS['Quantum Pictures']):
+            self.assertIn(activator['text'],chapter)
+        self.assertEqual(len(chapter_content.activators(chapter_content.CHAPTERS['Quantum Pictures'])),2)

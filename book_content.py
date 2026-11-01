@@ -51,8 +51,10 @@ def _context_pages(title, names, included):
     chapter = chapter_content.CHAPTERS.get(title, {})
     rows = [('heading', 'Read this notebook', None),
             ('link', 'Read handwritten notes', 'source:' + title)]
-    if chapter.get('activator'):
-        rows.append(('link', 'Activator - return to the handwritten starting point', 'activator:' + title))
+    for i, activator in enumerate(chapter_content.activators(chapter),1):
+        suffix = '' if i == 1 else ':'+str(i)
+        label = 'Activator - return to the handwritten starting point' if i == 1 else f'Activator {i:02d} - read the handwritten starting point'
+        rows.append(('link',label,'activator:'+title+suffix))
     for key, label in chapter_content.GROUPS:
         targets = chapter.get(key, [])
         if not targets:
@@ -177,12 +179,12 @@ def build(names, root):
             source_start=len(writer.pages)+1
             destinations['source:' + title]=source_start-1
             source = PdfReader(root / name)
-            activator=chapter_content.CHAPTERS.get(title,{}).get('activator',{})
-            if activator:
+            for i, activator in enumerate(chapter_content.activators(chapter_content.CHAPTERS.get(title,{})),1):
                 original_page=activator['page']
                 if not 1 <= original_page <= len(source.pages):
                     raise ValueError('Activator page is outside notebook: ' + title)
-                destinations['activator:'+title]=source_start+original_page-2
+                suffix='' if i==1 else ':'+str(i)
+                destinations['activator:'+title+suffix]=source_start+original_page-2
             for original in source.pages: writer.add_page(original)
             bookmark=writer.add_outline_item(title,page-1,parent=parent)
             writer.add_outline_item('Handwritten notes',source_start-1,parent=bookmark)

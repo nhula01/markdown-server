@@ -75,3 +75,8 @@ planned destinations remain labeled and link to their website outlines. Rebuild
 and verify link destinations when pagination changes. The website PDF reader's
 annotation layer makes these same links usable online and provides a return
 button; original handwritten pages are still appended without alterations.
+
+When a notebook has more than one handwritten activator, preserve the primary
+`activator` and append exact source text/page pairs to `additional_activators`.
+All activators appear on its chapter and get separate book links to their
+handwritten source page; never replace the primary just to add another.

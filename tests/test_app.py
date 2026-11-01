@@ -85,7 +85,9 @@ class ServerTests(unittest.TestCase):
         target = folder / source.name; target.write_bytes(source.read_bytes())
         status, _, body = self.request('/notebooks/Obsidian/Electromagnetic Pieces.pdf/')
         self.assertEqual(status, '200 OK')
-        self.assertIn(b'4 pages', body)
+        from pypdf import PdfReader
+        pages = len(PdfReader(target).pages)
+        self.assertIn(f'{pages} pages'.encode(), body)
         self.assertIn(b'Why can E and B be treated as one field?', body)
         self.assertIn(b'data-pdf-page="4"', body)
         self.assertIn(escape(app.site_content.CATALOG['reading_guides']['Electromagnetic Pieces']).encode(), body)

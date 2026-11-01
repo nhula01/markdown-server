@@ -38,7 +38,8 @@
       "leads_to": [
         "note:Maxwell's Equations",
         "concept:plane-waves",
-        "concept:quantization"
+        "concept:quantization",
+        "note:Coherent State"
       ],
       "appears_in": [
         "concept:cavity-qed",
@@ -169,7 +170,8 @@
       ],
       "leads_to": [
         "concept:band-structure",
-        "note:Linear Light"
+        "note:Linear Light",
+        "note:Plasmons"
       ],
       "appears_in": [
         "concept:confinement",
@@ -265,12 +267,20 @@
         "reference frames"
       ],
       "activator": {
-        "text": "Quantum pictures arise from our freedom to choose different reference frames in hilbert space. The physical evolution remains the same, but what appears to evolve depends on the frame from which we describe the system.",
+        "text": "Quantum pictures arise from our freedom to choose different reference frames in Hilbert space. The physical evolution remains the same, but what appears to evolve depends on the frame from which we describe the system.",
         "page": 1
       },
       "contents": [
         {
           "title": "Quantum pictures and reference frames",
+          "page": 1
+        },
+        {
+          "title": "Rotating frames and the rotating-wave approximation",
+          "page": 1
+        },
+        {
+          "title": "Removing free bath evolution",
           "page": 1
         },
         {
@@ -287,11 +297,19 @@
       ],
       "leads_to": [
         "concept:cavity-qed",
-        "topic:open-quantum-systems"
+        "topic:open-quantum-systems",
+        "note:Coherent State",
+        "note:Foundations of SLH"
       ],
       "appears_in": [
         "topic:quantum-optics",
         "concept:input-output"
+      ],
+      "additional_activators": [
+        {
+          "text": "In quantum optics, two common choices of rotating frame allow us to simplify quantum dynamics: one removes the free evolution to isolate the interaction, while the other removes the common carrier frequency so oscillation is scaled to relative frequencies.",
+          "page": 1
+        }
       ]
     },
     "Polaritons": {
@@ -311,6 +329,14 @@
         {
           "title": "Upper and lower branches; avoided crossing",
           "page": 1
+        },
+        {
+          "title": "Reflection and the Drude limit",
+          "page": 2
+        },
+        {
+          "title": "Anisotropic dispersion and phase retardation",
+          "page": 3
         }
       ],
       "prerequisites": [
@@ -318,11 +344,260 @@
         "note:Linear Light"
       ],
       "leads_to": [
-        "concept:cavity-qed"
+        "concept:cavity-qed",
+        "note:Plasmonics"
       ],
       "appears_in": [
         "topic:quantum-optics"
       ]
+    },
+    "Phonons": {
+      "slug": "phonons",
+      "question": "How does a chain of atoms carry a collective vibration?",
+      "tags": [
+        "phonons",
+        "lattice vibrations",
+        "dispersion",
+        "group velocity"
+      ],
+      "contents": [
+        {
+          "title": "Monatomic chain and restoring forces",
+          "page": 1
+        },
+        {
+          "title": "Dispersion and the sound-speed limit",
+          "page": 1
+        },
+        {
+          "title": "From the interatomic potential to Hooke’s law",
+          "page": 1
+        },
+        {
+          "title": "Diatomic one-dimensional lattice",
+          "page": 2
+        }
+      ],
+      "prerequisites": [
+        "note:Crystal",
+        "note:Oscillator Model"
+      ],
+      "leads_to": [
+        "note:Polaritons"
+      ],
+      "appears_in": [
+        "topic:light-and-matter"
+      ]
+    },
+    "Plasmons": {
+      "slug": "plasmons",
+      "question": "How does a disturbance in electron density restore itself?",
+      "tags": [
+        "plasmons",
+        "electron density",
+        "longitudinal waves",
+        "plasma frequency"
+      ],
+      "contents": [
+        {
+          "title": "Longitudinal and transverse waves",
+          "page": 1
+        },
+        {
+          "title": "Charge density and the restoring electric field",
+          "page": 1
+        },
+        {
+          "title": "Continuity equation and plasma frequency",
+          "page": 2
+        }
+      ],
+      "prerequisites": [
+        "note:Electromagnetic Pieces",
+        "note:Electrons in Crystals"
+      ],
+      "leads_to": [
+        "note:Plasmonics"
+      ],
+      "appears_in": [
+        "note:Polaritons"
+      ]
+    },
+    "Plasmonics": {
+      "slug": "plasmonics",
+      "question": "How can light remain bound to a metal surface?",
+      "tags": [
+        "surface plasmons",
+        "evanescent fields",
+        "momentum matching",
+        "sensing"
+      ],
+      "contents": [
+        {
+          "title": "Surface charge oscillations and bound electromagnetic fields",
+          "page": 1
+        },
+        {
+          "title": "SPP dispersion and momentum matching",
+          "page": 1
+        },
+        {
+          "title": "Loss and finite propagation length",
+          "page": 2
+        },
+        {
+          "title": "Prism coupling and surface-plasmon sensing",
+          "page": 3
+        }
+      ],
+      "prerequisites": [
+        "note:Plasmons",
+        "note:Polaritons",
+        "note:Linear Light"
+      ],
+      "leads_to": [
+        "topic:nonlinear-and-fiber-optics"
+      ],
+      "appears_in": [
+        "topic:light-and-matter"
+      ]
+    },
+    "Foundations of SLH": {
+      "slug": "foundations-of-slh",
+      "question": "Why do we need SLH?",
+      "tags": [
+        "SLH",
+        "input-output",
+        "quantum stochastic equations",
+        "cascaded systems"
+      ],
+      "contents": [
+        {
+          "title": "Input–output relations and SLH components",
+          "page": 1
+        },
+        {
+          "title": "Cascaded systems and composition rules",
+          "page": 1
+        },
+        {
+          "title": "Classical and quantum inputs; applications roadmap",
+          "page": 1
+        }
+      ],
+      "prerequisites": [
+        "note:Quantum Pictures",
+        "concept:input-output"
+      ],
+      "leads_to": [
+        "note:Duan Kimble"
+      ],
+      "appears_in": [
+        "topic:quantum-networks"
+      ]
+    },
+    "Duan Kimble": {
+      "slug": "duan-kimble",
+      "question": "How can a reflected photon acquire a phase set by an atom?",
+      "tags": [
+        "Duan–Kimble",
+        "cavity QED",
+        "conditional phase",
+        "heralded entanglement"
+      ],
+      "contents": [
+        {
+          "title": "Atom-dependent reflection phase",
+          "page": 1
+        },
+        {
+          "title": "Photon–atom controlled phase gate",
+          "page": 1
+        },
+        {
+          "title": "ZALM and heralded quantum-memory entanglement",
+          "page": 2
+        },
+        {
+          "title": "Transmission and entanglement-generation rates",
+          "page": 2
+        }
+      ],
+      "prerequisites": [
+        "note:Quantum Pictures",
+        "concept:cavity-qed"
+      ],
+      "leads_to": [
+        "topic:quantum-networks"
+      ],
+      "appears_in": [
+        "note:Foundations of SLH",
+        "topic:quantum-information"
+      ]
+    },
+    "Coherent State": {
+      "slug": "coherent-state",
+      "question": "How do optical modes give us a language for the field?",
+      "tags": [
+        "optical modes",
+        "coherent states",
+        "normalization",
+        "orthogonality"
+      ],
+      "contents": [
+        {
+          "title": "Spatial, temporal, frequency, and polarization modes",
+          "page": 1
+        },
+        {
+          "title": "Normalization and orthogonality",
+          "page": 1
+        },
+        {
+          "title": "Coherent-state condition",
+          "page": 2
+        }
+      ],
+      "prerequisites": [
+        "note:Electromagnetic Pieces",
+        "note:Quantum Pictures"
+      ],
+      "leads_to": [
+        "concept:photons",
+        "note:Duan Kimble"
+      ],
+      "appears_in": [
+        "note:Foundations of SLH"
+      ],
+      "activator": {
+        "text": "an optical mode is a distinct pattern of electromagnetic oscillation, characterized by its spatial, temporal, frequency, and polarization. Modes are the fundamental building blocks of an electromagnetic field. Just as a complex sound can be decomposed into individual frequencies, an arbitrary electromagnetic field can be expressed as a superposition of modes.",
+        "page": 1
+      }
+    },
+    "Science of Review": {
+      "slug": "science-of-review",
+      "question": "How can an activator help us recall an idea?",
+      "tags": [
+        "review",
+        "recall",
+        "activators",
+        "connections"
+      ],
+      "contents": [
+        {
+          "title": "Remembering a melody rather than isolated notes",
+          "page": 1
+        },
+        {
+          "title": "Activators, questions, and recalling connections",
+          "page": 1
+        }
+      ],
+      "prerequisites": [],
+      "leads_to": [
+        "note:Quantum Pictures"
+      ],
+      "appears_in": []
     }
   },
   "concepts": {
