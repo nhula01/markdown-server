@@ -14,6 +14,8 @@ import chapter_content
 import lead_content
 import review_content
 import book_content
+import pwa_content
+import json
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--base-path', default='/markdown-server')
@@ -33,12 +35,16 @@ shutil.rmtree(out / 'assets/vendor/supabase', ignore_errors=True)
 # otherwise retain an old stylesheet URL when reached through the menu.
 site_version = hashlib.sha256(b''.join(
     (Path(app.__file__).parent / name).read_bytes()
-    for name in ['book_content.py', 'topic_art.py', 'review_content.py', 'assets/margin-reminders.json', 'assets/margin-equations.js', 'assets/music.js', 'assets/review.js', 'assets/review-schedule.mjs', 'app.py', 'site_content.py', 'chapter_content.py', 'lead_content.py', 'site/leads.md', 'assets/leads.js', 'assets/theme.js', 'assets/style.css', 'assets/math.js', 'assets/search.js', 'assets/pdf-reader.js', 'site/catalog.json', 'site/chapters.json', 'scripts/build-pages.py']
+    for name in ['pwa_content.py', 'assets/pwa.js', 'assets/service-worker.js', 'book_content.py', 'topic_art.py', 'review_content.py', 'assets/margin-reminders.json', 'assets/margin-equations.js', 'assets/music.js', 'assets/review.js', 'assets/review-schedule.mjs', 'app.py', 'site_content.py', 'chapter_content.py', 'lead_content.py', 'site/leads.md', 'assets/leads.js', 'assets/theme.js', 'assets/style.css', 'assets/math.js', 'assets/search.js', 'assets/pdf-reader.js', 'site/catalog.json', 'site/chapters.json', 'scripts/build-pages.py']
 )
   + b''.join(name.encode() + hashlib.sha256(app.resolve(name, root).read_bytes()).digest()
             for root, names in [(app.ROOT, app.files()), (app.PDF_ROOT, app.pdf_files())]
             for name in names)).hexdigest()[:16]
 (out / 'style.css').write_text(app.CSS)
+(out / 'manifest.webmanifest').write_text(pwa_content.manifest(base))
+(out / 'sw.js').write_text(pwa_content.worker(site_version))
+shutil.copytree(Path(app.__file__).parent / 'assets/icons', out / 'assets/icons', dirs_exist_ok=True)
+shutil.copyfile(Path(app.__file__).parent / 'assets/pwa.js', out / 'assets/pwa.js')
 shutil.copytree(Path(app.__file__).parent / 'assets/audio', out / 'assets/audio', dirs_exist_ok=True)
 shutil.copytree(Path(app.__file__).parent / 'assets/fonts', out / 'assets/fonts', dirs_exist_ok=True)
 shutil.copytree(Path(app.__file__).parent / 'assets/vendor', out / 'assets/vendor', dirs_exist_ok=True)
@@ -136,3 +142,13 @@ for card in reviews:
     card['pdf'] = base + card['pdf']
 (out / 'review-index.json').write_text(__import__('json').dumps(reviews, ensure_ascii=False))
 print(f'Built {len(app.files())} Markdown documents and {len(app.pdf_files())} PDFs in {out}')
+
+# All review dependencies and chapter pages, excluding optional music and the collected book.
+offline = []
+for file in sorted(out.rglob('*')):
+    if not file.is_file(): continue
+    relative = file.relative_to(out).as_posix()
+    if relative.startswith(('assets/audio/', 'book/')) or relative in {'.nojekyll', 'sw.js', 'offline-index.json'}: continue
+    if relative.endswith('index.html'): relative = relative[:-len('index.html')]
+    offline.append(base + '/' + quote(relative, safe='/'))
+(out / 'offline-index.json').write_text(json.dumps({'version':site_version, 'files':offline}))

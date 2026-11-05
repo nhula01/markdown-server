@@ -280,3 +280,22 @@ leads as branches. Contents and topic dividers are clickable in the downloaded
 PDF. Published chapter targets stay inside the book; planned targets open the
 public website outline. A PDF annotation overlay supports the same links in the
 online reader, including a Return control for internal jumps.
+
+## Install on your phone and review offline
+
+Open `/notes/review/` on the HTTPS site. On iPhone, use Safari → Share → Add to
+Home Screen. On Android, use the Install review app button when offered, or
+Chrome's Install app / Add to Home screen menu. The installed app opens directly
+to daily review.
+
+Choose **Download for offline review** while connected and keep the app open
+until it confirms completion. This saves the review pages, public chapter pages,
+original handwritten PDFs, math renderer, and PDF reader on that device.
+Optional music and the collected-book PDF are excluded. Revisit while connected
+and refresh the download after notebook updates. Browser storage can be cleared
+by the browser or user; check the status before traveling. Completion checkmarks
+remain local to each browser/app. The static build supports both root hosting
+and the existing `/markdown-server/` GitHub Pages prefix.
+
+Verify offline fallback, interrupted downloads, and PDF byte ranges with
+`node --test tests/pwa-offline.test.mjs`.

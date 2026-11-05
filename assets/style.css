@@ -577,3 +577,24 @@ body:not(.ink-immersive):not(.music-reading-shell){max-width:calc(100vw - 280px)
 .pdf-reader[data-immersive="true"][data-depth="true"] .pdf-link-layer { transform: translateZ(25px); }
 .pdf-reader[data-book-links="true"] .pdf-controls { flex-wrap: wrap; }
 .pdf-reader[data-book-links="true"] .pdf-controls > button { white-space: nowrap; }
+
+/* Installable review workspace. */
+.review-app { display:grid; grid-template-columns:1fr 1fr; gap:1.5rem; padding:1.5rem; margin:1.5rem 0 2rem; border:1px solid var(--line, #c6c9c7); border-radius:12px; }
+.review-app h2 { margin:.3rem 0 .7rem; }
+.review-app p { margin:.5rem 0; }
+.review-app-actions { display:flex; flex-direction:column; align-items:flex-start; gap:.6rem; min-width:0; }
+.review-app-actions .button { min-height:44px; white-space:normal; text-align:left; }
+.review-app-actions [role="status"] { font-size:.9rem; }
+.review-app summary { cursor:pointer; min-height:44px; padding-top:.5rem; }
+@media (max-width:640px) {
+  .review-app { grid-template-columns:1fr; padding:1rem; gap:.75rem; }
+  .review-ratings { grid-template-columns:repeat(2,minmax(0,1fr)); }
+  .review-ratings button, .review-pdf-controls button { min-height:44px; }
+  #review-response { font-size:16px; }
+  .review-pdf-controls { flex-wrap:wrap; }
+  .review-app-actions .button { width:100%; }
+}
+@media (display-mode:standalone) {
+  body { padding-bottom:env(safe-area-inset-bottom); }
+  .site-header { padding-top:env(safe-area-inset-top); }
+}
