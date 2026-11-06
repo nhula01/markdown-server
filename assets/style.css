@@ -598,3 +598,8 @@ body:not(.ink-immersive):not(.music-reading-shell){max-width:calc(100vw - 280px)
   body { padding-bottom:env(safe-area-inset-bottom); }
   .site-header { padding-top:env(safe-area-inset-top); }
 }
+
+.note-video-link { display:inline-block; margin-top:.75rem; padding:.35rem 0; }
+.chapter-video { margin:1.5rem 0; padding:1.25rem 0; border-top:1px solid var(--line, #c6c9c7); }
+.chapter-video h2 { margin:0 0 .5rem; }
+.chapter-video .note-video-link { margin-top:0; min-height:44px; }

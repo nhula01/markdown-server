@@ -129,6 +129,9 @@ def viewer(name, url, names, metadata=None):
     guide = site_content.CATALOG.get('reading_guides', {}).get(stem, '')
     reading_guide = f'<details id="reading-guide" class="chapter-guide"><summary>Reading guide · verbatim from Optimum</summary><div class="guide-verbatim">{escape(guide)}</div></details>' if guide.strip() else ''
     activator_html = ''.join(f'<section class="chapter-activator" aria-labelledby="activator-title-{i}"><p class="kicker" id="activator-title-{i}">Activator</p><p>{escape(a["text"])}</p><a data-pdf-page="{a["page"]}" href="{escape(url, quote=True)}#page={a["page"]}">From the handwritten note · p. {a["page"]} ↗</a></section>' for i,a in enumerate(activators(chapter),1))
+    video = site_content.video_link(stem)
+    video_body = video or '<p class="muted">A video explanation will be added here.</p>'
+    video_section = f'<section id="video-explanation" class="chapter-video"><h2>Video explanation</h2>{video_body}</section>'
     guide_section = f'<div class="chapter-prose">{reading_guide}</div>' if reading_guide else ''
     guide_link = '<a href="#reading-guide">Reading guide</a>' if reading_guide else ''
     groups = ''.join(f'<section><h3>{label}</h3>{connection_list(chapter.get(key, []), names)}</section>' for key, label in GROUPS)
@@ -154,6 +157,7 @@ def viewer(name, url, names, metadata=None):
         <div class="chapter-main"><section id="handwritten-notes" class="handwriting"><div class="pdf-toolbar"><span class="kicker">The handwritten source</span><a href="{escape(url, quote=True)}">Open PDF ↗</a></div>
         <div class="pdf-reader" data-pdf-url="{escape(url, quote=True)}" data-title="{escape(stem, quote=True)}" data-page="1"><div class="pdf-controls"><div><button type="button" data-pdf-previous aria-label="Previous PDF page" disabled>←</button><select data-pdf-select aria-label="PDF page" disabled></select><button type="button" data-pdf-next aria-label="Next PDF page" disabled>→</button></div><div><button type="button" data-pdf-zoom-out aria-label="Zoom out" disabled>−</button><button type="button" data-pdf-zoom-in aria-label="Zoom in" disabled>+</button></div></div><p data-pdf-status role="status" aria-live="polite">Loading handwritten notes…</p><div class="pdf-surface"><canvas role="img" aria-label="{escape(stem, quote=True)} · handwritten page"></canvas></div></div>
         <noscript><iframe class="pdf-frame" title="{escape(stem, quote=True)} · handwritten notes" src="{escape(url, quote=True)}#page=1" width="100%" height="1100"></iframe></noscript><p class="file-source">Original reMarkable export. Use Open PDF to read or download the original file.</p></section>
+        {video_section}
         {guide_section}
         <section id="connections" class="chapter-connections"><h2>Key connections</h2><div class="connection-groups">{groups}</div>{linked_from}</section>
         {leads_html}

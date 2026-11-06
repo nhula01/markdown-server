@@ -6,11 +6,20 @@ read or copied by the site builder. Notebook files keep their original paths.
 import json
 from html import escape
 from pathlib import Path
-from urllib.parse import quote
+from urllib.parse import quote, urlsplit
 from topic_art import diagram
 
 CATALOG = json.loads((Path(__file__).parent / 'site/catalog.json').read_text())
 TOPICS = CATALOG['topics']
+VIDEOS = json.loads((Path(__file__).parent / 'site/videos.json').read_text())
+
+def video_link(title):
+    url = VIDEOS.get(title, '').strip()
+    parsed = urlsplit(url)
+    if parsed.scheme != 'https' or not parsed.hostname or parsed.username or parsed.password:
+        return ''
+    return f'<a class="note-video-link" href="{escape(url, quote=True)}" target="_blank" rel="noopener noreferrer">Watch video explanation ↗</a>'
+
 
 
 def topic_for(name):
@@ -58,7 +67,7 @@ def notebook_list(names, numbered=False):
         number = f'<span class="notebook-order" aria-label="Note {position}">{position:02d}</span>' if numbered else ''
         items.append(f'''<li class="{'illustrated-note' if artwork else ''}">{number}<div class="note-entry"><div class="note-title"><h3><a class="note-link" aria-describedby="{identifier}" href="/notebooks/{quote(name, safe='/')}/">{escape(stem)}</a></h3>
             <span class="note-popover" id="{identifier}" role="tooltip"><span class="guide-label">Reading guide · from Optimum</span>{content}</span></div>
-            <details class="reading-guide"><summary>Reading guide</summary><div class="guide-inline">{content}</div></details></div>{artwork}</li>''')
+            <details class="reading-guide"><summary>Reading guide</summary><div class="guide-inline">{content}</div></details>{video_link(stem)}</div>{artwork}</li>''')
     list_class = 'notebook-list numbered' if numbered else 'notebook-list'
     return f'<ul class="{list_class}">' + ''.join(items) + '</ul>'
 

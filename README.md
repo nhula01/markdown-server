@@ -299,3 +299,12 @@ and the existing `/markdown-server/` GitHub Pages prefix.
 
 Verify offline fallback, interrupted downloads, and PDF byte ranges with
 `node --test tests/pwa-offline.test.mjs`.
+
+## Video explanations
+
+Add each explanatory video's HTTPS link to `site/videos.json`, keyed by the
+exact notebook title. Empty values show a video placeholder beneath the
+handwritten note. A supplied link appears there and below the note in topic
+lists. For example, replace the empty value for `Crystal` with your video URL.
+Rebuild/publish after editing. Videos open on the hosting platform; the app's
+offline download saves the notes and link, but does not download external videos.
